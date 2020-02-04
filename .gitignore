@@ -14,7 +14,9 @@ build-robot_control-Desktop-Debug
 Makefile
 LineDetection
 .qmake.stash
-ConvertfromBGR_to_RGB
+ConvertFromBGR_to_RGB
+
+
 
 ## User files ##
 ################
