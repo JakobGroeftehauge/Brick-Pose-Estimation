@@ -24,15 +24,22 @@ string win_img_line = "Image with Lines";
 
 //Global variables used for tracksbars.
 // * Cannye Edge Detector
-int canny_thresh1 = 235;
-int canny_thresh2 = 227;
+int canny_thresh1 = 61;
+int canny_thresh2 = 125;
 int canny_threshMax = 255;
 
 //* Gaussian filter
 int kernel_size[5] = {3, 5, 7, 9, 11};
 int kernel_size_idx = 0;
 int std_dev = 1;
+
+
+//* Hough Lines
 int hough_threshold = 172;
+int rho = 1;
+int theta = 1;
+
+
 
 
 
@@ -65,10 +72,11 @@ void change_images()
         Point pt1, pt2;
         double a = cos(theta), b = sin(theta);
         double x0 = a*rho, y0 = b*rho;
-        pt1.x=cvRound(x0 + 400*(-b));
-        pt1.y=cvRound(y0 + 400*(a));
-        pt2.x=cvRound(x0 - 400*(-b));
-        pt2.y=cvRound(y0 - 400*(a));
+        int size = min(img_full.size().width, img_full.size().height);
+        pt1.x=cvRound(x0 + size*(-b));
+        pt1.y=cvRound(y0 + size*(a));
+        pt2.x=cvRound(x0 - size*(-b));
+        pt2.y=cvRound(y0 - size*(a));
         line(img_copy, pt1, pt2, Scalar(0,255,0), 1, LINE_AA);
     }
     cout << "Length of lines " << lines.size()<< endl;
@@ -92,12 +100,15 @@ static void on_trackbar(int, void*)
 int main()
 {
     //load image
-    img_full = cv::imread("brick_wall.jpg", IMREAD_COLOR);
+
+    img_full = cv::imread("../Strojer_Images/High-Res/snap1080_3_Color.png", IMREAD_COLOR);
+    //img_full = cv::imread("../Strojer_Images/Lower-Res (from c++)/Color_RGB/59rs-save-to-disk-output-Color.png", IMREAD_COLOR);
    // equalize_luminance(img_full, img_full);
 
     //Crop image
     cv::Rect roi;
-    roi.x = 0;
+    //roi.x = 100;
+    roi.x = 400;
     roi.y = 0;
     roi.width = min(img_full.size().width, img_full.size().height);
     roi.height = min(img_full.size().width, img_full.size().height);
@@ -121,12 +132,15 @@ int main()
     cv::createTrackbar(TrackbarName, win_gaussian, &std_dev, 6, on_trackbar);
     sprintf( TrackbarName, "Hough Threshold");
     cv::createTrackbar(TrackbarName, win_img_line, &hough_threshold, 400, on_trackbar);
-
+    /*
+    sprintf( TrackbarName, "Hough rho");
+    cv::createTrackbar(TrackbarName, win_img_line, &rho, 3, on_trackbar);
+    sprintf( TrackbarName, "Hough theta");
+    cv::createTrackbar(TrackbarName, win_img, &theta, 20, on_trackbar);*/
     //convert image to grayscale
     cv::cvtColor(img, img_gray, CV_BGR2GRAY);
     change_images();
     update_images();
-
     waitKey(0);
 
     // print parameters
