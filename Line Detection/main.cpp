@@ -60,15 +60,16 @@ void equalize_luminance(cv::Mat& inputImg, cv::Mat& outputimg)
 
 void change_images()
 {
-    cv::GaussianBlur(img_gray, img_gaussian, cv::Size(kernel_size[kernel_size_idx],kernel_size[kernel_size_idx]), std_dev,std_dev);
+    //cv::GaussianBlur(img_gray, img_gaussian, cv::Size(kernel_size[kernel_size_idx],kernel_size[kernel_size_idx]), std_dev,std_dev);
+    cv::medianBlur(img_gray, img_gaussian, 5);
     cv::Canny(img_gaussian, img_canny, canny_thresh1, canny_thresh2);
     img_copy = img.clone();
 
     //vector <Vec4i> lines;
     vector <Vec2f> lines;
     //cv::Mat hough_space;
-    HoughLines(img_canny, lines, 1,CV_PI/180, hough_threshold, 0, 0);
-    //HoughLinesP(img_canny,lines, 1,CV_PI/180, hough_threshold, minLineLength, maxLineGap);
+    HoughLines(img_canny, lines, 0.5,CV_PI/45, hough_threshold, 0, CV_HOUGH_MULTI_SCALE);
+    //HoughLinesP(img_canny,lines, 1,CV_PI/45, hough_threshold, minLineLength, maxLineGap);
     /*for( size_t i = 0; i < lines.size(); i++ )
     {
         line( img_copy, Point(lines[i][0], lines[i][1]),
@@ -113,19 +114,20 @@ int main()
 {
     //load image
 
-    //img_full = cv::imread("../Strojer_Images/High-Res/snap1080_3_Color.png", IMREAD_COLOR);
-    img_full = cv::imread("../Strojer_Images/Lower-Res (from c++)/Color_RGB/3rs-save-to-disk-output-Color.png", IMREAD_COLOR);
-   // equalize_luminance(img_full, img_full);
-
-    //Crop image
+    img_full = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4047.JPG", IMREAD_COLOR);
+    //img_full = cv::imread("../Strojer_Images/Lower-Res (from c++)/Color_RGB/3rs-save-to-disk-output-Color.png", IMREAD_COLOR);
+    //equalize_luminance(img_full, img_full);
+    cv::imshow("test", img_full);
+    cv::waitKey(0);
+    /*//Crop image
     cv::Rect roi;
     roi.x = 100;
     //roi.x = 400;
     roi.y = 0;
     roi.width = min(img_full.size().width, img_full.size().height);
     roi.height = min(img_full.size().width, img_full.size().height);
-    img = img_full(roi);
-
+    img = img_full(roi);*/
+    img = img_full;
     // Create Display windows
     cv::namedWindow(win_img);
     cv::namedWindow(win_gaussian);

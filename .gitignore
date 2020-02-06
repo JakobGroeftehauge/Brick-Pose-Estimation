@@ -16,6 +16,7 @@ LineDetection
 .qmake.stash
 ConvertFromBGR_to_RGB
 Resize_and_crop_img/Resize_and_crop_img
+Hough_transform/Hough_transform
 
 
 ## User files ##
