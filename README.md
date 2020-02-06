@@ -2,7 +2,7 @@
 
 ## List of Projects Contained in the Repository
 
-**CobertFromBGR_to_RGB:**  <br/>  # <br/> acts as newline
+**CobertFromBGR_to_RGB:**  <br/> 
 **Hough_tranform:**  <br/>
 **Line Detection:**  <br/>
 **Resize_and_crop_img:**  <br/>
