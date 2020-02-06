@@ -8,7 +8,7 @@
 
 ### List of Projects Contained in the Repository
 
-**CobertFromBGR_to_RGB:**  <br/> 
+**ConvertFromBGR_to_RGB:**  <br/> 
 **Hough_tranform:** Implementation of hough transform for line detection in edge images. <br/>
 **Line Detection:**  <br/>
 **Resize_and_crop_img:**  <br/>
