@@ -15,7 +15,7 @@ Makefile
 LineDetection
 .qmake.stash
 ConvertFromBGR_to_RGB
-
+Resize_and_crop_img/Resize_and_crop_img
 
 
 ## User files ##

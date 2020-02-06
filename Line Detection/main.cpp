@@ -24,21 +24,22 @@ string win_img_line = "Image with Lines";
 
 //Global variables used for tracksbars.
 // * Cannye Edge Detector
-int canny_thresh1 = 61;
-int canny_thresh2 = 125;
+int canny_thresh1 = 22;
+int canny_thresh2 = 110;
 int canny_threshMax = 255;
 
 //* Gaussian filter
 int kernel_size[5] = {3, 5, 7, 9, 11};
-int kernel_size_idx = 0;
-int std_dev = 1;
+int kernel_size_idx = 1;
+int std_dev = 2;
 
 
 //* Hough Lines
-int hough_threshold = 172;
+int hough_threshold = 58;
 int rho = 1;
 int theta = 1;
-
+int minLineLength = 20;
+int maxLineGap = 20;
 
 
 
@@ -61,14 +62,24 @@ void change_images()
 {
     cv::GaussianBlur(img_gray, img_gaussian, cv::Size(kernel_size[kernel_size_idx],kernel_size[kernel_size_idx]), std_dev,std_dev);
     cv::Canny(img_gaussian, img_canny, canny_thresh1, canny_thresh2);
-
     img_copy = img.clone();
 
+    //vector <Vec4i> lines;
     vector <Vec2f> lines;
-    HoughLines(img_canny,lines, 1,CV_PI/180, hough_threshold);
+    //cv::Mat hough_space;
+    HoughLines(img_canny, lines, 1,CV_PI/180, hough_threshold, 0, 0);
+    //HoughLinesP(img_canny,lines, 1,CV_PI/180, hough_threshold, minLineLength, maxLineGap);
+    /*for( size_t i = 0; i < lines.size(); i++ )
+    {
+        line( img_copy, Point(lines[i][0], lines[i][1]),
+            Point(lines[i][2], lines[i][3]), Scalar(0,0,255), 2, LINE_AA);
+    }*/
+
     for (size_t i = 0; i < lines.size();i++)
     {
+
         float rho =  lines[i][0], theta = lines[i][1];
+         cout << rho << ", " << theta << "; "<< endl;
         Point pt1, pt2;
         double a = cos(theta), b = sin(theta);
         double x0 = a*rho, y0 = b*rho;
@@ -80,6 +91,7 @@ void change_images()
         line(img_copy, pt1, pt2, Scalar(0,255,0), 1, LINE_AA);
     }
     cout << "Length of lines " << lines.size()<< endl;
+    //cout << "cols: " << hough_space.cols << "  Rows: "<< hough_space.rows << endl;
 }
 
 void update_images()
@@ -101,14 +113,14 @@ int main()
 {
     //load image
 
-    img_full = cv::imread("../Strojer_Images/High-Res/snap1080_3_Color.png", IMREAD_COLOR);
-    //img_full = cv::imread("../Strojer_Images/Lower-Res (from c++)/Color_RGB/59rs-save-to-disk-output-Color.png", IMREAD_COLOR);
+    //img_full = cv::imread("../Strojer_Images/High-Res/snap1080_3_Color.png", IMREAD_COLOR);
+    img_full = cv::imread("../Strojer_Images/Lower-Res (from c++)/Color_RGB/3rs-save-to-disk-output-Color.png", IMREAD_COLOR);
    // equalize_luminance(img_full, img_full);
 
     //Crop image
     cv::Rect roi;
-    //roi.x = 100;
-    roi.x = 400;
+    roi.x = 100;
+    //roi.x = 400;
     roi.y = 0;
     roi.width = min(img_full.size().width, img_full.size().height);
     roi.height = min(img_full.size().width, img_full.size().height);
@@ -132,6 +144,10 @@ int main()
     cv::createTrackbar(TrackbarName, win_gaussian, &std_dev, 6, on_trackbar);
     sprintf( TrackbarName, "Hough Threshold");
     cv::createTrackbar(TrackbarName, win_img_line, &hough_threshold, 400, on_trackbar);
+    sprintf( TrackbarName, "Hough minLength");
+    cv::createTrackbar(TrackbarName, win_img, &minLineLength, 400, on_trackbar);
+    sprintf( TrackbarName, "Hough maxLineGap");
+    cv::createTrackbar(TrackbarName, win_img, &maxLineGap, 400, on_trackbar);
     /*
     sprintf( TrackbarName, "Hough rho");
     cv::createTrackbar(TrackbarName, win_img_line, &rho, 3, on_trackbar);
