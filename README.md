@@ -1,12 +1,18 @@
 # Deep Learning Aided Pose Estimation for Robotic Brick Picking
 
-## List of Projects Contained in the Repository
+## Description
+
+
+
+## Content
+
+### List of Projects Contained in the Repository
 
 **CobertFromBGR_to_RGB:**  <br/> 
-**Hough_tranform:**  <br/>
+**Hough_tranform:** Implementation of hough transform for line detection in edge images. <br/>
 **Line Detection:**  <br/>
 **Resize_and_crop_img:**  <br/>
-**saveImages:**  <br/>
+**saveImages:** Application for capturing RGB and depth images simultaneous with the Intel RealSense camera  <br/>
 
 ### Miscellaneous
-**Strojer_Images:**  <br/>
+**Strojer_Images:** This folder contains various images of bricks used for the listed projects <br/>
