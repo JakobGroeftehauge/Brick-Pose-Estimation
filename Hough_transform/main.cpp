@@ -39,7 +39,7 @@ cv::Mat Hough_transform(cv::Mat img, float res_theta = CV_PI/180, float res_rho 
                     float theta = n * res_theta;
                     int rho = cvRound(w * sin(theta) + h * cos(theta));
                     int rho_index =cvRound(rho_max/2 +  rho/res_rho);
-                    //accumulator_array.at<uchar>(cv::Point(n, rho_index))++;
+                    accumulator_array.at<uchar>(cv::Point(rho_index, n))++;
 
                     //accumulator_array.at<uchar>(cv::Point(w, h))++; //For test
                 }
@@ -74,7 +74,7 @@ int main()
     cv::Mat filter_img;
     cv::Mat gray_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4042.JPG", IMREAD_GRAYSCALE);
     cv::medianBlur(gray_img, filter_img, 5);
-    cv::Canny(filter_img, edge_img, 22, 110);
+    cv::Canny(filter_img, edge_img, 130, 200);
 
 
 
