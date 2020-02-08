@@ -114,7 +114,7 @@ int main()
 {
     //load image
 
-    img_full = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4047.JPG", IMREAD_COLOR);
+    img_full = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4050.JPG", IMREAD_COLOR);
     //img_full = cv::imread("../Strojer_Images/Lower-Res (from c++)/Color_RGB/3rs-save-to-disk-output-Color.png", IMREAD_COLOR);
     //equalize_luminance(img_full, img_full);
     cv::imshow("test", img_full);
