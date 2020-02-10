@@ -24,6 +24,8 @@ bool save_frame_raw_data(const std::string& filename, rs2::frame frame)
         outfile.write(static_cast<const char*>(image.get_data()), image.get_height()* image.get_stride_in_bytes());
 
         outfile.close();
+
+        std::cout << image.get_height() * image.get_stride_in_bytes() << std::endl;
         ret = true;
     }
 
