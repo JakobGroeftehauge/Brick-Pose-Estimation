@@ -66,30 +66,6 @@ cv::Mat Hough_transform(cv::Mat img)
     return accumulator_array;
 }
 
-/**
- * @brief Function which save a Mat container to a csv file.
- *
- * @param img - The imag@brief e to save.
- * @param filename - name of file (without suffix).
- */
-void save_to_csv(cv::Mat img, std::string filename)
-{
-    std::ofstream file;
-    file.open(filename + ".csv");
-
-    for(int w = 0; w < img.size().width; w++)
-    {
-        for(int h = 0; h < img.size().height; h++)
-        {
-            file << (int) img.at<uchar>(cv::Point(w, h)) << ", ";
-        }
-
-        file << endl;
-    }
-
-    file.close();
-}
-
 
 cv::Mat transform_hough_space(cv::Mat hough_space, int theta_split_value)
 {
@@ -507,17 +483,17 @@ int main()
     cv::Mat gray_img;
     cv::Mat hough_space_norm;
     cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4049.JPG", IMREAD_COLOR);
-    //Hough_space hough_lines(color_img);
 
     cv::cvtColor(color_img, gray_img, CV_BGR2GRAY);
     cv::medianBlur(gray_img, filter_img, 5);
     cv::Canny(filter_img, edge_img, 60, 140);
     cv::imshow("Edge Image", edge_img);
+    Hough_space hough_lines(edge_img);
 
     //cv::waitKey(0);
 
-    hough_space = Hough_transform(edge_img);
-    save_to_csv(hough_space, "test");
+    //hough_space = Hough_transform(edge_img);
+    hough_lines.save_to_csv("test");
 
     vector<vector<double>> lines = findLines(edge_img, 70);
     cout << "Number of lines detected: " << lines.size() << endl;

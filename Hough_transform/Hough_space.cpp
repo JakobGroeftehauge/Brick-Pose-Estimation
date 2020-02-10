@@ -11,9 +11,18 @@ Hough_space::Hough_space(cv::Mat edge_img)
 	this->num_angle = cvRound(CV_PI / resolution_theta);
 	this->hough_space = cv::Mat::zeros(num_angle, rho_max*2+1, CV_16U);
     initialise_hough_space();
+    fill_ticks();
 
 }
 
+/**
+ * Method that initialises the hough space by calculating the hough transform and filling in "tick containers"
+ * By default the reuolution of the hough space is 1 degreee for the theta, and 1 pixel for rho.
+ *
+ * @param img - edge image
+ *
+ * @return hough space
+ */
 void Hough_space::initialise_hough_space()
 {
     for (int w = 0; w < img_width; w++)
@@ -35,5 +44,48 @@ void Hough_space::initialise_hough_space()
                 }
             }
         }
+    }
+}
+
+/**
+ * Method which fills in the "tick containers" for rho and theta.
+ * These containers are implemented to ease conversion from image matrix to parameters.
+ */
+void Hough_space::fill_ticks()
+{
+    this->theta_tick.resize(this->num_angle);
+    for (int i = 0; i < this->num_angle; i++)
+    {
+        this->theta_tick[i] = i * this->resolution_theta;
+    }
+    this->rho_tick.resize((this->rho_max*2+1)/this->resolution_rho);
+    for (int i = 0; i < (this->rho_max * 2 + 1) / this->resolution_rho; i++)
+    {
+        this->rho_tick[i] = i * this->resolution_rho - this->rho_max;
+    }
+}
+
+void Hough_space::find_lines(int accum_threshold)
+{
+
+}
+
+void Hough_space::save_to_csv(std::string filename)
+{
+    {
+        std::ofstream file;
+        file.open(filename + ".csv");
+
+        for (int w = 0; w < this->hough_space.size().width; w++)
+        {
+            for (int h = 0; h < this->hough_space.size().height; h++)
+            {
+                file << (int)this->hough_space.at<ushort>(cv::Point(w, h)) << ", ";
+            }
+
+            file << "\n";
+        }
+
+        file.close();
     }
 }
