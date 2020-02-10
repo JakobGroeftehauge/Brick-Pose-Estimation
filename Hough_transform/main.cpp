@@ -28,44 +28,6 @@ std::vector<double> convert_to_line(cv::Point pos_hough_space, int rho_range)
     return line_parameters;
 }
 
-/**
- * Method which return the hough space an of edge image.
- * By default the reuolution of the hough space is 1 degreee for the theta, and 1 pixel for rho.
- *
- * @param img - edge image
- *
- * @return hough space
- */
-cv::Mat Hough_transform(cv::Mat img)
-{
-    int img_width = img.size().width;
-    int img_height = img.size().height;
-
-    //Create Accumulator array
-    int rho_max = cvRound(sqrt(pow(img_width, 2.0) + pow(img_height, 2.0)));
-    int num_angle = CV_PI/resolution_theta;
-    cv::Mat accumulator_array = Mat::zeros(num_angle, rho_max, CV_8U);
-
-    for(int w = 0; w < img_width; w++)
-    {
-        for(int h = 0; h < img_height; h++)
-        {
-            //Check if the current pixel is a edge pixel (white)
-            if(img.at<uchar>(cv::Point(w, h)) == 255)
-            {
-                for(float n = 0; n < num_angle; n++)
-                {
-                    float theta = n * resolution_theta;
-                    int rho = cvRound((w-img_width/2)* cos(theta) + (h-img_height/2) * sin(theta));
-                    int rho_index =cvRound(rho_max/2.0 + rho);
-                    accumulator_array.at<uchar>(cv::Point(rho_index, n))++;
-                }
-            }
-        }
-    }
-    return accumulator_array;
-}
-
 
 cv::Mat transform_hough_space(cv::Mat hough_space, int theta_split_value)
 {

@@ -7,6 +7,10 @@ public:
 
 	//-------- methods -----------
 	void save_to_csv(std::string filename);
+	// ------ Not settled on yet --------
+	void get_shifted_hough(); // check whether important clusters exist at top and bottom, if so, perform shifting
+
+
 
 private:
 	cv::Mat edge_img;
@@ -29,12 +33,7 @@ private:
 	void fill_ticks();
 	void find_lines(int accum_threshold);
 
-    /**
- * @brief Function which save a Mat container to a csv file.
- *
- * @param img - The imag@brief e to save.
- * @param filename - name of file (without suffix).
- */
+
 
 };
 

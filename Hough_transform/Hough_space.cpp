@@ -67,7 +67,12 @@ void Hough_space::fill_ticks()
 
 void Hough_space::find_lines(int accum_threshold)
 {
-
+    cv::Mat hough_space_norm;
+    cv::normalize(this->hough_space, hough_space_norm, 0, 255, cv::NORM_MINMAX, CV_16U);
+    cv::Mat hough_space_bin;// = threshold(hough_space_norm, accum_threshold);
+    cv::threshold(hough_space_norm, hough_space_bin, 255, accum_threshold, cv::THRESH_BINARY);
+    cv::imshow("hough space bin", hough_space_bin);
+    cv::imshow("hough_space norm", hough_space_norm);
 }
 
 void Hough_space::save_to_csv(std::string filename)
