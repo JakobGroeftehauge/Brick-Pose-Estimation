@@ -1,0 +1,15 @@
+RGB = imread('IMG_4047.JPG');
+I  = rgb2gray(RGB);
+BW = edge(I,'canny',[0.05 0.25]);
+[H,T,R] = hough(BW,'RhoResolution',1,'Theta',-90:0.5:89);
+subplot(2,1,1);
+imshow(RGB);
+title('gantrycrane.png');
+Htrunc = H;
+Htrunc(H<30) = 0;
+subplot(2,1,2);
+imshow(imadjust(rescale(Htrunc)),'XData',T,'YData',R,'InitialMagnification','fit');
+title('Hough transform of gantrycrane.png');
+xlabel('\theta'), ylabel('\rho');
+axis on, axis normal, hold on;
+colormap(gca,hot);
