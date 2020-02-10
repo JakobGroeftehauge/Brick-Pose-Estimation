@@ -6,7 +6,7 @@
 using namespace std;
 using namespace cv;
 
-RNG rng(12345); //random generator used for determine color of contours when displaying them.
+RNG rng(12346); //random generator used for determine color of contours when displaying them.
 double resolution_theta = CV_PI/180;
 int resolution_rho = 1;
 
@@ -55,8 +55,8 @@ cv::Mat Hough_transform(cv::Mat img)
                 for(float n = 0; n < num_angle; n++)
                 {
                     float theta = n * resolution_theta;
-                    int rho = cvRound(w * cos(theta) + h * sin(theta));
-                    int rho_index =cvRound(rho_max/2 + rho);
+                    int rho = cvRound((w-img_width/2)* cos(theta) + (h-img_height/2) * sin(theta));
+                    int rho_index =cvRound(rho_max/2.0 + rho);
                     accumulator_array.at<uchar>(cv::Point(rho_index, n))++;
                 }
             }
@@ -101,10 +101,10 @@ void print_line(cv::Mat img, double rho, double theta)
     double a = cos(theta), b = sin(theta);
     double x0 = a * rho, y0 = b * rho;
     int size = 1000;//max(img.size().height, img.size().width) * 2; //just needs to be big enough.
-    pt1.x=cvRound(x0 + size*(-b));
-    pt1.y=cvRound(y0 + size*(a));
-    pt2.x=cvRound(x0 - size*(-b));
-    pt2.y=cvRound(y0 - size*(a));
+    pt1.x=cvRound(x0 + size*(-b)) + img.size().width/2;
+    pt1.y=cvRound(y0 + size*(a)) + img.size().height/2;
+    pt2.x=cvRound(x0 - size*(-b)) + img.size().width/2;
+    pt2.y=cvRound(y0 - size*(a)) + img.size().height/2;
     line(img, pt1, pt2, Scalar(0,255,0), 1, LINE_AA);
 }
 
@@ -173,7 +173,7 @@ vector<vector<cv::Point>> find_contours(cv::Mat hough_space_bin)
     cv::Mat hough_space_copy = hough_space_bin.clone();
 
     cv::Mat kernel = Mat::ones(3, 3, CV_8U);
-    for(int i = 0; i < 2; i++) // The number of dialations (i) needs to tuned.
+    for(int i = 0; i < 4; i++) // The number of dialations (i) needs to tuned.
     {
         dilate(hough_space_copy, hough_space_copy, kernel);
     }
@@ -295,7 +295,7 @@ int main()
 
     // Show lines
     draw_lines(color_img, lines);
-    //print_line(color_img, -100, 3.12414);
+    //print_line(color_img, 17, 1.5);
     cv::imshow("Color_image", color_img); //Lines are not perfect due to holes in contour
 
     //Show images
