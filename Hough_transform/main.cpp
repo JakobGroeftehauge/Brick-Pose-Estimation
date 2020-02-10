@@ -328,7 +328,7 @@ vector<Point2f> get_points_on_line(vector<double> line_parameters, int img_width
 vector<Point2f> filter_intersections(vector<cv::Point2f> intersections, int max_x, int max_y)
 {
     vector<cv::Point2f> filtered_intersections;
-    for(int i = 0; i < intersections.size(); i++)
+    for(unsigned int i = 0; i < intersections.size(); i++)
     {
         cv::Point2f point = intersections[i];
         if(point.x < (float) max_x && point.x > 0.0 && point.y < (float) max_y && point.y > 0.0)
@@ -376,7 +376,7 @@ vector<cv::Point2f> get_intersections(vector<vector<double>> lines, int img_widt
  */
 void show_intersections(cv::Mat img, vector<cv::Point2f> points)
 {
-    for(int i = 0; i < points.size(); i++)
+    for(unsigned int i = 0; i < points.size(); i++)
     {
         cv::circle(img, points[i], 2, cv::Scalar(0,0,255), -1);
     }
@@ -390,10 +390,25 @@ void print_intersections(vector<cv::Point2f> intersections)
 {
     cout << "Detected intersections: " << endl;
 
-    for(int i = 0; i < intersections.size(); i++)
+    for(unsigned int i = 0; i < intersections.size(); i++)
     {
         cout << "Point " << i << "-  x:" << intersections[i].x << "  y: "<< intersections[i].y << endl;
     }
+}
+
+cv::Mat transform_hough_space(cv::Mat hough_space, int theta_split_value)
+{
+    cv::Mat hough_space_copy = hough_space.clone();
+    int hough_width = hough_space.size().width;
+    int hough_height = hough_space.size().height;
+
+    cv::Mat transformed_hough;
+    cv::Mat upper_part = hough_space_copy(Rect(0,0, hough_width -1, theta_split_value-1));
+    cv::Mat lower_part = hough_space_copy(Rect(0, theta_split_value + 1, hough_width - 1, hough_height - theta_split_value - 1));
+
+    flip(upper_part, upper_part, 1);
+    cv::vconcat(lower_part, upper_part, transformed_hough);
+    return transformed_hough;
 }
 
 int main()
@@ -423,6 +438,15 @@ int main()
     vector<cv::Point2f> intersections = get_intersections(lines, color_img.size().width, color_img.size().height);
     show_intersections(color_img, intersections);
     print_intersections(intersections);
+
+    cv::Mat trans_hough = transform_hough_space(hough_space, 40);
+    cv::Mat trans_hough_norm;
+    cv::normalize(trans_hough, trans_hough_norm, 0, 255, NORM_MINMAX, CV_8UC1);
+    cv::Mat trans_hough_bin = threshold(trans_hough_norm, 90);
+    get_dominant_lines(trans_hough, trans_hough_bin);
+    cv::imshow("trans hough bin", trans_hough_bin);
+
+    cv::imshow("trans hough", trans_hough_norm);
     cv::imshow("Color_image", color_img); //Lines are not perfect due to holes in contour
 
     //Show images
