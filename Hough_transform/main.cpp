@@ -167,6 +167,33 @@ cv::Point get_maximum(cv::Mat hough_space, vector<cv::Point> contour)
     return max_point;
 }
 
+/*
+* finds a horizontal line closest to the top which contains no white pixels
+* @param
+*/
+int find_splitting_line(cv::Mat img)
+{
+    int result = 1;
+    int counter = 0;
+    for (int row = 0; row<img.size().height; row++)
+    {
+        for (int col = 0; col < img.size().width; col++)
+        {
+            if (img.at<uchar>(cv::Point(col, row)) > 0)
+            {
+                counter = 0;
+                break;
+            }
+                
+            if (col == img.size().width - 1)
+                counter++;
+            if (counter > 4)
+                return row - 2;
+        }
+    }
+
+    return 0;
+}
 
 vector<vector<cv::Point>> find_contours(cv::Mat hough_space_bin)
 {
@@ -177,6 +204,8 @@ vector<vector<cv::Point>> find_contours(cv::Mat hough_space_bin)
     {
         dilate(hough_space_copy, hough_space_copy, kernel);
     }
+
+    cout << "splitting line: " << find_splitting_line(hough_space_copy) << endl;
 
     // Pad hough space with 1 pixels on all edges, due to the function
     // find contours ignores the outer most pixel.
@@ -410,6 +439,7 @@ cv::Mat transform_hough_space(cv::Mat hough_space, int theta_split_value)
     cv::vconcat(lower_part, upper_part, transformed_hough);
     return transformed_hough;
 }
+
 
 int main()
 {
