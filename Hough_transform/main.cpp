@@ -289,16 +289,16 @@ vector<vector<double>> get_dominant_lines(cv::Mat hough_space, cv::Mat hough_spa
     return lines;
 }
 
-vector<vector<double>> findLines(cv::Mat edge_img, int accum_threshold)
-{
-    cv::Mat hough_space = Hough_transform(edge_img);
-    cv::Mat hough_space_norm;
-    cv::normalize(hough_space, hough_space_norm, 0, 255, NORM_MINMAX, CV_8UC1);
-    cv::Mat hough_space_bin = threshold(hough_space_norm, accum_threshold);
-    cv::imshow("hough space bin", hough_space_bin);
-    cv::imshow("hough_space norm", hough_space_norm);
-    return get_dominant_lines(hough_space, hough_space_bin);
-}
+//vector<vector<double>> findLines(cv::Mat edge_img, int accum_threshold)
+//{
+//    cv::Mat hough_space = Hough_transform(edge_img);
+//    cv::Mat hough_space_norm;
+//    cv::normalize(hough_space, hough_space_norm, 0, 255, NORM_MINMAX, CV_8UC1);
+//    cv::Mat hough_space_bin = threshold(hough_space_norm, accum_threshold);
+//    cv::imshow("hough space bin", hough_space_bin);
+//    cv::imshow("hough_space norm", hough_space_norm);
+//    return get_dominant_lines(hough_space, hough_space_bin);
+//}
 
 void print_line_parameters(vector<vector<double>> lines)
 {
@@ -444,20 +444,19 @@ int main()
     cv::Mat filter_img;
     cv::Mat gray_img;
     cv::Mat hough_space_norm;
-    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4049.JPG", IMREAD_COLOR);
+    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4048.JPG", IMREAD_COLOR);
 
     cv::cvtColor(color_img, gray_img, CV_BGR2GRAY);
     cv::medianBlur(gray_img, filter_img, 5);
     cv::Canny(filter_img, edge_img, 60, 140);
     cv::imshow("Edge Image", edge_img);
-    Hough_space hough_lines(edge_img);
 
-    //cv::waitKey(0);
+    Hough_space hough_lines(edge_img);
 
     //hough_space = Hough_transform(edge_img);
     hough_lines.save_to_csv("test");
 
-    vector<vector<double>> lines = findLines(edge_img, 70);
+    vector<vector<double>> lines = hough_lines.find_lines();//findLines(edge_img, 70);
     cout << "Number of lines detected: " << lines.size() << endl;
     print_line_parameters(lines);
 
@@ -469,22 +468,7 @@ int main()
     show_intersections(color_img, intersections);
     print_intersections(intersections);
 
-    /*cv::Mat trans_hough = transform_hough_space(hough_space, 40);
-    cv::Mat trans_hough_norm;
-    cv::normalize(trans_hough, trans_hough_norm, 0, 255, NORM_MINMAX, CV_8UC1);
-    cv::Mat trans_hough_bin = threshold(trans_hough_norm, 90);
-    get_dominant_lines(trans_hough, trans_hough_bin);
-    cv::imshow("trans hough bin", trans_hough_bin);*/
-
-    //cv::imshow("trans hough", trans_hough_norm);
     cv::imshow("Color_image", color_img); //Lines are not perfect due to holes in contour
-
-    //Show images
-    //cv::imshow("Grayscale Image", gray_img);
-    //cv::imshow("Filtered Image", filter_img);
-    
-    cv::imshow("Hough Space", hough_space);
-
     cv::waitKey(0);
     return 1;
 }
