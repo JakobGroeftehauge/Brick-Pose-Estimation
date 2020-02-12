@@ -73,10 +73,12 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
 {
     cv::imshow("hough space reg", this->hough_matrix);
     cv::Mat hough_space_norm;
+
     cv::normalize(this->hough_matrix, hough_space_norm, 0, 65535, cv::NORM_MINMAX, CV_16U);
+    hough_space_norm.convertTo(hough_space_norm, CV_8U, 1.0/256.0);
     cv::Mat hough_space_bin;// = threshold(hough_space_norm, accum_threshold);
-    cv::threshold(hough_space_norm, hough_space_bin, cvRound(65535*this->accum_threshold), 65535, cv::THRESH_BINARY);
-    
+    cv::threshold(hough_space_norm, hough_space_bin, cvRound(255*this->accum_threshold), 65535, cv::THRESH_BINARY);
+    hough_space_bin.convertTo(hough_space_bin, CV_16U, 256.0);
  
     cv::imshow("hough_space norm", hough_space_norm);
     int split_value = 0;
