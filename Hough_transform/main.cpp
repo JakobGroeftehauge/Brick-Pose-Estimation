@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <opencv2/opencv.hpp>
+#include "Hough_space.h"
 
 
 using namespace std;
@@ -97,6 +98,8 @@ cv::Mat transform_hough_space(cv::Mat hough_space, int theta_split_value)
     int hough_height = hough_space.size().height;
 
     cv::Mat transformed_hough;
+    // Error below here when canny thresholds are low.
+    // Maybe issue is if theta is = 0
     cv::Mat upper_part = hough_space_copy(Rect(0,0, hough_width -1, theta_split_value-1));
     cv::Mat lower_part = hough_space_copy(Rect(0, theta_split_value + 1, hough_width - 1, hough_height - theta_split_value - 1));
 
@@ -168,12 +171,33 @@ cv::Mat threshold(cv::Mat hough_space, int threshold)
 /**
  *  Finds the most dominante point within a specified contour in the hough space
  */
+cv::Point calculate_(cv::Mat hough_space, vector<cv::Point> contour)
+{
+    cv::Point max_point = cv::Point2i(2, 5);
+    int max_value = 0;
+    for (unsigned int i = 0; i < contour.size(); i++)
+    {
+        //cout << "Contour: " << int(hough_space.at<uchar>(contour[i])) << endl;
+        if (hough_space.at<uchar>(contour[i]) > max_value)
+        {
+            max_point = contour[i];
+            max_value = hough_space.at<uchar>(contour[i]);
+        }
+    }
+    return max_point;
+}
+
+
+/**
+ *  Finds the most dominante point within a specified contour in the hough space
+ */
 cv::Point get_maximum(cv::Mat hough_space, vector<cv::Point> contour)
 {
-    cv::Point max_point;
+    cv::Point max_point = cv::Point2i(2,5);
     int max_value = 0;
     for(unsigned int i = 0; i < contour.size(); i++)
     {
+        //cout << "Contour: " << int(hough_space.at<uchar>(contour[i])) << endl;
         if(hough_space.at<uchar>(contour[i]) > max_value)
         {
             max_point = contour[i];
@@ -188,19 +212,21 @@ vector<vector<cv::Point>> inverse_transform_points(vector<vector<cv::Point>> con
     vector<vector<cv::Point>> trans_point;
     for(int i = 0; i < contours.size(); i++)
     {
+        cout << "hough dim y: " << hough_dim_y << endl;
         vector<cv::Point> single_contour;
         for(int j = 0; j < contours[i].size(); j++)
         {
             cv::Point point = contours[i][j];
             if(point.y > hough_dim_y - theta_split)
             {
-                int x_coor = point.x + 2 * (hough_dim_x/2 - point.x);
-                single_contour.push_back(cv::Point(x_coor, point.y - (hough_dim_y - theta_split)));
+                int x_coor = point.x+2 * (hough_dim_x / 2 - point.x);
+                single_contour.push_back(cv::Point(x_coor, point.y- (hough_dim_y - theta_split)));
             }
             else
             {
-                single_contour.push_back(cv::Point(point.x, point.y + theta_split));
+                single_contour.push_back(cv::Point(point.x, point.y +theta_split-1));
             }
+            //cout << "cont x: " << point.x << "cont y: " << point.y << endl;
         }
         trans_point.push_back(single_contour);
     }
@@ -277,10 +303,10 @@ vector<vector<cv::Point>> find_contours(cv::Mat hough_space_bin)
         contour.empty();
 
     }
-
     complete_contours = inverse_transform_points(complete_contours, split_theta, hough_space_copy.size().width, hough_space_bin.size().height);
     //Combine contour which parameters yeilds similar line, but is not necesaary located next to eachother in hough space. (fx 0 and pi)
     // NEEDS TO BE FIXED.
+    
     return complete_contours;
 }
 
@@ -480,11 +506,15 @@ int main()
     cv::Mat filter_img;
     cv::Mat gray_img;
     cv::Mat hough_space_norm;
-    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4048.JPG", IMREAD_COLOR);
+    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4049.JPG", IMREAD_COLOR);
+    //Hough_space hough_lines(color_img);
 
     cv::cvtColor(color_img, gray_img, CV_BGR2GRAY);
     cv::medianBlur(gray_img, filter_img, 5);
-    cv::Canny(filter_img, edge_img, 70, 180);
+    cv::Canny(filter_img, edge_img, 60, 140);
+    cv::imshow("Edge Image", edge_img);
+
+    //cv::waitKey(0);
 
     hough_space = Hough_transform(edge_img);
     save_to_csv(hough_space, "test");
@@ -514,7 +544,7 @@ int main()
     //Show images
     //cv::imshow("Grayscale Image", gray_img);
     //cv::imshow("Filtered Image", filter_img);
-    cv::imshow("Edge Image", edge_img);
+    
     cv::imshow("Hough Space", hough_space);
 
     cv::waitKey(0);
