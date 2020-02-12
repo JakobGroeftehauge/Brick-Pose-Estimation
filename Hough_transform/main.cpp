@@ -12,103 +12,6 @@ double resolution_theta = CV_PI/180;
 int resolution_rho = 1;
 
 /**
- * Convert a point in hough space to a vector of the line parameters for the corresponding point.
- *
- * @param pos_hough_space - point in hough space
- * @param rho_max - size of the hough space in the rho dimension
- *
- * @return vector of line parameters - {rho, theta}.
- */
-std::vector<double> convert_to_line(cv::Point pos_hough_space, int rho_range)
-{
-    double theta = pos_hough_space.y * resolution_theta;
-    double rho = (pos_hough_space.x - rho_range/2.0) * resolution_rho;
-    vector<double> line_parameters = {rho, theta};
-
-    return line_parameters;
-}
-
-/**
- * Method which return the hough space an of edge image.
- * By default the reuolution of the hough space is 1 degreee for the theta, and 1 pixel for rho.
- *
- * @param img - edge image
- *
- * @return hough space
- */
-cv::Mat Hough_transform(cv::Mat img)
-{
-    int img_width = img.size().width;
-    int img_height = img.size().height;
-
-    //Create Accumulator array
-    int rho_max = cvRound(sqrt(pow(img_width, 2.0) + pow(img_height, 2.0)));
-    int num_angle = CV_PI/resolution_theta;
-    cv::Mat accumulator_array = Mat::zeros(num_angle, rho_max, CV_8U);
-
-    for(int w = 0; w < img_width; w++)
-    {
-        for(int h = 0; h < img_height; h++)
-        {
-            //Check if the current pixel is a edge pixel (white)
-            if(img.at<uchar>(cv::Point(w, h)) == 255)
-            {
-                for(float n = 0; n < num_angle; n++)
-                {
-                    float theta = n * resolution_theta;
-                    int rho = cvRound((w-img_width/2)* cos(theta) + (h-img_height/2) * sin(theta));
-                    int rho_index =cvRound(rho_max/2.0 + rho);
-                    accumulator_array.at<uchar>(cv::Point(rho_index, n))++;
-                }
-            }
-        }
-    }
-    return accumulator_array;
-}
-
-/**
- * @brief Function which save a Mat container to a csv file.
- *
- * @param img - The imag@brief e to save.
- * @param filename - name of file (without suffix).
- */
-void save_to_csv(cv::Mat img, std::string filename)
-{
-    std::ofstream file;
-    file.open(filename + ".csv");
-
-    for(int w = 0; w < img.size().width; w++)
-    {
-        for(int h = 0; h < img.size().height; h++)
-        {
-            file << (int) img.at<uchar>(cv::Point(w, h)) << ", ";
-        }
-
-        file << endl;
-    }
-
-    file.close();
-}
-
-
-cv::Mat transform_hough_space(cv::Mat hough_space, int theta_split_value)
-{
-    cv::Mat hough_space_copy = hough_space.clone();
-    int hough_width = hough_space.size().width;
-    int hough_height = hough_space.size().height;
-
-    cv::Mat transformed_hough;
-    // Error below here when canny thresholds are low.
-    // Maybe issue is if theta is = 0
-    cv::Mat upper_part = hough_space_copy(Rect(0,0, hough_width -1, theta_split_value-1));
-    cv::Mat lower_part = hough_space_copy(Rect(0, theta_split_value + 1, hough_width - 1, hough_height - theta_split_value - 1));
-
-    flip(upper_part, upper_part, 1);
-    cv::vconcat(lower_part, upper_part, transformed_hough);
-    return transformed_hough;
-}
-
-/**
  * print a single line on an image.
  * @param img (image with 3 channels)
  * @param rho
@@ -141,176 +44,6 @@ void draw_lines(cv::Mat img, vector<vector<double>> lines)
 }
 
 /**
- * Performs thresholding on the hough space.
- *
- * @param hough_space
- * @param threshold
- *
- * @return A binary map of the hough space. A pixel is colored white if
- * its value is equal of above thte threshold.
- */
-cv::Mat threshold(cv::Mat hough_space, int threshold)
-{
-    int width = hough_space.size().width;
-    int height = hough_space.size().height;
-
-    cv::Mat thres_hough = Mat::zeros(height, width, CV_8U);
-    for(int w = 0; w < width; w++)
-    {
-        for(int h = 0; h < height; h++)
-        {
-            if(hough_space.at<uchar>(cv::Point(w, h)) >= threshold)
-            {
-                thres_hough.at<uchar>(cv::Point(w, h)) = 255;
-            }
-        }
-    }
-    return thres_hough;
-}
-
-/**
- *  Finds the most dominante point within a specified contour in the hough space
- */
-cv::Point calculate_(cv::Mat hough_space, vector<cv::Point> contour)
-{
-    cv::Point max_point = cv::Point2i(2, 5);
-    int max_value = 0;
-    for (unsigned int i = 0; i < contour.size(); i++)
-    {
-        //cout << "Contour: " << int(hough_space.at<uchar>(contour[i])) << endl;
-        if (hough_space.at<uchar>(contour[i]) > max_value)
-        {
-            max_point = contour[i];
-            max_value = hough_space.at<uchar>(contour[i]);
-        }
-    }
-    return max_point;
-}
-
-
-/**
- *  Finds the most dominante point within a specified contour in the hough space
- */
-cv::Point get_maximum(cv::Mat hough_space, vector<cv::Point> contour)
-{
-    cv::Point max_point = cv::Point2i(2,5);
-    int max_value = 0;
-    for(unsigned int i = 0; i < contour.size(); i++)
-    {
-        //cout << "Contour: " << int(hough_space.at<uchar>(contour[i])) << endl;
-        if(hough_space.at<uchar>(contour[i]) > max_value)
-        {
-            max_point = contour[i];
-            max_value = hough_space.at<uchar>(contour[i]);
-        }
-    }
-    return max_point;
-}
-
-vector<vector<cv::Point>> inverse_transform_points(vector<vector<cv::Point>> contours, int theta_split, int hough_dim_x, int hough_dim_y)
-{
-    vector<vector<cv::Point>> trans_point;
-    for(int i = 0; i < contours.size(); i++)
-    {
-        cout << "hough dim y: " << hough_dim_y << endl;
-        vector<cv::Point> single_contour;
-        for(int j = 0; j < contours[i].size(); j++)
-        {
-            cv::Point point = contours[i][j];
-            if(point.y > hough_dim_y - theta_split)
-            {
-                int x_coor = point.x+2 * (hough_dim_x / 2 - point.x);
-                single_contour.push_back(cv::Point(x_coor, point.y- (hough_dim_y - theta_split)));
-            }
-            else
-            {
-                single_contour.push_back(cv::Point(point.x, point.y +theta_split-1));
-            }
-            //cout << "cont x: " << point.x << "cont y: " << point.y << endl;
-        }
-        trans_point.push_back(single_contour);
-    }
-    return trans_point;
-}
-
-/**
-* finds a horizontal line closest to the top which contains no white pixels
-* @param
-*/
-int find_splitting_line(cv::Mat img)
-{
-    int result = 1;
-    int counter = 0;
-    for (int row = 0; row<img.size().height; row++)
-    {
-        for (int col = 0; col < img.size().width; col++)
-        {
-            if (img.at<uchar>(cv::Point(col, row)) > 0)
-            {
-                counter = 0;
-                break;
-            }
-                
-            if (col == img.size().width - 1)
-                counter++;
-            if (counter > 4)
-                return row - 2;
-        }
-    }
-
-    return 0;
-}
-
-vector<vector<cv::Point>> find_contours(cv::Mat hough_space_bin)
-{
-    cv::Mat hough_space_copy = hough_space_bin.clone();
-    int split_theta = find_splitting_line(hough_space_copy);
-
-    cv::Mat hough_space_trans = transform_hough_space(hough_space_copy, split_theta);
-
-    cv::Mat kernel = Mat::ones(3, 3, CV_8U);
-
-    for(int i = 0; i < 4; i++) // The number of dialations (i) needs to tuned.
-    {
-        dilate(hough_space_trans, hough_space_trans, kernel);
-    }
-
-    //cout << "splitting line: " << find_splitting_line(hough_space_copy) << endl;
-
-    // Pad hough space with 1 pixels on all edges, due to the function
-    // find contours ignores the outer most pixel.
-    cv::Mat padded_hough_space;
-    cv::copyMakeBorder(hough_space_trans, padded_hough_space, 1, 1, 1, 1, 0);
-
-    vector<vector<Point> > contour_perimeters;
-    vector<Vec4i> hierarchy;
-
-    findContours(padded_hough_space, contour_perimeters, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, cv::Point(-1,-1));
-
-    vector<vector<cv::Point>> complete_contours;
-    for(unsigned int i = 0; i < contour_perimeters.size(); i++)
-    {
-        cv::Rect bounding_box = cv::boundingRect(contour_perimeters[i]);
-        vector<cv::Point> contour;
-        for(int j = 0; j < bounding_box.width; j++)
-        {
-            for(int u = 0; u < bounding_box.height; u++)
-            {
-                contour.push_back(cv::Point(bounding_box.x + j, bounding_box.y + u));
-            }
-        }
-        complete_contours.push_back(contour);
-        contour.empty();
-
-    }
-    complete_contours = inverse_transform_points(complete_contours, split_theta, hough_space_copy.size().width, hough_space_bin.size().height);
-    //Combine contour which parameters yeilds similar line, but is not necesaary located next to eachother in hough space. (fx 0 and pi)
-    // NEEDS TO BE FIXED.
-    
-    return complete_contours;
-}
-
-/**
  * @brief Cand show the found regions of ineterest within the hough space.
  * @param contour_list - list of contours detected in the hough space.
  * @param height - size of hough space in the theta dimension.
@@ -326,40 +59,6 @@ void show_contours(vector<vector<cv::Point>> contour_list, int height, int width
         drawContours( img, contour_list, i, color, 1, LINE_AA);
     }
     cv::imshow("Detected Contours in Hough Space", img);
-}
-
-/**
- * Function which finds the dominante lines in hough space
- *
- * @param hough_space
- *
- * @return vector of dominant lines.
- */
-vector<vector<double>> get_dominant_lines(cv::Mat hough_space, cv::Mat hough_space_bin)
-{
-    vector<vector<cv::Point>> contours = find_contours(hough_space_bin);
-    show_contours(contours, hough_space.size().height, hough_space.size().width);
-
-    vector<vector<double>> lines;
-    cout <<"Number of contours detected: " <<  contours.size() << endl; //For debugging.
-
-    //Find maximum point for every contour.
-    for(unsigned int i = 0; i < contours.size(); i++)
-    {
-        lines.push_back(convert_to_line(get_maximum(hough_space, contours[i]), hough_space.size().width));
-    }
-    return lines;
-}
-
-vector<vector<double>> findLines(cv::Mat edge_img, int accum_threshold)
-{
-    cv::Mat hough_space = Hough_transform(edge_img);
-    cv::Mat hough_space_norm;
-    cv::normalize(hough_space, hough_space_norm, 0, 255, NORM_MINMAX, CV_8UC1);
-    cv::Mat hough_space_bin = threshold(hough_space_norm, accum_threshold);
-    cv::imshow("hough space bin", hough_space_bin);
-    cv::imshow("hough_space norm", hough_space_norm);
-    return get_dominant_lines(hough_space, hough_space_bin);
 }
 
 void print_line_parameters(vector<vector<double>> lines)
@@ -496,9 +195,6 @@ void print_intersections(vector<cv::Point2f> intersections)
     }
 }
 
-
-
-
 int main()
 {
     cv::Mat hough_space;
@@ -506,20 +202,19 @@ int main()
     cv::Mat filter_img;
     cv::Mat gray_img;
     cv::Mat hough_space_norm;
-    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4049.JPG", IMREAD_COLOR);
-    //Hough_space hough_lines(color_img);
+    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4048.JPG", IMREAD_COLOR);
 
     cv::cvtColor(color_img, gray_img, CV_BGR2GRAY);
     cv::medianBlur(gray_img, filter_img, 5);
     cv::Canny(filter_img, edge_img, 60, 140);
     cv::imshow("Edge Image", edge_img);
 
-    //cv::waitKey(0);
+    Hough_space hough_lines(edge_img);
 
-    hough_space = Hough_transform(edge_img);
-    save_to_csv(hough_space, "test");
+    //hough_space = Hough_transform(edge_img);
+    hough_lines.save_to_csv("test");
 
-    vector<vector<double>> lines = findLines(edge_img, 70);
+    vector<vector<double>> lines = hough_lines.find_lines();//findLines(edge_img, 70);
     cout << "Number of lines detected: " << lines.size() << endl;
     print_line_parameters(lines);
 
@@ -531,22 +226,7 @@ int main()
     show_intersections(color_img, intersections);
     print_intersections(intersections);
 
-    /*cv::Mat trans_hough = transform_hough_space(hough_space, 40);
-    cv::Mat trans_hough_norm;
-    cv::normalize(trans_hough, trans_hough_norm, 0, 255, NORM_MINMAX, CV_8UC1);
-    cv::Mat trans_hough_bin = threshold(trans_hough_norm, 90);
-    get_dominant_lines(trans_hough, trans_hough_bin);
-    cv::imshow("trans hough bin", trans_hough_bin);*/
-
-    //cv::imshow("trans hough", trans_hough_norm);
     cv::imshow("Color_image", color_img); //Lines are not perfect due to holes in contour
-
-    //Show images
-    //cv::imshow("Grayscale Image", gray_img);
-    //cv::imshow("Filtered Image", filter_img);
-    
-    cv::imshow("Hough Space", hough_space);
-
     cv::waitKey(0);
     return 1;
 }
