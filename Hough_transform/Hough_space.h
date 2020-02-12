@@ -40,9 +40,13 @@ private:
 	int clusters_at_border(cv::Mat hough_space_bin);
 	int find_splitting_line(cv::Mat hough_space_bin);
 	std::vector<std::vector<cv::Point>> inverse_shift_points(std::vector<std::vector<cv::Point>> contours, int theta_split);
+	std::vector<cv::Point2f> inverse_shift_single_contour(std::vector<cv::Point2f> contour, int theta_split);
+	cv::Point2f inverse_shift_single_point(cv::Point2f point, int theta_split);
 	void show_contours(std::vector<std::vector<cv::Point>> contour_list);
 	std::vector<double> convert_to_line(cv::Point pos_hough_space);
+	std::vector<double> convert_to_line(cv::Point2f pos_hough_space);
 	cv::Point get_maximum(std::vector<cv::Point> contour);
+	cv::Point2f get_weighted_average(std::vector<cv::Point> contour, int split_value);
 	void shift_hough(cv::Mat hough_space_src, cv::Mat& hough_space_dst, int split_value);
 
 };

@@ -97,7 +97,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
     cv::imshow("hough space bin", hough_space_bin);
     cv::Mat kernel = cv::Mat::ones(3, 3, CV_8U);
     //cv::waitKey(0);
-    for (int i = 0; i < 4; i++) // The number of dialations (i) needs to tuned.
+    for (int i = 0; i < 3; i++) // The number of dialations (i) needs to tuned.
     {
         dilate(hough_space_bin, hough_space_bin, kernel);
     }
@@ -127,8 +127,23 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
         contour.empty();
 
     }
-    complete_contours = inverse_shift_points(complete_contours, split_value);
+    
+    // --------------------------------- Using Maximum -------------------------------------
+    //complete_contours = inverse_shift_points(complete_contours, split_value);
 
+    //show_contours(complete_contours);
+
+    //std::vector<std::vector<double>> lines;
+    //std::cout << "Number of contours detected: " << complete_contours.size() << std::endl; //For debugging.
+
+    ////Find maximum point for every contour.
+    //for (unsigned int i = 0; i < complete_contours.size(); i++)
+    //{
+    //    lines.push_back(convert_to_line(get_maximum(complete_contours[i])));
+    //    //lines.push_back(convert_to_line(get_weighted_average(complete_contours[i])));
+    //    //weighted average does not work due to the current structure. See explanation at definition.
+    //}
+    // -------------------------------- using weighted average ------------------------------
     show_contours(complete_contours);
 
     std::vector<std::vector<double>> lines;
@@ -137,7 +152,9 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
     //Find maximum point for every contour.
     for (unsigned int i = 0; i < complete_contours.size(); i++)
     {
-        lines.push_back(convert_to_line(get_maximum(complete_contours[i])));
+        //lines.push_back(convert_to_line(get_maximum(complete_contours[i])));
+        lines.push_back(convert_to_line(inverse_shift_single_point(get_weighted_average(complete_contours[i],split_value),split_value)));
+        //weighted average does not work due to the current structure. See explanation at definition.
     }
     return lines;
 }
@@ -226,6 +243,42 @@ std::vector<std::vector<cv::Point>> Hough_space::inverse_shift_points(std::vecto
     return trans_point;
 }
 
+
+std::vector<cv::Point2f> Hough_space::inverse_shift_single_contour(std::vector<cv::Point2f> contour, int theta_split)
+{
+    std::vector<cv::Point2f> single_contour;
+    for (int i = 0; i < contour.size(); i++)
+    {
+        
+        cv::Point point = contour[i];
+        if (point.y >= this->hough_height - theta_split) // >= since the split line is included in shifted region
+        {
+            int x_coor = this->hough_width - 1 - point.x;
+            single_contour.push_back(cv::Point(x_coor, point.y - this->hough_height + theta_split));
+        }
+        else
+        {
+            single_contour.push_back(cv::Point(point.x, point.y + theta_split));
+        }
+    }
+    return single_contour;
+}
+
+cv::Point2f Hough_space::inverse_shift_single_point(cv::Point2f point, int theta_split)
+{
+    cv::Point2f single_contour;
+    if (point.y >= this->hough_height - theta_split) // >= since the split line is included in shifted region
+    {
+        int x_coor = this->hough_width - 1 - point.x;
+        single_contour = (cv::Point(x_coor, point.y - this->hough_height + theta_split));
+    }
+    else
+    {
+        single_contour = (cv::Point(point.x, point.y + theta_split));
+    }
+    return single_contour;
+}
+
 void Hough_space::show_contours(std::vector<std::vector<cv::Point>> contour_list)
 {
     cv::Mat img = cv::Mat::zeros(cv::Size(this->hough_width, this->hough_height), CV_8UC3);
@@ -250,6 +303,18 @@ std::vector<double> Hough_space::convert_to_line(cv::Point pos_hough_space)
 
     return line_parameters;
 }
+/*
+* Overloaded version of above method to accound for cv::Point2f
+*/
+std::vector<double> Hough_space::convert_to_line(cv::Point2f pos_hough_space)
+{
+    double theta = pos_hough_space.y * this->resolution_theta;
+    double rho = (pos_hough_space.x - this->rho_max) * this->resolution_rho;
+    std::vector<double> line_parameters = { rho, theta };
+
+    return line_parameters;
+}
+
 /**
 *  Finds the most dominante point within a specified contour in the hough space
 */
@@ -267,6 +332,32 @@ cv::Point Hough_space::get_maximum(std::vector<cv::Point> contour)
         }
     }
     return max_point;
+}
+
+/*
+Finding the weighted average does not work due to the fact that the idicies relating to one cluster "jumps"
+due to the shift and later inverse shift. This results in an average that does not make sense. A work around
+for this may be to either keep the entire hough space in the shifted condition and simply change the axes, or
+to keep the contour indicies in the shifted state until after the weighted average. This would require the hough 
+space to be artifcially shifted while calculating the weighted average.
+*/
+cv::Point2f Hough_space::get_weighted_average(std::vector<cv::Point> contour, int split_value)
+{
+    cv::Mat hough_matrix_copy = this->hough_matrix.clone();
+    shift_hough(hough_matrix_copy, hough_matrix_copy, split_value);
+    cv::Point2f point_sum = {0,0};
+    int accumulator_sum = 0;
+    for (unsigned int i = 0; i < contour.size(); i++)
+    {
+        std::cout << "contour x: " << contour[i].x << " contour y: " << contour[i].y << " weight: " << hough_matrix_copy.at<ushort>(contour[i]) << std::endl;
+        accumulator_sum += hough_matrix_copy.at<ushort>(contour[i]);
+        point_sum.x += contour[i].x* hough_matrix_copy.at<ushort>(contour[i]);
+        point_sum.y += contour[i].y * hough_matrix_copy.at<ushort>(contour[i]);
+    }
+    point_sum.x /= accumulator_sum;
+    point_sum.y /= accumulator_sum;
+    std::cout << "weighted x: " << point_sum.x << " weighted y: " << point_sum.y << std::endl;
+    return point_sum;
 }
 
 void Hough_space::save_to_csv(std::string filename)
