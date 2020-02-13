@@ -2,7 +2,7 @@
 #include <math.h>
 #include <opencv2/opencv.hpp>
 #include "Hough_space.h"
-
+#include "Bricks_from_lines_img.h"
 
 using namespace std;
 using namespace cv;
@@ -10,6 +10,26 @@ using namespace cv;
 RNG rng(12347); //random generator used for determine color of contours when displaying them.
 double resolution_theta = CV_PI/180;
 int resolution_rho = 1;
+
+void save_to_csv(cv::Mat img, std::string filename)
+{
+    {
+        std::ofstream file;
+        file.open(filename + ".csv");
+
+        for (int w = 0; w < img.size().width; w++)
+        {
+            for (int h = 0; h < img.size().height; h++)
+            {
+                file << (int)img.at<ushort>(cv::Point(w, h)) << ", ";
+            }
+
+            file << "\n";
+        }
+
+        file.close();
+    }
+}
 
 /**
  * print a single line on an image.
@@ -28,6 +48,25 @@ void print_line(cv::Mat img, double rho, double theta)
     pt2.x=cvRound(x0 - size*(-b)) + img.size().width/2;
     pt2.y=cvRound(y0 - size*(a)) + img.size().height/2;
     line(img, pt1, pt2, Scalar(0,255,0), 1, LINE_AA);
+}
+
+/**
+ * print a single line on a black and white image.
+ * @param img (image with 1 channel)
+ * @param rho
+ * @param theta
+ */
+void print_line_bw(cv::Mat img, double rho, double theta)
+{
+    cv::Point pt1, pt2;
+    double a = cos(theta), b = sin(theta);
+    double x0 = a * rho, y0 = b * rho;
+    int size = 1000;//max(img.size().height, img.size().width) * 2; //just needs to be big enough.
+    pt1.x = cvRound(x0 + size * (-b)) + img.size().width / 2;
+    pt1.y = cvRound(y0 + size * (a)) + img.size().height / 2;
+    pt2.x = cvRound(x0 - size * (-b)) + img.size().width / 2;
+    pt2.y = cvRound(y0 - size * (a)) + img.size().height / 2;
+    line(img, pt1, pt2, 0, 2);
 }
 
 /**
@@ -202,7 +241,7 @@ int main()
     cv::Mat filter_img;
     cv::Mat gray_img;
     cv::Mat hough_space_norm;
-    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4048.JPG", IMREAD_COLOR);
+    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4047.JPG", IMREAD_COLOR);
 
     cv::cvtColor(color_img, gray_img, CV_BGR2GRAY);
     cv::medianBlur(gray_img, filter_img, 5);
@@ -211,15 +250,17 @@ int main()
 
     Hough_space hough_lines(edge_img);
 
-    //hough_space = Hough_transform(edge_img);
     hough_lines.save_to_csv("test");
 
-    vector<vector<double>> lines = hough_lines.find_lines();//findLines(edge_img, 70);
+    vector<vector<double>> lines = hough_lines.find_lines();
     cout << "Number of lines detected: " << lines.size() << endl;
     print_line_parameters(lines);
 
-    // Show lines
-    draw_lines(color_img, lines);
+    Bricks_from_lines_img brick_detections(color_img,lines);
+    brick_detections.draw_rect(color_img);
+    brick_detections.draw_rotated_rect(color_img);
+
+    //draw_lines(color_img, lines);
     //print_line(color_img, 114, 3.14);
 
     vector<cv::Point2f> intersections = get_intersections(lines, color_img.size().width, color_img.size().height);
@@ -227,6 +268,7 @@ int main()
     print_intersections(intersections);
 
     cv::imshow("Color_image", color_img); //Lines are not perfect due to holes in contour
+
     cv::waitKey(0);
     return 1;
 }
