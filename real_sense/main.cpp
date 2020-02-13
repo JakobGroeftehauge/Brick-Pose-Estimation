@@ -8,6 +8,7 @@ using namespace std;
 
 int main()
 {
+
     Realsense_camera camera;
     camera.capture();
 
