@@ -1,6 +1,7 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <librealsense2/rs.hpp>
+#include <librealsense2/rsutil.h>
 #include "depth_processor.h"
 #include "realsense_camera.h"
 
@@ -8,10 +9,15 @@ using namespace std;
 
 int main()
 {
+    float pixel[2] = {500,600};
+    float point[3];
 
     Realsense_camera camera;
     camera.capture();
-
+    cout << "intrinsics: \nfx:  " << camera.get_intrinsics().fx << " fy: " << camera.get_intrinsics().fy << endl; 
+    cout << "ppx: " << camera.get_intrinsics().ppx << " ppy: " << camera.get_intrinsics().ppy << endl;
+    rs2_deproject_pixel_to_point(point, &camera.intrinsics, pixel, camera.depth_map.at<double>(pixel[0], pixel[1]));
+    cout << "x: " << point[0] << " y: " << point[1] << " z: " << point[2] << endl;
     cv::imshow("RGB", camera.RGB_image);
     cv::imshow("Depth", camera.depth_map);
 
@@ -21,8 +27,6 @@ int main()
 /*
 int main()
 {
-    //NOTICE! We need to align color to depth and not the other way around.
-    //Thus, if we want to work with a higher resolution image, we need to know how to align a single point.
     cv::Mat depth_edge;
     Realsense_camera camera;
     const auto window_name = "Display Image";

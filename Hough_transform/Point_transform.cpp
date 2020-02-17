@@ -25,8 +25,8 @@ Point_transform::Point_transform(cv::Mat transformation_mat, cv::Point2d focal_l
 cv::Point3f Point_transform::transform_point(cv::Point2d point, float depth)
 {
 	cv::Point3d transformed_point;
-	transformed_point.x = (point.x - this->origin_delta.x) * depth / this->focal_len.x; //1000 to handle units
-	transformed_point.y = (point.y - this->origin_delta.y) * depth / this->focal_len.y; //1000 to handle units
+	transformed_point.x = (point.x - this->origin_delta.x) * depth / this->focal_len.x; 
+	transformed_point.y = (point.y - this->origin_delta.y) * depth / this->focal_len.y; 
 	transformed_point.z = depth;
 	// ------------------ transformation matrix ----------------------
 	transformed_point.x = transformed_point.x * transformation_mat.at<float>(0, 0) + transformed_point.y * transformation_mat.at<float>(0, 1)\
