@@ -242,7 +242,7 @@ int main()
     cv::Mat filter_img;
     cv::Mat gray_img;
     cv::Mat hough_space_norm;
-    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4044.JPG", IMREAD_COLOR);
+    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4048.JPG", IMREAD_COLOR);
 
     cv::cvtColor(color_img, gray_img, CV_BGR2GRAY);
     cv::medianBlur(gray_img, filter_img, 5);
@@ -260,6 +260,29 @@ int main()
     Bricks_from_lines_img brick_detections(color_img,lines);
     brick_detections.draw_rect(color_img);
     brick_detections.draw_rotated_rect(color_img);
+    
+    if (brick_detections.rotated_rectangles.size() > 0)
+        cout << "Angles and centres:" << endl;
+    else
+        cout << "No bricks detected" << endl;
+
+    for (int i = 0; i < brick_detections.rotated_rectangles.size(); i++)
+    {
+        if (brick_detections.rotated_rectangles[i].size.width > brick_detections.rotated_rectangles[i].size.height)
+        {
+            brick_detections.rotated_rectangles[i] = RotatedRect(brick_detections.rotated_rectangles[i].center, Size2f(brick_detections.rotated_rectangles[i].size.height, brick_detections.rotated_rectangles[i].size.width), brick_detections.rotated_rectangles[i].angle + 90);
+        }
+        cout << "angle: " << brick_detections.rotated_rectangles[i].angle << endl;
+        cout << "center: " << brick_detections.rotated_rectangles[i].center << endl;
+        cout << "size: " << brick_detections.rotated_rectangles[i].size << endl;
+        circle(color_img, brick_detections.rotated_rectangles[i].center, 2, cv::Scalar(0, 0, 0), -1);
+        cv::Point2f text_offset = { -12,-10 };
+        char angle [50];
+        sprintf_s(angle, "%.1f", brick_detections.rotated_rectangles[i].angle);
+        putText(color_img, angle, brick_detections.rotated_rectangles[i].center + text_offset, 0, 0.4, cv::Scalar(150, 0, 200),1);
+    
+    }
+
 
     draw_lines(color_img, lines);
     //print_line(color_img, 114, 3.14);
