@@ -4,8 +4,8 @@
   "shapes": [
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": ,
+      "fill_color": ,
       "points": [
         [
           118.18181818181817,

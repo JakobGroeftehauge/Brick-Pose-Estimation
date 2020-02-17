@@ -14,7 +14,6 @@ int main()
 
     cv::imshow("RGB", camera.RGB_image);
     cv::imshow("Depth", camera.depth_map);
-
     cv::waitKey(0);
     return 0;
 }
