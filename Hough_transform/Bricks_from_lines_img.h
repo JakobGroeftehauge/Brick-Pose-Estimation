@@ -9,6 +9,7 @@ public:
 	void draw_rotated_rect(cv::Mat img);
 	void draw_rect(cv::Mat img);
 	std::vector<std::vector<cv::Point>> get_contours();
+	std::vector<cv::RotatedRect> rotated_rectangles;
 
 
 private:
@@ -17,7 +18,7 @@ private:
 	cv::Mat base_img;
 	std::vector<std::vector<cv::Point>> contours;
 	std::vector<cv::Vec4i> hierarchy;
-	std::vector<cv::RotatedRect> rotated_rectangles;
+
 	int area_upper;
 	int area_lower;
 	int arc_length_upper;
