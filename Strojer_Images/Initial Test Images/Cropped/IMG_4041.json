@@ -4,8 +4,8 @@
   "shapes": [
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           181.4457831325301,
@@ -41,7 +41,7 @@
     128
   ],
   "imagePath": "IMG_4041.JPG",
-  "imageData": null,
+  "imageData": 1,
   "imageHeight": 400,
   "imageWidth": 400
 }

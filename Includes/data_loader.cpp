@@ -3,8 +3,16 @@
 #include <experimental/filesystem>
 #include "data_loader.h"
 
+Data_loader::Data_loader()
+{
+
+}
+
 Data_loader::Data_loader(std::string path_to_folder)
 {
+    this->path_folder = path_to_folder;
+    this->file_paths_iterator = 0;
+    std::cout << this->path_folder << std::endl;
     //Store path to all .json files in folder
     for(const auto & entry : std::experimental::filesystem::directory_iterator(path_to_folder))
     {
@@ -16,7 +24,6 @@ Data_loader::Data_loader(std::string path_to_folder)
         }
     }
 
-    this->file_paths_iterator = 0;
 }
 
 bool Data_loader::Load_Next()
@@ -24,11 +31,12 @@ bool Data_loader::Load_Next()
     if(file_paths_iterator < file_paths.size())
     {
         this->annotation_loader.LoadAnnotation(file_paths[file_paths_iterator]);
-        std::cout << "file path" << annotation_loader.imagePath << std::endl;
-        this->img = cv::imread(annotation_loader.imagePath, cv::IMREAD_COLOR);
+        std::cout << "file path" << this->path_folder + "/" + annotation_loader.imagePath << std::endl;
+
+        this->img = cv::imread(this->path_folder + "/" + annotation_loader.imagePath, cv::IMREAD_COLOR);
         this->Bounding_boxes = convert_points_to_rects(annotation_loader.Rect_list);
         this->angle_vector = convert_points_to_angles(annotation_loader.Rect_list);
-
+        file_paths_iterator++;
         return true;
     }
     else

@@ -7,6 +7,7 @@
 class Data_loader
 {
 public:
+    Data_loader();
     Data_loader(std::string path_to_folder);
     bool Load_Next();
     std::vector<cv::Rect> Bounding_boxes;
@@ -14,6 +15,7 @@ public:
     cv::Mat img;
 
     std::vector<std::string> file_paths;
+    std::string path_folder;
     unsigned int file_paths_iterator;
     Annotation_loader annotation_loader;
     std::vector<cv::Rect> convert_points_to_rects(std::vector<std::vector<cv::Point2f>> annotation_points);

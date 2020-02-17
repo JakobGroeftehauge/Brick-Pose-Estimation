@@ -71,7 +71,7 @@ void Hough_space::fill_ticks()
 
 std::vector<std::vector<double>>  Hough_space::find_lines()
 {
-    cv::imshow("hough space reg", this->hough_matrix);
+    //cv::imshow("hough space reg", this->hough_matrix);
     cv::Mat hough_space_norm;
 
     cv::normalize(this->hough_matrix, hough_space_norm, 0, 65535, cv::NORM_MINMAX, CV_16U);
@@ -80,7 +80,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
     cv::threshold(hough_space_norm, hough_space_bin, cvRound(255*this->accum_threshold), 65535, cv::THRESH_BINARY);
     hough_space_bin.convertTo(hough_space_bin, CV_16U, 256.0);
  
-    cv::imshow("hough_space norm", hough_space_norm);
+    //cv::imshow("hough_space norm", hough_space_norm);
     int split_value = 0;
     if (clusters_at_border(hough_space_bin))
     {
@@ -96,7 +96,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
         }
     }
     //Dilate the clusters to "grow" them together
-    cv::imshow("hough space bin", hough_space_bin);
+    //cv::imshow("hough space bin", hough_space_bin);
     cv::Mat kernel = cv::Mat::ones(3, 3, CV_8U);
     //cv::waitKey(0);
     for (int i = 0; i < 3; i++) // The number of dialations (i) needs to tuned.
@@ -108,7 +108,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
     std::vector<std::vector<cv::Point> > contour_perimeters;
     std::vector<cv::Vec4i> hierarchy;
     padded_hough_space.convertTo(padded_hough_space, CV_8U);
-    cv::imshow("paddedhough", padded_hough_space);
+    //cv::imshow("paddedhough", padded_hough_space);
     //cv::waitKey(0);
     // may  throw exception if no white points exist.
     findContours(padded_hough_space, contour_perimeters, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_NONE, cv::Point(-1, -1)); //try RETR_FLOODFILL 
@@ -136,7 +136,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
     show_contours(complete_contours);
 
     std::vector<std::vector<double>> lines;
-    std::cout << "Number of contours detected: " << complete_contours.size() << std::endl; //For debugging.
+    //std::cout << "Number of contours detected: " << complete_contours.size() << std::endl; //For debugging.
 
     //Find maximum point for every contour.
     for (unsigned int i = 0; i < complete_contours.size(); i++)
@@ -224,10 +224,10 @@ int Hough_space::find_splitting_line(cv::Mat hough_space_bin)
 std::vector<std::vector<cv::Point>> Hough_space::inverse_shift_points(std::vector<std::vector<cv::Point>> contours, int theta_split)
 {
     std::vector<std::vector<cv::Point>> trans_point;
-    for (int i = 0; i < contours.size(); i++)
+    for (unsigned int i = 0; i < contours.size(); i++)
     {
         std::vector<cv::Point> single_contour;
-        for (int j = 0; j < contours[i].size(); j++)
+        for (unsigned int j = 0; j < contours[i].size(); j++)
         {
             cv::Point point = contours[i][j];
             if (point.y >= this->hough_height - theta_split) // >= since the split line is included in shifted region
@@ -249,7 +249,7 @@ std::vector<std::vector<cv::Point>> Hough_space::inverse_shift_points(std::vecto
 std::vector<cv::Point2f> Hough_space::inverse_shift_single_contour(std::vector<cv::Point2f> contour, int theta_split)
 {
     std::vector<cv::Point2f> single_contour;
-    for (int i = 0; i < contour.size(); i++)
+    for (unsigned int i = 0; i < contour.size(); i++)
     {
         
         cv::Point point = contour[i];
@@ -290,7 +290,7 @@ void Hough_space::show_contours(std::vector<std::vector<cv::Point>> contour_list
         cv::Scalar color = cv::Scalar(this->rng.uniform(0, 255), this->rng.uniform(0, 255), this->rng.uniform(0, 255));
         drawContours(img, contour_list, i, color, 1, cv::LINE_AA);
     }
-    cv::imshow("Detected Contours in Hough Space", img);
+    //cv::imshow("Detected Contours in Hough Space", img);
 }
 /**
 * Convert a point in hough space to a vector of the line parameters for the corresponding point.
