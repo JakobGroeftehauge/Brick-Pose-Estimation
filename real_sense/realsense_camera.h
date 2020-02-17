@@ -10,6 +10,7 @@ class Realsense_camera
 public:
     Realsense_camera();
     void capture();
+    rs2_intrinsics get_intrinsics();
     cv::Mat depth_map;
     cv::Mat RGB_image;
 
@@ -18,6 +19,7 @@ public:
     Depth_processor depth_proces;
 
     //private:
+    rs2_intrinsics intrinsics;
     rs2::frameset allign_frames(rs2::frameset f);
     cv::Mat generate_depth_map(rs2::depth_frame f);
     cv::Mat frame_to_mat(rs2::frame f);

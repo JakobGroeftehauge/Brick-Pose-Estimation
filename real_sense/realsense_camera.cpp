@@ -22,17 +22,25 @@ void Realsense_camera::capture()
         //Perform post processing on the depth frame every capturing, inorder to take advantageous
         //of the temporal diffenrence filter. (Only a thesis, should maybe be tested).
         depth_frame = this->depth_proces.process(frames.get_depth_frame());
-    }
-
+    }   
+    this->intrinsics = depth_frame.get_profile().as<rs2::video_stream_profile>().get_intrinsics(); // Calibration data
     //Perform post processing on captured images, and store them.
     this->depth_map = generate_depth_map(depth_frame);
     std::cout << "RGB" << std::endl;
     this->RGB_image = frame_to_mat(frames.get_color_frame());
 }
 
+rs2_intrinsics Realsense_camera::get_intrinsics()
+{
+    //auto depth = f.get_depth_frame();
+    //rs2_intrinsics intr = depth.get_profile().as<rs2::video_stream_profile>().get_intrinsics(); // Calibration data
+	return this->intrinsics;
+}
+
 rs2::frameset Realsense_camera::allign_frames(rs2::frameset frames)
 {
     rs2::align align(RS2_STREAM_COLOR);
+    //rs2::align align(RS2_STREAM_DEPTH); //<- used for testing
     rs2::frameset aligned_frames = align.process(frames);
     return aligned_frames;
 }
