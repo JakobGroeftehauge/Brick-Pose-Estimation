@@ -3,6 +3,7 @@
 #include <opencv2/opencv.hpp>
 #include "Hough_space.h"
 #include "Bricks_from_lines_img.h"
+#include "Point_transform.h"
 
 using namespace std;
 using namespace cv;
@@ -241,7 +242,7 @@ int main()
     cv::Mat filter_img;
     cv::Mat gray_img;
     cv::Mat hough_space_norm;
-    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4047.JPG", IMREAD_COLOR);
+    cv::Mat color_img = cv::imread("../Strojer_Images/Initial Test Images/Cropped/IMG_4044.JPG", IMREAD_COLOR);
 
     cv::cvtColor(color_img, gray_img, CV_BGR2GRAY);
     cv::medianBlur(gray_img, filter_img, 5);
@@ -260,12 +261,17 @@ int main()
     brick_detections.draw_rect(color_img);
     brick_detections.draw_rotated_rect(color_img);
 
-    //draw_lines(color_img, lines);
+    draw_lines(color_img, lines);
     //print_line(color_img, 114, 3.14);
 
     vector<cv::Point2f> intersections = get_intersections(lines, color_img.size().width, color_img.size().height);
     show_intersections(color_img, intersections);
     print_intersections(intersections);
+
+    cv::Point2f test_point = { 2,3 };
+
+    Point_transform point_tf(cv::Point2d(454.767059, 454.767059));
+    cout << "Transformed Point: " << point_tf.transform_point(test_point, 1);
 
     cv::imshow("Color_image", color_img); //Lines are not perfect due to holes in contour
 
