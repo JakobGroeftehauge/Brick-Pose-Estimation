@@ -5,7 +5,6 @@ BB_detector::BB_detector()
     //should maybe be set smarter!
     this->img_height = 400;
     this->img_width = 400;
-
 }
 
 
