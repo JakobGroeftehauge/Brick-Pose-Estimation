@@ -18,6 +18,9 @@ public:
     int uppper_thres_canny = 140;
     int lower_thres_canny = 60;
 
+    double calc_intersection(cv::Rect rect1, cv::Rect rect2);
+    double calc_union(cv::Rect rect1, cv::Rect rect2);
+
 
 
 

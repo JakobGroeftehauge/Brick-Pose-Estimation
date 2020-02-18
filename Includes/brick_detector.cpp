@@ -47,6 +47,16 @@ void Brick_Detector::show_lines(cv::Mat img, vector<vector<double> > lines)
     }
 }
 
+double Brick_Detector::calc_intersection(cv::Rect rect1, cv::Rect rect2)
+{
+   return (rect1 & rect2).area();
+}
+
+double Brick_Detector::calc_union(cv::Rect rect1, cv::Rect rect2)
+{
+    return (rect1 | rect2).area();
+}
+
 void Brick_Detector::predict_all_images()
 {
 
