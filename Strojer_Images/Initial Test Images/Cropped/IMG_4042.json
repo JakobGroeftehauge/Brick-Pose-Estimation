@@ -29,8 +29,8 @@
     },
     {
       "label": "Angle",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           194.0877192982456,
