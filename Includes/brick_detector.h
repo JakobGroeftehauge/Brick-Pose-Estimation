@@ -13,13 +13,15 @@ public:
     std::vector<std::vector<double>> get_lines(cv::Mat img);
     void show_predictions(cv::Mat img, std::vector<cv::Rect> BB);
     void show_lines(cv::Mat img, vector<vector<double>> lines);
+    void evaluate_predictions(double threhold);
+    void save_evaluation(int true_pos, int false_pos, int false_neg);
     Data_loader data_loader;
     BB_detector boundingBox_detector;
     int uppper_thres_canny = 140;
     int lower_thres_canny = 60;
 
-    double calc_intersection(cv::Rect rect1, cv::Rect rect2);
-    double calc_union(cv::Rect rect1, cv::Rect rect2);
+    double intersection_area(cv::Rect rect1, cv::Rect rect2);
+    double union_area(cv::Rect rect1, cv::Rect rect2);
 
 
 

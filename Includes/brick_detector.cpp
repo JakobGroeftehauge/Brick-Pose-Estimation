@@ -47,12 +47,55 @@ void Brick_Detector::show_lines(cv::Mat img, vector<vector<double> > lines)
     }
 }
 
-double Brick_Detector::calc_intersection(cv::Rect rect1, cv::Rect rect2)
+void Brick_Detector::evaluate_predictions(double threhold = 0.5)
+{
+    std::vector<cv::Rect> annotations(this->data_loader.Bounding_boxes);
+    std::vector<cv::Rect> predictions(this->boundingBox_detector.BB);
+
+    unsigned int i = 0;
+    while(i < predictions.size())
+    {
+        //Find the BB with the greatest intersection over union.
+        double max_IOU = 0;
+        int index_max_IOU = 0;
+        for(unsigned int j = 0; j < annotations.size(); j++)
+        {
+            double IOU = intersection_area(predictions[i], annotations[j]) / union_area(predictions[i], annotations[j]);
+            if(IOU > max_IOU)
+            {
+                max_IOU = IOU;
+                index_max_IOU = j;
+            }
+        }
+
+        if(max_IOU > threhold)
+        {
+            //Remove elements form annotation list and prediction list.
+            predictions.erase(predictions.begin() + i);
+            annotations.erase(annotations.begin() + index_max_IOU);
+        }
+        else
+        {
+            i++;
+        }
+    }
+    int true_pos = this->boundingBox_detector.BB.size() - predictions.size();
+    int false_pos = predictions.size();
+    int false_neg = annotations.size();
+    save_evaluation(true_pos, false_pos, false_neg);
+}
+
+void Brick_Detector::save_evaluation(int true_pos, int false_pos, int false_neg)
+{
+
+}
+
+double Brick_Detector::intersection_area(cv::Rect rect1, cv::Rect rect2)
 {
    return (rect1 & rect2).area();
 }
 
-double Brick_Detector::calc_union(cv::Rect rect1, cv::Rect rect2)
+double Brick_Detector::union_area(cv::Rect rect1, cv::Rect rect2)
 {
     return (rect1 | rect2).area();
 }

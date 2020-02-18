@@ -18,10 +18,13 @@ void BB_detector::detect_BB(vector<vector<double>> lines)
 
     vector<vector<vector<double>>> clustered_lines = cluster_lines(lines);
     //sort
+    if(clustered_lines[0].size() > 0 & clustered_lines[1].size() > 0)
+    {
     vector<vector<vector<double>>> sorted_lines = {sort_lines(clustered_lines[0]), sort_lines(clustered_lines[1])};
     vector<vector<cv::Point2f>> intersection_matrix = get_intersection_matrix(sorted_lines);
 
     get_bounding_boxes(intersection_matrix);
+    }
 }
 
 vector<vector<vector<double>>> BB_detector::cluster_lines(vector<vector<double> > lines)
