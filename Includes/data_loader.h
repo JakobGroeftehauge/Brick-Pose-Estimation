@@ -9,15 +9,17 @@ class Data_loader
 public:
     Data_loader();
     Data_loader(std::string path_to_folder);
-    bool Load_Next();
+    bool loadNext();
     std::vector<cv::Rect> Bounding_boxes;
     std::vector<double> angle_vector;
     cv::Mat img;
+    std::string image_path;
 
+private:
     std::vector<std::string> file_paths;
     std::string path_folder;
     unsigned int file_paths_iterator;
-    Annotation_loader annotation_loader;
+    Annotation_Loader annotation_loader;
     std::vector<cv::Rect> convert_points_to_rects(std::vector<std::vector<cv::Point2f>> annotation_points);
     std::vector<double> convert_points_to_angles(std::vector<std::vector<cv::Point2f>> annotation_points);
     bool ends_with(const std::string &mainStr, const std::string &toMatch);

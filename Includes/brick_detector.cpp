@@ -103,7 +103,7 @@ double Brick_Detector::union_area(cv::Rect rect1, cv::Rect rect2)
 void Brick_Detector::predict_all_images()
 {
 
-    while(data_loader.Load_Next() == true)
+    while(data_loader.loadNext() == true)
     {
         std::vector<std::vector<double>> lines = get_lines(data_loader.img);
         boundingBox_detector.detect_BB(lines);
