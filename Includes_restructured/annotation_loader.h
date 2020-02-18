@@ -7,10 +7,11 @@
 
 class Annotation_loader
 {
+
 public:
     Annotation_loader();
-    void LoadAnnotation(std::string path);
-    std::string imagePath;
+    void loadAnnotation(std::string path);
+    std::string image_file_name;
     std::vector<std::vector<cv::Point2f>> Rect_list;
 
 private:

@@ -6,7 +6,7 @@ Annotation_loader::Annotation_loader()
 
 }
 
-void Annotation_loader::LoadAnnotation(std::string path)
+void Annotation_loader::loadAnnotation(std::string path)
 {
     replace_null(path);
     cv::FileStorage file(path, cv::FileStorage::READ);
@@ -28,8 +28,8 @@ void Annotation_loader::LoadAnnotation(std::string path)
     Rect_list = annotation_point_list;
 
     cv::FileNode img_path   = file["imagePath"];
-    imagePath = img_path.string();
-    std::cout << imagePath << std::endl;
+    image_file_name = img_path.string();
+    std::cout << image_file_name << std::endl;
 }
 
 void Annotation_loader::replace_null(std::string path)

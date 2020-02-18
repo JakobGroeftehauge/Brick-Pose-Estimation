@@ -4,6 +4,7 @@
 #include "data_loader.h"
 
 
+
 Data_loader::Data_loader()
 {
 
@@ -27,13 +28,13 @@ Data_loader::Data_loader(std::string path_to_folder)
 
 }
 
-bool Data_loader::Load_Next()
+bool Data_loader::loadNext()
 {
     if(file_paths_iterator < file_paths.size())
     {
-        this->annotation_loader.LoadAnnotation(file_paths[file_paths_iterator]);
-        std::cout << "file path" << this->path_folder + "/" + annotation_loader.imagePath << std::endl;
-
+        this->annotation_loader.loadAnnotation(file_paths[file_paths_iterator]);
+        //std::cout << "file path" << this->path_folder + "/" + annotation_loader.imagePath << std::endl;
+        this->image_path = this->annotation_loader.imagePath;
         this->img = cv::imread(this->path_folder + "/" + annotation_loader.imagePath, cv::IMREAD_COLOR);
         this->Bounding_boxes = convert_points_to_rects(annotation_loader.Rect_list);
         this->angle_vector = convert_points_to_angles(annotation_loader.Rect_list);

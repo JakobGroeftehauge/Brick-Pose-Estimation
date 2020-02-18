@@ -9,11 +9,13 @@ class Data_loader
 public:
     Data_loader();
     Data_loader(std::string path_to_folder);
-    bool Load_Next();
+    bool loadNext();
     std::vector<cv::Rect> Bounding_boxes;
     std::vector<double> angle_vector;
     cv::Mat img;
+    std::string file_name;
 
+private:
     std::vector<std::string> file_paths;
     std::string path_folder;
     unsigned int file_paths_iterator;
