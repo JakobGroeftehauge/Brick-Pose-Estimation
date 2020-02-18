@@ -22,6 +22,7 @@ public:
 
     double intersection_area(cv::Rect rect1, cv::Rect rect2);
     double union_area(cv::Rect rect1, cv::Rect rect2);
+    std::ofstream file;
 
 
 
