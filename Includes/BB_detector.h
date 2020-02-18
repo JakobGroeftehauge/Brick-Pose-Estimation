@@ -13,6 +13,7 @@ public:
 
     //private:
     vector<cv::Rect> BB;
+    vector<cv::RotatedRect> rotated_BB;
     int img_height;
     int img_width;
     vector<vector<vector<double>>> cluster_lines(vector<vector<double>> lines);

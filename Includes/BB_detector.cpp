@@ -13,6 +13,7 @@ void BB_detector::detect_BB(vector<vector<double>> lines)
 {
     //Delete old predictions.
     this->BB = {};
+    this->rotated_BB = {};
 
     //The Class could possible invoke the images itself.
 
@@ -189,6 +190,7 @@ void BB_detector::get_bounding_boxes(vector<vector<cv::Point2f> > intersection_m
             {
                 cv::Rect bounding_box =  cv::boundingRect(contour);
                 this->BB.push_back(bounding_box);
+                this->rotated_BB.push_back(BB_rotated);
             }
         }
     }
