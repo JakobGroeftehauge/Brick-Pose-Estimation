@@ -16,18 +16,18 @@ public:
 	void detect(cv::Mat img);
 	void set_img(cv::Mat img);
 	std::vector<prediction> predictions;
+    std::vector<std::vector<double>> lines;
+
 private:
 	cv::Mat img;
 
     int canny_thres_low;
     int canny_thres_high;
 
-    std::vector<std::vector<double>> lines;
-
     void clear_all();
     void clear_predictions();
     void find_lines();
-    void find_BB(std::vector<std::vector<std::vector<double> > > clustered_lines);
+    void find_BB(std::vector<std::vector<std::vector<double>>> clustered_lines);
     void find_edges(cv::Mat &src, cv::Mat &dst);
 
     std::vector<std::vector<std::vector<double>>> cluster_lines();
