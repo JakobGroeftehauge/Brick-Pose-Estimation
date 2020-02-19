@@ -2,7 +2,7 @@
 #include <iostream>
 #include <experimental/filesystem>
 #include "data_loader.h"
-
+#include "annotation_loader.h"
 
 
 Data_loader::Data_loader()
@@ -33,9 +33,8 @@ bool Data_loader::loadNext()
     if(file_paths_iterator < file_paths.size())
     {
         this->annotation_loader.loadAnnotation(file_paths[file_paths_iterator]);
-        //std::cout << "file path" << this->path_folder + "/" + annotation_loader.imagePath << std::endl;
-        this->image_path = this->annotation_loader.imagePath;
-        this->img = cv::imread(this->path_folder + "/" + annotation_loader.imagePath, cv::IMREAD_COLOR);
+        this->file_name = this->annotation_loader.image_file_name;
+        this->img = cv::imread(this->path_folder + "/" + annotation_loader.image_file_name, cv::IMREAD_COLOR);
         this->Bounding_boxes = convert_points_to_rects(annotation_loader.Rect_list);
         this->angle_vector = convert_points_to_angles(annotation_loader.Rect_list);
         file_paths_iterator++;

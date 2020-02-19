@@ -107,6 +107,7 @@ double Brick_Detector::union_area(cv::Rect rect1, cv::Rect rect2)
 
 void Brick_Detector::predict_all_images()
 {
+
     file.open("result.csv");
     for(int i = 0; i < 2; i++)
     //while(data_loader.Load_Next() == true)

@@ -8,6 +8,7 @@ build-robot_control-Desktop-Debug
 *.o
 *.so
 *.exe
+*.autosave
 
 ## Qmake Specific
 
