@@ -24,6 +24,8 @@ public:
     bool point_within_boundaries(cv::Point2f point);
     void get_bounding_boxes(vector<vector<cv::Point2f>> intersection_matrix);
     bool accept_detection(cv::RotatedRect rotated_BB);
+
+
 };
 
 #endif // BB_DETECTOR_H

@@ -87,6 +87,11 @@ void Brick_Detector::evaluate_predictions(double threhold = 0.5)
 
 void Brick_Detector::save_evaluation(int true_pos, int false_pos, int false_neg)
 {
+    file << data_loader.annotation_loader.imagePath << ", ";
+    file << true_pos << ", ";
+    file << false_pos << ", ";
+    file << false_neg << ", ";
+    file << "\n";
 
 }
 
@@ -103,10 +108,14 @@ double Brick_Detector::union_area(cv::Rect rect1, cv::Rect rect2)
 void Brick_Detector::predict_all_images()
 {
 
-    while(data_loader.loadNext() == true)
+    file.open("result.csv");
+    for(int i = 0; i < 2; i++)
+    //while(data_loader.Load_Next() == true)
     {
+        data_loader.Load_Next();
         std::vector<std::vector<double>> lines = get_lines(data_loader.img);
         boundingBox_detector.detect_BB(lines);
+        evaluate_predictions(0.5);
         cv::Mat img_copy = data_loader.img.clone();
         show_predictions(img_copy, boundingBox_detector.BB);
         std::cout << "Size: " << boundingBox_detector.BB.size() << std::endl;
@@ -115,4 +124,5 @@ void Brick_Detector::predict_all_images()
         cv::waitKey(0);
     }
 
+    file.close();
 }
