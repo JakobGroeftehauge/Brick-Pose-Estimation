@@ -33,7 +33,19 @@ void print_lines(cv::Mat &img, std::vector<std::vector<double>> lines)
     }
 }
 
+void print_rotated_bounding_boxes(cv::Mat &img, std::vector<prediction> preds)
+{
+    for(unsigned int  i = 0; i < preds.size(); i++)
+    {
+        cv::Point2f rect_points[4];
+        preds[i].rotated_rect.points(rect_points);
 
+        for(int j = 0; j < 4; j++)
+        {
+            cv::line(img, rect_points[j], rect_points[(j + 1) % 4], cv::Scalar(0, 0, 255), 1, 8);
+        }
+    }
+}
 
 
 

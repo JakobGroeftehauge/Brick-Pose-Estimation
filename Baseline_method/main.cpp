@@ -16,7 +16,8 @@ int main()
 
     cout << "prediction size: " << test.predictions.size() << endl;
     util::print_lines(img, test.lines);
-    util::print_bounding_boxes(img, test.predictions);
+    //util::print_bounding_boxes(img, test.predictions);
+    util::print_rotated_bounding_boxes(img, test.predictions);
     cv::imshow("test", img);
     cv::waitKey(0);
     //Brick_Detector detector("../Strojer_Images/Initial Test Images/Cropped");
