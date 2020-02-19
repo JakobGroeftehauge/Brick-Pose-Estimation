@@ -55,11 +55,12 @@ void Evaluator::close_file()
 
 double Evaluator::calculate_IoU(cv::Rect rect1, cv::Rect rect2)
 {
-	return (rect1 & rect2).area() / (rect1 | rect2).area();
+	return (double)(rect1 & rect2).area() / (double)(rect1 | rect2).area();
 }
 
 void Evaluator::evaluate(double threshold)
 {
+    std::cout << "Threshold: " << threshold << std::endl;
 	std::vector<cv::Rect> annotations(this->loader.Bounding_boxes);
 	std::vector<cv::Rect> predictions;
 	for (int i = 0; i < detector.predictions.size(); i++)
@@ -75,6 +76,7 @@ void Evaluator::evaluate(double threshold)
         for (unsigned int j = 0; j < annotations.size(); j++)
         {
             double IOU = calculate_IoU(predictions[i], annotations[j]);
+            std::cout << IOU << std::endl;
             if (IOU > max_IOU)
             {
                 max_IOU = IOU;
