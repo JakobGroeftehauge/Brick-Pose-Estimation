@@ -5,12 +5,13 @@
 #include <regex>
 
 
-class Annotation_Loader
+class Annotation_loader
 {
+
 public:
-    Annotation_Loader();
+    Annotation_loader();
     void loadAnnotation(std::string path);
-    std::string imagePath;
+    std::string image_file_name;
     std::vector<std::vector<cv::Point2f>> Rect_list;
 
 private:

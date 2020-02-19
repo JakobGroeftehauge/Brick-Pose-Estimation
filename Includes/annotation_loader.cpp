@@ -1,12 +1,12 @@
 #include "annotation_loader.h"
 #include <iostream>
 
-Annotation_Loader::Annotation_Loader()
+Annotation_loader::Annotation_loader()
 {
 
 }
 
-void Annotation_Loader::loadAnnotation(std::string path)
+void Annotation_loader::loadAnnotation(std::string path)
 {
     replace_null(path);
     cv::FileStorage file(path, cv::FileStorage::READ);
@@ -28,19 +28,15 @@ void Annotation_Loader::loadAnnotation(std::string path)
     Rect_list = annotation_point_list;
 
     cv::FileNode img_path   = file["imagePath"];
-    imagePath = img_path.string();
-    std::cout << imagePath << std::endl;
+    image_file_name = img_path.string();
+    std::cout << image_file_name << std::endl;
 }
 
-void Annotation_Loader::replace_null(std::string path)
+void Annotation_loader::replace_null(std::string path)
 {
     std::ifstream t(path);
     std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-
-    //std::string str("null hello name");
-    //string = std::regex_replace(string, std::regex("\\$name"), "Somename");
     str = std::regex_replace(str, std::regex("null"), "1");
-    //std::cout << str << std::endl;
     std::ofstream out(path);
     out << str;
     out.close();

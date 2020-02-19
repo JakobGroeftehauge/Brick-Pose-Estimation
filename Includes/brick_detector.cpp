@@ -1,128 +1,241 @@
-#include "brick_detector.h"
-#include "Hough_space.h"
-#include "data_loader.h"
+#include "Brick_Detector.h"
 
-Brick_Detector::Brick_Detector(std::string path_to_folder)
+
+
+Brick_Detector::Brick_Detector()
 {
-    this->data_loader = Data_loader(path_to_folder);
+    this->canny_thres_high = 140;
+    this->canny_thres_low = 60;
 }
 
-std::vector<std::vector<double> > Brick_Detector::get_lines(cv::Mat img)
+Brick_Detector::Brick_Detector(cv::Mat img)
+{
+    this->img = img;
+    this->canny_thres_high = 140;
+    this->canny_thres_low = 60;
+}
+
+void Brick_Detector::detect()
+{
+    clear_predictions();
+    find_lines();
+
+    if(lines.size() > 0)
+    {
+        std::vector<std::vector<std::vector<double>>> clustered_lines = cluster_lines();
+
+        if(clustered_lines[0].size() > 0 && clustered_lines[1].size() > 0)
+        {
+            find_BB(clustered_lines);
+        }
+        else
+        {
+            //TO DO: determine what to do when none or only one cluster is located.
+        }
+    }
+    else
+    {
+       return;  //TO DO: determine what to do when no lines has been located.
+    }
+
+}
+
+void Brick_Detector::detect(cv::Mat img)
+{
+    set_img(img);
+    detect();
+}
+
+void Brick_Detector::set_img(cv::Mat img)
+{
+    this->img = img;
+    std::cout << this->img.size().width << std::endl;
+}
+
+void Brick_Detector::clear_all()
+{
+    this->img.release();
+    clear_predictions();
+}
+
+void Brick_Detector::clear_predictions()
+{
+    this->predictions = {};
+}
+
+void Brick_Detector::find_lines()
+{
+    cv::Mat edge_img;
+    find_edges(this->img, edge_img);
+
+    Hough_space hough(edge_img);
+
+    this->lines =  hough.find_lines();
+    std::cout << this->lines.size() << std::endl;
+}
+
+void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
 {
     cv::Mat gray_img;
-    cv::cvtColor(img, gray_img, CV_BGR2GRAY);
+    cv::cvtColor(src, gray_img, CV_BGR2GRAY);
 
     cv::Mat filter_img;
     cv::medianBlur(gray_img, filter_img, 5);
 
-    cv::Mat edge_img;
-    cv::Canny(filter_img, edge_img, this->lower_thres_canny, this->uppper_thres_canny);
-
-    Hough_space hough(edge_img);
-
-    return hough.find_lines();
+    cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
 }
 
-void Brick_Detector::show_predictions(cv::Mat img, std::vector<cv::Rect> BB)
+void Brick_Detector::find_BB(std::vector<std::vector<std::vector<double>>> clustered_lines)
 {
-    for(unsigned int i = 0; i < BB.size(); i++)
+    std::vector<std::vector<std::vector<double>>> sorted_lines;
+    std::vector<std::vector<cv::Point2f>> intersection_matrix;
+
+    if(clustered_lines[0].size() > 0 && clustered_lines[1].size() > 0)
     {
-        cv::rectangle(img, BB[i].tl(), BB[i].br(), cv::Scalar(255, 0, 0, 1));
+        sorted_lines = {sort_lines(clustered_lines[0]), sort_lines(clustered_lines[1])};
+        intersection_matrix = find_intersection_matrix(sorted_lines);
     }
+
+    convert_intections_to_BB(intersection_matrix);
 }
 
-void Brick_Detector::show_lines(cv::Mat img, vector<vector<double> > lines)
+std::vector<std::vector<std::vector<double>>> Brick_Detector::cluster_lines()
 {
-    for(unsigned int i =0; i < lines.size(); i++)
+    std::vector<std::vector<double>> lines_cluster1;
+    std::vector<std::vector<double>> lines_cluster2;
+
+    float theta_ref = this->lines[0][1];
+    lines_cluster1.push_back(lines[0]);
+
+    for(unsigned int i = 1; i < lines.size(); i++)
     {
-        cv::Point pt1, pt2;
-        double a = cos(lines[i][1]), b = sin(lines[i][1]);
-        double x0 = a * lines[i][0], y0 = b * lines[i][0];
-        int size = 1000;//max(img.size().height, img.size().width) * 2; //just needs to be big enough.
-        pt1.x=cvRound(x0 + size*(-b)) + img.size().width/2;
-        pt1.y=cvRound(y0 + size*(a)) + img.size().height/2;
-        pt2.x=cvRound(x0 - size*(-b)) + img.size().width/2;
-        pt2.y=cvRound(y0 - size*(a)) + img.size().height/2;
-        cv::line(img, pt1, pt2, cv::Scalar(0,255,0), 1, cv::LINE_AA);
-    }
-}
+        double theta = lines[i][1];
+        double diff_theta = abs(theta -  theta_ref);
+        double diff = std::min(diff_theta, CV_PI-diff_theta);
 
-void Brick_Detector::evaluate_predictions(double threhold = 0.5)
-{
-    std::vector<cv::Rect> annotations(this->data_loader.Bounding_boxes);
-    std::vector<cv::Rect> predictions(this->boundingBox_detector.BB);
-
-    unsigned int i = 0;
-    while(i < predictions.size())
-    {
-        //Find the BB with the greatest intersection over union.
-        double max_IOU = 0;
-        int index_max_IOU = 0;
-        for(unsigned int j = 0; j < annotations.size(); j++)
+        if(diff < CV_PI/4.0)
         {
-            double IOU = intersection_area(predictions[i], annotations[j]) / union_area(predictions[i], annotations[j]);
-            if(IOU > max_IOU)
-            {
-                max_IOU = IOU;
-                index_max_IOU = j;
-            }
-        }
-
-        if(max_IOU > threhold)
-        {
-            //Remove elements form annotation list and prediction list.
-            predictions.erase(predictions.begin() + i);
-            annotations.erase(annotations.begin() + index_max_IOU);
+            lines_cluster1.push_back(lines[i]);
         }
         else
         {
-            i++;
+            lines_cluster2.push_back(lines[i]);
         }
     }
-    int true_pos = this->boundingBox_detector.BB.size() - predictions.size();
-    int false_pos = predictions.size();
-    int false_neg = annotations.size();
-    save_evaluation(true_pos, false_pos, false_neg);
+
+    return {lines_cluster1, lines_cluster2};
 }
 
-void Brick_Detector::save_evaluation(int true_pos, int false_pos, int false_neg)
+std::vector<std::vector<double> > Brick_Detector::sort_lines(std::vector<std::vector<double> > lines)
 {
-    file << data_loader.annotation_loader.imagePath << ", ";
-    file << true_pos << ", ";
-    file << false_pos << ", ";
-    file << false_neg << ", ";
-    file << "\n";
+    std::vector<std::vector<double>> copy_lines = lines;
+
+    //Method of sorting - specified by the lambda function declared below.
+    std::sort(copy_lines.begin(), copy_lines.end(),
+              [](const std::vector<double>& a, const std::vector<double>& b)
+                {   //Lambda function
+                    double rho_a = a[0];
+                    if(a[1] > 2.5)
+                    {
+                        rho_a = -rho_a;
+                    }
+
+                    double  rho_b = b[0];
+                    if(b[1] > 2.5) //TO DO: threshold should be changed before deploying.
+                    {
+                        rho_b = -rho_b;
+                    }
+
+                    return rho_a < rho_b;
+                });
+
+    return copy_lines;
 
 }
 
-double Brick_Detector::intersection_area(cv::Rect rect1, cv::Rect rect2)
+std::vector<std::vector<cv::Point2f> > Brick_Detector::find_intersection_matrix(std::vector<std::vector<std::vector<double>>> clustered_lines_sorted)
 {
-   return (rect1 & rect2).area();
-}
+    std::vector<std::vector<cv::Point2f>> intersection_matrix;
 
-double Brick_Detector::union_area(cv::Rect rect1, cv::Rect rect2)
-{
-    return (rect1 | rect2).area();
-}
-
-void Brick_Detector::predict_all_images()
-{
-
-    file.open("result.csv");
-    for(int i = 0; i < 2; i++)
-    //while(data_loader.Load_Next() == true)
+    for(unsigned int i = 0; i < clustered_lines_sorted[0].size(); i++)
     {
-        data_loader.Load_Next();
-        std::vector<std::vector<double>> lines = get_lines(data_loader.img);
-        boundingBox_detector.detect_BB(lines);
-        evaluate_predictions(0.5);
-        cv::Mat img_copy = data_loader.img.clone();
-        show_predictions(img_copy, boundingBox_detector.BB);
-        std::cout << "Size: " << boundingBox_detector.BB.size() << std::endl;
-        show_lines(img_copy, lines);
-        cv::imshow("Pred", img_copy);
-        cv::waitKey(0);
+        intersection_matrix.push_back({});
+        for(unsigned int j = 0; j < clustered_lines_sorted[1].size(); j++)
+        {
+            cv::Point2f intersection = find_intersection(clustered_lines_sorted[0][i], clustered_lines_sorted[1][j]);
+            intersection_matrix[i].push_back(intersection);
+        }
     }
 
-    file.close();
+    return intersection_matrix;
 }
+
+cv::Point2f Brick_Detector::find_intersection(std::vector<double> line1, std::vector<double> line2)
+{
+    std::vector<cv::Point2f> points_line1 = get_points_on_line(line1);
+    std::vector<cv::Point2f> points_line2 = get_points_on_line(line2);
+
+    cv::Point2f x = points_line2[0] - points_line1[0];
+    cv::Point2f d1 = points_line1[1] - points_line1[0];
+    cv::Point2f d2 = points_line2[1] - points_line2[0];
+
+    float cross = d1.x*d2.y - d1.y*d2.x;
+
+    if (abs(cross) < /*EPS*/1e-8)
+    {
+        //TO DO:
+        //determine what to do, if no intersection is present.
+        //Should not be a problem, if no false lines is detected, but it would be nice if it was handeled.
+    }
+
+    double t1 = (x.x * d2.y - x.y * d2.x)/cross;
+    cv::Point2f intersection = points_line1[0] + d1 * t1;
+
+    return intersection;
+}
+
+std::vector<cv::Point2f> Brick_Detector::get_points_on_line(std::vector<double> line)
+{
+    cv::Point2f pt1, pt2;
+    int rho = line[0];
+    double theta = line[1];
+    double a = cos(theta), b = sin(theta);
+    double x0 = a * rho, y0 = b * rho;
+    int size = 1000; //Increase if image size increases.
+    pt1.x = x0 + size*(-b) + this->img.size().width/2;
+    pt1.y = y0 + size*(a) + this->img.size().height/2;
+    pt2.x = x0 - size*(-b) +  this->img.size().width/2;
+    pt2.y = y0 - size*(a) + this->img.size().height/2;
+    return {pt1, pt2};
+}
+
+void Brick_Detector::convert_intections_to_BB(std::vector<std::vector<cv::Point2f> > intersection_matrix)
+{
+    for(unsigned int i = 0; i < intersection_matrix.size() - 1; i++)
+    {
+        for(unsigned int j = 0; j < intersection_matrix[i].size() - 1; j++)
+        {
+            std::vector<cv::Point2f> contour = {intersection_matrix[i][j], intersection_matrix[i][j + 1], intersection_matrix[i + 1][j], intersection_matrix[i + 1][j + 1]};
+            cv::RotatedRect BB_rotated = cv::minAreaRect(contour);
+
+            //Evaluate if the current contour could orignate from a brick.
+            if(accept_detection(BB_rotated) == true) //should be used to filter out BB which does not origin form bricks
+            {
+                prediction pred;
+                cv::Rect bounding_box =  cv::boundingRect(contour);
+                pred.rect = bounding_box;
+                pred.rotated_rect = BB_rotated;
+
+                //TO DO: Calculate angle and update value on the struct pred.
+
+                this->predictions.push_back(pred);
+            }
+        }
+    }
+}
+
+bool Brick_Detector::accept_detection(cv::RotatedRect rotated_BB)
+{
+    return true; //TO DO: Implement method for filtering unwanted bounding boxes.
+}
+
