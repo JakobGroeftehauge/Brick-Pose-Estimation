@@ -36,7 +36,7 @@ void Brick_Detector::detect()
     }
     else
     {
-        //TO DO: determine what to do when no lines has been located.
+       return;  //TO DO: determine what to do when no lines has been located.
     }
 
 }
@@ -68,8 +68,7 @@ void Brick_Detector::find_lines()
 {
     cv::Mat edge_img;
     find_edges(this->img, edge_img);
-    cv::imshow("edge", edge_img);
-    cv::waitKey(0);
+
     Hough_space hough(edge_img);
 
     this->lines =  hough.find_lines();
@@ -85,16 +84,12 @@ void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
     cv::medianBlur(gray_img, filter_img, 5);
 
     cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
-    cv::imshow("edge1", dst);
-    cv::waitKey(0);
 }
 
 void Brick_Detector::find_BB(std::vector<std::vector<std::vector<double>>> clustered_lines)
 {
     std::vector<std::vector<std::vector<double>>> sorted_lines;
     std::vector<std::vector<cv::Point2f>> intersection_matrix;
-
-    //clustered_lines = cluster_lines();
 
     if(clustered_lines[0].size() > 0 && clustered_lines[1].size() > 0)
     {
