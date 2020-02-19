@@ -8,15 +8,16 @@ public:
 	Evaluator();
 	Evaluator(std::string path);
 	void set_path(std::string path);
-	void predict_next_img();
+	void evaluate_next_img();
 	void open_file(std::string file_name);
 	void close_file();
 
 private:
 	double calculate_IoU(cv::Rect rect1, cv::Rect rect2);
 	void print_results_to_csv();
-	std::string folder_path;
+	//std::string folder_path;
 	Data_loader loader;
 	std::ofstream file;
+	Brick_Detector detector;
 };
 
