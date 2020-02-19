@@ -36,11 +36,7 @@ void Annotation_loader::replace_null(std::string path)
 {
     std::ifstream t(path);
     std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-
-    //std::string str("null hello name");
-    //string = std::regex_replace(string, std::regex("\\$name"), "Somename");
     str = std::regex_replace(str, std::regex("null"), "1");
-    std::cout << str << std::endl;
     std::ofstream out(path);
     out << str;
     out.close();

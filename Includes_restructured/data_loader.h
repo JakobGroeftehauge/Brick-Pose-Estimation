@@ -14,10 +14,10 @@ public:
     std::vector<double> angle_vector;
     cv::Mat img;
     std::string file_name;
+    std::string path_folder;
 
 private:
     std::vector<std::string> file_paths;
-    std::string path_folder;
     unsigned int file_paths_iterator;
     Annotation_loader annotation_loader;
     std::vector<cv::Rect> convert_points_to_rects(std::vector<std::vector<cv::Point2f>> annotation_points);

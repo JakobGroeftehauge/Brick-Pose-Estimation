@@ -1,6 +1,5 @@
 #include "Brick_Detector.h"
-#include <vector>
-#include "Hough_space.h"
+
 
 
 Brick_Detector::Brick_Detector()

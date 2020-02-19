@@ -1,4 +1,5 @@
 #include "Evaluator.h"
+#include <experimental/filesystem>
 
 Evaluator::Evaluator()
 {
@@ -6,27 +7,50 @@ Evaluator::Evaluator()
 
 Evaluator::Evaluator(std::string path)
 {
+    if (!(std::experimental::filesystem::exists(path + "/evaluations")))
+    {
+        if(std::experimental::filesystem::create_directory(path + "/evaluations"))
+            std::cout << "Directory: " + path + "/evaluations created" <<  std::endl;
+    }
+        
+
 	set_path(path);
 }
 
 void Evaluator::set_path(std::string path)
 {
+
 	this->loader = Data_loader(path);
 }
 
-bool Evaluator::evaluate_next_img(double threshold = 0.5)
+bool Evaluator::evaluate_next_img(double threshold)
 {
+    if (file.is_open() == false)
+        open_file();
 	if (loader.loadNext())
 	{
 		this->detector.detect(loader.img);
-
+        evaluate(threshold);
 		return true;
 	}
 	else
 	{
 		std::cout << "No more images to evaluate" << std::endl;
+        close_file();
 		return false;
 	}
+}
+
+void Evaluator::open_file()
+{
+    //file.open(loader.path_folder + "/evaluation_images/results.csv");
+    this->file.open(this->loader.path_folder + "/evaluations/results.csv");
+    this->file << "File Name, True Positive, False Positive, False Negative \n";
+}
+
+void Evaluator::close_file()
+{
+    file.close();
 }
 
 double Evaluator::calculate_IoU(cv::Rect rect1, cv::Rect rect2)
@@ -34,7 +58,7 @@ double Evaluator::calculate_IoU(cv::Rect rect1, cv::Rect rect2)
 	return (rect1 & rect2).area() / (rect1 | rect2).area();
 }
 
-void Evaluator::evaluate(double threshold = 0.5)
+void Evaluator::evaluate(double threshold)
 {
 	std::vector<cv::Rect> annotations(this->loader.Bounding_boxes);
 	std::vector<cv::Rect> predictions;
@@ -42,5 +66,49 @@ void Evaluator::evaluate(double threshold = 0.5)
 	{
 		predictions.push_back(detector.predictions[i].rect);
 	}
+    unsigned int i = 0;
+    while (i < predictions.size())
+    {
+        //Find the BB with the greatest intersection over union.
+        double max_IOU = 0;
+        int index_max_IOU = 0;
+        for (unsigned int j = 0; j < annotations.size(); j++)
+        {
+            double IOU = calculate_IoU(predictions[i], annotations[j]);
+            if (IOU > max_IOU)
+            {
+                max_IOU = IOU;
+                index_max_IOU = j;
+            }
+        }
 
+        if (max_IOU > threshold)
+        {
+            //Remove elements form annotation list and prediction list.
+            predictions.erase(predictions.begin() + i);
+            annotations.erase(annotations.begin() + index_max_IOU);
+        }
+        else
+        {
+            i++;
+        }
+    }
+    int true_pos = this->detector.predictions.size() - predictions.size();
+    int false_pos = predictions.size();
+    int false_neg = annotations.size();
+    save_evaluation(true_pos, false_pos, false_neg);
+}
+
+void Evaluator::save_evaluation(int true_pos, int false_pos, int false_neg)
+{
+    file << loader.file_name << ", ";
+    file << true_pos << ", ";
+    file << false_pos << ", ";
+    file << false_neg << ", ";
+    file << "\n";
+    // color code true_pos, false_pos etc:
+    this->img_to_print = loader.img.clone();
+    util::print_bounding_boxes(img_to_print, loader.Bounding_boxes, cv::Scalar(0, 255, 0));
+    util::print_bounding_boxes(img_to_print, detector.predictions, cv::Scalar(255, 255, 0));
+    cv::imwrite(loader.path_folder + "/evaluations/" + loader.file_name, img_to_print);
 }

@@ -9,15 +9,23 @@
 namespace util
 {
 
-void print_bounding_boxes(cv::Mat& img, std::vector<prediction> preds)
+inline void print_bounding_boxes(cv::Mat& img, std::vector<prediction> preds, cv::Scalar color = cv::Scalar(255,0,0))
 {
     for(unsigned int i = 0; i < preds.size(); i++)
     {
-        cv::rectangle(img, preds[i].rect.tl(), preds[i].rect.br(), cv::Scalar(255, 0, 0));
+        cv::rectangle(img, preds[i].rect.tl(), preds[i].rect.br(), color);
+    }
+}
+inline void print_bounding_boxes(cv::Mat& img, std::vector<cv::Rect> preds, cv::Scalar color = cv::Scalar(255, 0, 0))
+{
+    for (unsigned int i = 0; i < preds.size(); i++)
+    {
+        cv::rectangle(img, preds[i].tl(), preds[i].br(), color);
     }
 }
 
-void print_lines(cv::Mat &img, std::vector<std::vector<double>> lines)
+
+inline void print_lines(cv::Mat &img, std::vector<std::vector<double>> lines, cv::Scalar color = cv::Scalar(0, 255, 0))
 {
     for(unsigned int i = 0; i < lines.size(); i++)
     {
@@ -29,11 +37,11 @@ void print_lines(cv::Mat &img, std::vector<std::vector<double>> lines)
         pt1.y=cvRound(y0 + size*(a)) + img.size().height/2;
         pt2.x=cvRound(x0 - size*(-b)) + img.size().width/2;
         pt2.y=cvRound(y0 - size*(a)) + img.size().height/2;
-        cv::line(img, pt1, pt2, cv::Scalar(0,255,0), 1, cv::LINE_AA);
+        cv::line(img, pt1, pt2, color, 1, cv::LINE_AA);
     }
 }
 
-void print_rotated_bounding_boxes(cv::Mat &img, std::vector<prediction> preds)
+inline void print_rotated_bounding_boxes(cv::Mat &img, std::vector<prediction> preds, cv::Scalar color = cv::Scalar(0, 0, 255))
 {
     for(unsigned int  i = 0; i < preds.size(); i++)
     {
@@ -42,7 +50,7 @@ void print_rotated_bounding_boxes(cv::Mat &img, std::vector<prediction> preds)
 
         for(int j = 0; j < 4; j++)
         {
-            cv::line(img, rect_points[j], rect_points[(j + 1) % 4], cv::Scalar(0, 0, 255), 1, 8);
+            cv::line(img, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
         }
     }
 }

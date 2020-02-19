@@ -1,5 +1,7 @@
 #pragma once
 #include <opencv2/opencv.hpp>
+#include <vector>
+#include "Hough_space.h"
 struct prediction {
 	cv::Rect rect;
 	cv::RotatedRect rotated_rect;
