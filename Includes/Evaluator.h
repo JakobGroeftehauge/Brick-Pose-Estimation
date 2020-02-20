@@ -24,5 +24,7 @@ private:
 	Data_loader loader;
 	std::ofstream file;
 	Brick_Detector detector;
+    std::vector<cv::Rect> false_positive;
+    std::vector<cv::Rect> true_positive;
 };
 

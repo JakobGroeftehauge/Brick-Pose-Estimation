@@ -62,6 +62,8 @@ double Evaluator::calculate_IoU(cv::Rect rect1, cv::Rect rect2)
 
 void Evaluator::evaluate(double threshold)
 {
+    this->false_positive = {};
+    this->true_positive = {};
     std::cout << "Threshold: " << threshold << std::endl;
 	std::vector<cv::Rect> annotations(this->loader.Bounding_boxes);
 	std::vector<cv::Rect> predictions;
@@ -89,6 +91,7 @@ void Evaluator::evaluate(double threshold)
         if (max_IOU > threshold)
         {
             //Remove elements form annotation list and prediction list.
+            this->true_positive.push_back(predictions[i]);
             predictions.erase(predictions.begin() + i);
             annotations.erase(annotations.begin() + index_max_IOU);
         }
@@ -97,6 +100,9 @@ void Evaluator::evaluate(double threshold)
             i++;
         }
     }
+
+    this->false_positive = predictions;
+
     int true_pos = this->detector.predictions.size() - predictions.size();
     int false_pos = predictions.size();
     int false_neg = annotations.size();
@@ -113,6 +119,9 @@ void Evaluator::save_evaluation(int true_pos, int false_pos, int false_neg)
     // color code true_pos, false_pos etc:
     this->img_to_print = loader.img.clone();
     util::print_bounding_boxes(img_to_print, loader.Bounding_boxes, cv::Scalar(0, 255, 0));
-    util::print_bounding_boxes(img_to_print, detector.predictions, cv::Scalar(255, 255, 0));
+    //util::print_bounding_boxes(img_to_print, detector.predictions, cv::Scalar(255, 255, 0));
+    util::print_bounding_boxes(this->img_to_print, this->false_positive, cv::Scalar(0,0,255));
+    util::print_bounding_boxes(this->img_to_print, this->true_positive, cv::Scalar(255, 0, 0));
+
     cv::imwrite(loader.path_folder + "/evaluations/" + loader.file_name, img_to_print);
 }
