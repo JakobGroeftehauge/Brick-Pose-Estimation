@@ -4,13 +4,18 @@
 #include <opencv2/opencv.hpp>
 #include <librealsense2/rs.hpp>
 #include "depth_processor.h"
+#include "util.h"
 
 class Realsense_camera
 {
 public:
     Realsense_camera();
     void capture();
+    void capture_fast();
     rs2_intrinsics get_intrinsics();
+    void save_image(std::string path, int number);
+    void save_intrinsics(std::string filename);
+    void save_depth(std::string filename);
     cv::Mat depth_map;
     cv::Mat RGB_image;
 

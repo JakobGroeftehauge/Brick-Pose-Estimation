@@ -57,7 +57,6 @@ inline void print_rotated_bounding_boxes(cv::Mat &img, std::vector<prediction> p
 
 
 
-
 }
 #endif // UTIL_H
 
