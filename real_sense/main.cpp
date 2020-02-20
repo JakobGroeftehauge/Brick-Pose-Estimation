@@ -12,7 +12,7 @@ int main()
 {
     //float pixel[2] = {500,600};
     //float point[3];
-    int img_counter = 0;
+    int img_counter = 62;
     Realsense_camera camera;
     //camera.capture();
     //cout << "intrinsics: \nfx:  " << camera.get_intrinsics().fx << " fy: " << camera.get_intrinsics().fy << endl; 
