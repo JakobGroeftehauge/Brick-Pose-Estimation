@@ -1,8 +1,7 @@
-#pragma once
 #include <iostream>
 #include "../Includes/Brick_Detector.h"
 #include "../Includes/Evaluator.h"
-//#include "../Includes_restructured/util.h"
+//#include "../Includes/util.h"
 //#include "Brick_Detector.h"
 
 

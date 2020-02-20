@@ -6,7 +6,7 @@
 #include "../Includes/realsense_camera.h"
 
 using namespace std;
-const string img_folder = "";
+const string img_folder = "../Strojer_Images/Simple Dataset/";
 
 int main()
 {
