@@ -13,7 +13,7 @@ Hough_space::Hough_space(cv::Mat edge_img)
     this->hough_height = num_angle;
     this->hough_width = rho_max * 2 + 1;
 	this->hough_matrix = cv::Mat::zeros(hough_height, hough_width, CV_16U);
-    this->accum_threshold = 0.35;
+    this->accum_threshold = 0.30;
     initialise_hough_space();
     fill_ticks();
 
