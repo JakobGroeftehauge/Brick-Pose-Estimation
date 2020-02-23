@@ -9,8 +9,7 @@ using namespace std;
 
 int main()
 {
-    Evaluator test_evaluator("../Strojer_Images/Initial Test Images/Cropped");
-    //test_evaluator.open_file();
+    Evaluator test_evaluator("../Strojer_Images/Simple Dataset");
     //test_evaluator.close_file();
     while (test_evaluator.evaluate_next_img())
     {
