@@ -8,6 +8,7 @@ Annotation_loader::Annotation_loader()
 
 void Annotation_loader::loadAnnotation(std::string path)
 {
+    std::cout << path << std::endl;
     replace_null(path);
     cv::FileStorage file(path, cv::FileStorage::READ);
     std::cout << path << std::endl;
