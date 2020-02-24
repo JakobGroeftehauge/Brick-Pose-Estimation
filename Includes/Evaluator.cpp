@@ -122,6 +122,7 @@ void Evaluator::save_evaluation(int true_pos, int false_pos, int false_neg)
     //util::print_bounding_boxes(img_to_print, detector.predictions, cv::Scalar(255, 255, 0));
     util::print_bounding_boxes(this->img_to_print, this->false_positive, cv::Scalar(0,0,255));
     util::print_bounding_boxes(this->img_to_print, this->true_positive, cv::Scalar(255, 0, 0));
+    util::print_lines(this->img_to_print, this->detector.lines, cv::Scalar(255, 255, 255));
 
     cv::imwrite(loader.path_folder + "/evaluations/" + loader.file_name, img_to_print);
 }

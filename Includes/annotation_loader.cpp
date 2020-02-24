@@ -11,6 +11,7 @@ void Annotation_loader::loadAnnotation(std::string path)
     std::cout << path << std::endl;
     replace_null(path);
     cv::FileStorage file(path, cv::FileStorage::READ);
+    std::cout << path << std::endl;
     cv::FileNode root = file["shapes"];
     std::vector<std::vector<cv::Point2f>> annotation_point_list;
 
