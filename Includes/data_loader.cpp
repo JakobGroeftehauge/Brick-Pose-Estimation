@@ -46,6 +46,28 @@ bool Data_loader::loadNext()
     }
 }
 
+std::vector<std::vector<double>> Data_loader::get_BB_characteristics()
+{
+    std::vector<std::vector<double>> output_list;
+
+    for(unsigned int i = 0; i < annotation_loader.Rect_list.size(); i++)
+    {
+        std::vector<double> BB = {};
+
+        cv::Rect rect = cv::boundingRect(annotation_loader.Rect_list[i]);
+        cv::RotatedRect rotated_rect = cv::minAreaRect(annotation_loader.Rect_list[i]);
+
+        BB.push_back(rect.width);
+        BB.push_back(rect.height);
+        BB.push_back(rotated_rect.size.width);
+        BB.push_back(rotated_rect.size.height);
+
+        output_list.push_back(BB);
+    }
+
+    return output_list;
+}
+
 std::vector<cv::Rect> Data_loader::convert_points_to_rects(std::vector<std::vector<cv::Point2f> > annotation_points)
 {
     std::vector<cv::Rect> BB_list;
