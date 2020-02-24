@@ -243,7 +243,7 @@ bool Brick_Detector::accept_detection(cv::RotatedRect rotated_BB)
     double area = rotated_BB.size.width * rotated_BB.size.height;
     double margin = 0.1;
 
-    if(min_side < 20.5 * (1 - margin) || max_side > 108 * (1 + margin))
+    if(min_side < 20.5 * (1 - margin) || max_side > 108.0 * (1 + margin))
     {
         return false;
     }
@@ -251,7 +251,7 @@ bool Brick_Detector::accept_detection(cv::RotatedRect rotated_BB)
     {
         return false;
     }
-    else if(area < 1906 * (1 - margin) || area > 3260 * (1 + margin))
+    else if(area < 1906.0 * (1 - margin) || area > 3260.0 * (1 + margin))
     {
         return false;
     }
