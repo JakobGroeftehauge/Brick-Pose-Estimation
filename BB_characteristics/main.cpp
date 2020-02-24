@@ -16,6 +16,11 @@ int main()
    {
        std::vector<std::vector<double>> BB_data = loader.get_BB_characteristics();
 
+       if(BB_data.size() != 16)
+       {
+            cout << "!! - " << loader.file_name << endl;
+       }
+
        for(unsigned int i = 0; i < BB_data.size(); i++)
        {
            for(unsigned int j = 0; j < BB_data[i].size(); j++)

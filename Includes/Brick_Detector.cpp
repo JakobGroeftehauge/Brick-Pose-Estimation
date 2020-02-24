@@ -237,6 +237,27 @@ void Brick_Detector::convert_intections_to_BB(std::vector<std::vector<cv::Point2
 
 bool Brick_Detector::accept_detection(cv::RotatedRect rotated_BB)
 {
-    return true; //TO DO: Implement method for filtering unwanted bounding boxes.
+    double min_side = std::min(rotated_BB.size.width, rotated_BB.size.height);
+    double max_side = std::max(rotated_BB.size.width, rotated_BB.size.height);
+    double proportion = min_side/max_side;
+    double area = rotated_BB.size.width * rotated_BB.size.height;
+    double margin = 0.1;
+
+    if(min_side < 20.5 * (1 - margin) || max_side > 108 * (1 + margin))
+    {
+        return false;
+    }
+    else if(proportion < 0.203 * (1 - margin)|| proportion > 0.296 * (1 + margin))
+    {
+        return false;
+    }
+    else if(area < 1906 * (1 - margin) || area > 3260 * (1 + margin))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
