@@ -10,6 +10,7 @@ public:
     Data_loader();
     Data_loader(std::string path_to_folder);
     bool loadNext();
+    std::vector<std::vector<double>> get_BB_characteristics(); //Used for determine threshols for filtering bounding boxes.
     std::vector<cv::Rect> Bounding_boxes;
     std::vector<double> angle_vector;
     cv::Mat img;
