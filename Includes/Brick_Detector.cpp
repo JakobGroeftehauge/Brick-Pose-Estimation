@@ -69,7 +69,7 @@ void Brick_Detector::find_lines()
     find_edges(this->img, edge_img);
     cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(50, edge_img.size().height - 1), 0, -1);
     cv::imshow("edge_img", edge_img);
-    Hough_space hough(edge_img);
+    this->hough = Hough_space(edge_img);
 
     this->lines =  hough.find_lines();
     std::cout << this->lines.size() << std::endl;
@@ -130,19 +130,19 @@ std::vector<std::vector<std::vector<double>>> Brick_Detector::cluster_lines()
 std::vector<std::vector<double> > Brick_Detector::sort_lines(std::vector<std::vector<double> > lines)
 {
     std::vector<std::vector<double>> copy_lines = lines;
-
+    double split_angle = this->hough.split_angle;
     //Method of sorting - specified by the lambda function declared below.
     std::sort(copy_lines.begin(), copy_lines.end(),
-              [](const std::vector<double>& a, const std::vector<double>& b)
+              [split_angle](const std::vector<double>& a, const std::vector<double>& b)
                 {   //Lambda function
                     double rho_a = a[0];
-                    if(a[1] > 2.5)
+                    if(a[1] > split_angle)
                     {
                         rho_a = -rho_a;
                     }
 
                     double  rho_b = b[0];
-                    if(b[1] > 2.5) //TO DO: threshold should be changed before deploying.
+                    if(b[1] > split_angle) //TO DO: threshold should be changed before deploying.
                     {
                         rho_b = -rho_b;
                     }
