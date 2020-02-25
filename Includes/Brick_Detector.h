@@ -22,7 +22,7 @@ public:
 
 private:
 	cv::Mat img;
-
+    Hough_space hough;
     int canny_thres_low;
     int canny_thres_high;
 

@@ -9,12 +9,13 @@ struct shifted_hough {
 class Hough_space
 {
 public:
+	Hough_space();
 	Hough_space(cv::Mat edge_img);
-
 	//-------- methods -----------
 	void save_to_csv(std::string filename);
 	// ------ Not settled on yet --------
 	std::vector<std::vector<double>> find_lines();
+	double split_angle;
 
 private:
 	cv::Mat edge_img;

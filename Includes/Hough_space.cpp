@@ -1,5 +1,9 @@
 #include "Hough_space.h"
 
+Hough_space::Hough_space()
+{
+}
+
 Hough_space::Hough_space(cv::Mat edge_img)
 {
     this->rng(123456);
@@ -85,6 +89,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
     if (clusters_at_border(hough_space_bin))
     {
         split_value = find_splitting_line(hough_space_bin);
+        this->split_angle = split_value * this->resolution_theta;
         //shift the hough space
         if (split_value > 0)
         {
@@ -214,10 +219,11 @@ int Hough_space::find_splitting_line(cv::Mat hough_space_bin)
             if (col == this->hough_width - 1)
                 counter++;
             if (counter > 4)
-                return row - 2;
+            {
+                    return row - 2;
+            }
         }
     }
-
     return 0;
 }
 
