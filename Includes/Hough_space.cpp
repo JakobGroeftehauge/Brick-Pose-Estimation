@@ -109,7 +109,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
         dilate(hough_space_bin, hough_space_bin, kernel);
     }
     cv::Mat padded_hough_space;
-    cv::copyMakeBorder(hough_space_bin, padded_hough_space, 1, 1, 1, 1, 0);
+    cv::copyMakeBorder(hough_space_bin, padded_hough_space, 1, 1, 1, 1, 0);//contours ignore border
     std::vector<std::vector<cv::Point> > contour_perimeters;
     std::vector<cv::Vec4i> hierarchy;
     padded_hough_space.convertTo(padded_hough_space, CV_8U);
