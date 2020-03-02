@@ -9,7 +9,7 @@ build-robot_control-Desktop-Debug
 *.so
 *.exe
 *.autosave
-
+*.h5
 ## Qmake Specific
 
 Makefile
