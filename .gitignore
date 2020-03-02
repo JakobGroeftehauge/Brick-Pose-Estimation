@@ -10,8 +10,8 @@ build-robot_control-Desktop-Debug
 *.exe
 *.autosave
 *.h5
-## Qmake Specific
 
+## Qmake Specific
 Makefile
 LineDetection
 .qmake.stash
@@ -22,9 +22,19 @@ Hough_transform/Hough_transform
 real_sense/real_sense
 Load_JSON/Load_JSON
 Baseline_method/Baseline_method
+01 Classic Vision/BB_characteristics/BB_characteristics
+01 Classic Vision/Baseline_method/Baseline_method
+01 Classic Vision/Hough_transform/Hough_transform
+01 Classic Vision/Load_JSON/Load_JSON
+01 Classic Vision/Resize_and_crop_img/Resize_and_crop_img
+01 Classic Vision/real_sense/real_sense
 
+## Paperspace server
 cuda-repo-ubuntu1804_10.1.243-1_amd64.deb
 nvidia-machine-learning-repo-ubuntu1804_1.0.0-1_amd64.deb
+
+## Jupyter checkpoint files
+**/*.ipynb_checkpoints/
 
 ## User files ##
 ################
