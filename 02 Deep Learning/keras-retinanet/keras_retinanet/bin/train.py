@@ -532,7 +532,7 @@ def main(args=None):
     )
     print(HPM_train_model.history['loss'])
     print(HPM_train_model.history['val_loss'])
-    print_loss_to_csv(HPM_train_model.history['loss'], HPM_train_model.history['val_loss'], '', 'losses1.csv')
+    print_loss_to_csv(HPM_train_model.history['loss'], HPM_train_model.history['val_loss'], '', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
     
     return HPM_train_model
 
