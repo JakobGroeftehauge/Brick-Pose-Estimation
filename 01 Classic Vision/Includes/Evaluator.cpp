@@ -17,6 +17,17 @@ Evaluator::Evaluator(std::string path)
 	set_path(path);
 }
 
+Evaluator::Evaluator(std::string path_to_folder, std::string img_list_csv)
+{
+    if (!(std::experimental::filesystem::exists(path_to_folder + "/evaluations")))
+    {
+        if (std::experimental::filesystem::create_directory(path_to_folder + "/evaluations"))
+            std::cout << "Directory: " + path_to_folder + "/evaluations created" << std::endl;
+    }
+
+    this->loader = Data_loader(path_to_folder, img_list_csv);
+}
+
 void Evaluator::set_path(std::string path)
 {
 

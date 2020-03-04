@@ -9,6 +9,7 @@ class Evaluator
 public:
 	Evaluator();
 	Evaluator(std::string path);
+	Evaluator(std::string path_to_folder, std::string img_list_csv);
 	void set_path(std::string path);
 	bool evaluate_next_img(double threshold = 0.5);
 	void open_file();
