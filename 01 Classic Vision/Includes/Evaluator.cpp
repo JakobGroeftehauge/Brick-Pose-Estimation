@@ -91,7 +91,7 @@ void Evaluator::evaluate(double threshold)
         for (unsigned int j = 0; j < annotations.size(); j++)
         {
             double IOU = calculate_IoU(predictions[i], annotations[j]);
-            std::cout << IOU << std::endl;
+            //std::cout << IOU << std::endl;
             if (IOU > max_IOU)
             {
                 max_IOU = IOU;
