@@ -67,7 +67,7 @@ def makedirs(path):
     except OSError:
         if not os.path.isdir(path):
             raise
-
+        
 
 def model_with_weights(model, weights, skip_mismatch):
     """ Load weights for model.
