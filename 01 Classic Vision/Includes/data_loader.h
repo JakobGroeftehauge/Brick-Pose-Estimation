@@ -9,6 +9,7 @@ class Data_loader
 public:
     Data_loader();
     Data_loader(std::string path_to_folder);
+    Data_loader(std::string path_to_folder, std::string img_list_csv);
     bool loadNext();
     std::vector<std::vector<double>> get_BB_characteristics(); //Used for determine threshols for filtering bounding boxes.
     std::vector<cv::Rect> Bounding_boxes;

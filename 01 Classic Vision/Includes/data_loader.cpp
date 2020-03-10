@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <experimental/filesystem>
 #include "data_loader.h"
 #include "annotation_loader.h"
@@ -22,10 +23,34 @@ Data_loader::Data_loader(std::string path_to_folder)
 
         if(ends_with(load_path, ".json") == true)
         {
+            //std::cout << load_path << std::endl;
             file_paths.push_back(load_path);
         }
     }
 
+}
+
+Data_loader::Data_loader(std::string path_to_folder, std::string img_list_csv)
+{
+    this->path_folder = path_to_folder;
+    this->file_paths_iterator = 0;
+    std::cout << this->path_folder << std::endl;
+    std::ifstream fin;
+    std::string word;
+    // Open an existing file 
+    fin.open(img_list_csv);
+    while (std::getline(fin, word))
+    {
+        std::cout << word.substr(0, word.find_last_of(".")) + ".json" << std::endl;
+        this->file_paths.push_back(path_to_folder + "/" + word.substr(0, word.find_last_of(".")) + ".json");
+    }
+    fin.close();
+    //while (std::getline(fin, word,",") )
+    //{
+
+    //}
+    //std::getline(s, word, ', ')
+    // Load paths from csv file
 }
 
 bool Data_loader::loadNext()

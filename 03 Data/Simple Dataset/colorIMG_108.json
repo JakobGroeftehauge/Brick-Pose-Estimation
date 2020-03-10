@@ -22,7 +22,7 @@
           168.29268292682926
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -46,7 +46,7 @@
           156.09756097560975
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -70,7 +70,7 @@
           182.2299651567944
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -94,7 +94,7 @@
           179.7909407665505
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -118,7 +118,7 @@
           205.57491289198606
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -142,7 +142,7 @@
           227.3519163763066
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -166,7 +166,7 @@
           249.12891986062718
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -190,7 +190,7 @@
           251.39372822299651
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -214,7 +214,7 @@
           263.2404181184669
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -238,7 +238,7 @@
           253.4843205574913
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -262,7 +262,7 @@
           287.8048780487805
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -286,7 +286,7 @@
           277.0034843205575
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -310,7 +310,7 @@
           302.2648083623693
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -334,7 +334,7 @@
           312.54355400696863
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -358,7 +358,7 @@
           367.42160278745644
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     },
@@ -382,13 +382,13 @@
           353.3101045296167
         ]
       ],
-      "group_id": null,
+      "group_id": 1,
       "shape_type": "polygon",
       "flags": {}
     }
   ],
   "imagePath": "colorIMG_108.png",
-  "imageData": null,
+  "imageData": 1,
   "imageHeight": 480,
   "imageWidth": 640
 }

@@ -4,8 +4,8 @@
   "shapes": [
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           314.86988847583643,
@@ -29,8 +29,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           317.8438661710037,
@@ -54,8 +54,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           318.2156133828996,
@@ -79,8 +79,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           318.58736059479554,
@@ -104,8 +104,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           323.7918215613383,
@@ -129,8 +129,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           326.02230483271376,
@@ -154,8 +154,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           327.13754646840147,
@@ -179,8 +179,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           328.62453531598516,
@@ -208,8 +208,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           416.728624535316,
@@ -233,8 +233,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           416.728624535316,
@@ -258,8 +258,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           421.18959107806694,
@@ -283,8 +283,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           418.95910780669146,
@@ -308,8 +308,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           423.7918215613383,
@@ -333,8 +333,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           425.2788104089219,
@@ -358,8 +358,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           427.13754646840147,
@@ -383,8 +383,8 @@
     },
     {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
+      "line_color": 1,
+      "fill_color": 1,
       "points": [
         [
           429.36802973977694,
@@ -420,7 +420,7 @@
     128
   ],
   "imagePath": "colorIMG_23.png",
-  "imageData": null,
+  "imageData": 1,
   "imageHeight": 480,
   "imageWidth": 640
 }
