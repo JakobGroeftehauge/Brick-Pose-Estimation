@@ -108,7 +108,7 @@ def default_regression_model(num_values, num_anchors, pyramid_feature_size=256, 
     else:
         inputs  = keras.layers.Input(shape=(None, None, pyramid_feature_size))
     outputs = inputs
-    for i in range(4):
+    for i in range(4): # the names used here are not unique, however this may not be an issue
         outputs = keras.layers.Conv2D(
             filters=regression_feature_size,
             activation='relu',
@@ -122,6 +122,23 @@ def default_regression_model(num_values, num_anchors, pyramid_feature_size=256, 
     outputs = keras.layers.Reshape((-1, num_values), name='pyramid_regression_reshape')(outputs)
 
     return keras.models.Model(inputs=inputs, outputs=outputs, name=name)
+
+def angle_regression_model(num_values, num_anchors, pyramid_feature_size=256, regression_feature_size=256, name='angle_regression_submodel'):
+    """ Creates the angle regression submodel. This is done by calling the default_regression_model
+    but only adding two values to regress.
+
+    Args
+        num_values              : Number of values to regress.
+        num_anchors             : Number of anchors to regress for each feature level.
+        pyramid_feature_size    : The number of filters to expect from the feature pyramid levels.
+        regression_feature_size : The number of filters to use in the layers in the regression submodel.
+        name                    : The name of the submodel.
+
+    Returns
+        A keras.models.Model that predicts regression values for each anchor.
+    """
+
+    return default_regression_model(num_values, num_anchors, name=name)
 
 
 def __create_pyramid_features(C3, C4, C5, feature_size=256):
@@ -175,6 +192,24 @@ def default_submodels(num_classes, num_anchors):
         A list of tuple, where the first element is the name of the submodel and the second element is the submodel itself.
     """
     return [
+        ('regression', default_regression_model(4, num_anchors)),
+        ('classification', default_classification_model(num_classes, num_anchors))
+    ]
+
+def default_submodels_and_angle(num_classes, num_anchors):
+    """ Create a list of default submodels used for object detection.
+
+    The default submodels contains a regression submodel and a classification submodel.
+
+    Args
+        num_classes : Number of classes to use.
+        num_anchors : Number of base anchors.
+
+    Returns
+        A list of tuple, where the first element is the name of the submodel and the second element is the submodel itself.
+    """
+    return [
+        ('angle_regression', angle_regression_model(2, num_anchors)),
         ('regression', default_regression_model(4, num_anchors)),
         ('classification', default_classification_model(num_classes, num_anchors))
     ]
@@ -271,7 +306,8 @@ def retinanet(
         num_anchors = AnchorParameters.default.num_anchors()
 
     if submodels is None:
-        submodels = default_submodels(num_classes, num_anchors)
+        submodels = default_submodels_and_angle(num_classes, num_anchors)
+        # original: submodels = default_submodels(num_classes, num_anchors)
 
     C3, C4, C5 = backbone_layers
 
@@ -338,7 +374,7 @@ def retinanet_bbox(
     other = model.outputs[2:]
 
     # apply predicted regression to anchors
-    boxes = layers.RegressBoxes(name='boxes')([anchors, regression])
+    boxes = layers.RegressBoxes(name='boxes')([anchors, regression]) #_misc.py
     boxes = layers.ClipBoxes(name='clipped_boxes')([model.inputs[0], boxes])
 
     # filter detections (apply NMS / score threshold / select top-k)
