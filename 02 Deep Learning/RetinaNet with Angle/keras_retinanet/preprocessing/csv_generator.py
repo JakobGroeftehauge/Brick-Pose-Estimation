@@ -69,9 +69,9 @@ def _read_annotations(csv_reader, classes):
         line += 1
 
         try:
-            img_file, x1, y1, x2, y2, class_name = row[:6]
+            img_file, x1, y1, x2, y2, class_name, angle = row[:7]
         except ValueError:
-            raise_from(ValueError('line {}: format should be \'img_file,x1,y1,x2,y2,class_name\' or \'img_file,,,,,\''.format(line)), None)
+            raise_from(ValueError('line {}: format should be \'img_file,x1,y1,x2,y2,class_name,angleX, angleY\' or \'img_file,,,,,\''.format(line)), None)
 
         if img_file not in result:
             result[img_file] = []
@@ -85,6 +85,15 @@ def _read_annotations(csv_reader, classes):
         x2 = _parse(x2, int, 'line {}: malformed x2: {{}}'.format(line))
         y2 = _parse(y2, int, 'line {}: malformed y2: {{}}'.format(line))
 
+        angle = _parse(angle, float, 'line {}: malformed angle: {{}}'.format(line))
+        angleX = np.cos(angle * 2)
+        angleY = np.sin(angle * 2)
+
+        angleX = _parse(angleX, float, 'line {}: malformed angle_x: {{}}'.format(line))
+        angleY = _parse(angleY, float, 'line {}: malformed angle_y: {{}}'.format(line))
+
+        # TODO: Check if the angle is valid.
+
         # Check that the bounding box is valid.
         if x2 <= x1:
             raise ValueError('line {}: x2 ({}) must be higher than x1 ({})'.format(line, x2, x1))
@@ -95,7 +104,7 @@ def _read_annotations(csv_reader, classes):
         if class_name not in classes:
             raise ValueError('line {}: unknown class name: \'{}\' (classes: {})'.format(line, class_name, classes))
 
-        result[img_file].append({'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'class': class_name})
+        result[img_file].append({'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2, 'class': class_name, 'angleX': angleX, 'angleY': angleY})
     return result
 
 
@@ -211,7 +220,7 @@ class CSVGenerator(Generator):
         """ Load annotations for an image_index.
         """
         path        = self.image_names[image_index]
-        annotations = {'labels': np.empty((0,)), 'bboxes': np.empty((0, 4))}
+        annotations = {'labels': np.empty((0,)), 'bboxes': np.empty((0, 4)), 'angles': np.empty((0, 2))}
 
         for idx, annot in enumerate(self.image_data[path]):
             annotations['labels'] = np.concatenate((annotations['labels'], [self.name_to_label(annot['class'])]))
@@ -219,7 +228,7 @@ class CSVGenerator(Generator):
                 float(annot['x1']),
                 float(annot['y1']),
                 float(annot['x2']),
-                float(annot['y2']),
-            ]]))
+                float(annot['y2']),]]))
+            annotations['angles'] = np.concatenate((annotations['angles'], [[float(annot['angleX']),float(annot['angleY']),]]))
 
         return annotations

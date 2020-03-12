@@ -34,6 +34,7 @@ from ..utils.image import (
     resize_image,
 )
 from ..utils.transform import transform_aabb
+from ..utils.transform import transform_angle
 
 
 class Generator(keras.utils.Sequence):
@@ -152,8 +153,9 @@ class Generator(keras.utils.Sequence):
         annotations_group = [self.load_annotations(image_index) for image_index in group]
         for annotations in annotations_group:
             assert(isinstance(annotations, dict)), '\'load_annotations\' should return a list of dictionaries, received: {}'.format(type(annotations))
-            assert('labels' in annotations), '\'load_annotations\' should return a list of dictionaries that contain \'labels\' and \'bboxes\'.'
-            assert('bboxes' in annotations), '\'load_annotations\' should return a list of dictionaries that contain \'labels\' and \'bboxes\'.'
+            assert('labels' in annotations), '\'load_annotations\' should return a list of dictionaries that contain \'labels\' and \'bboxes\' and \'angles\'.'
+            assert('bboxes' in annotations), '\'load_annotations\' should return a list of dictionaries that contain \'labels\' and \'bboxes\' and \'angles\'.'
+            assert('angles' in annotations), '\'load_annotations\' should return a list of dictionaries that contain \'labels\' and \'bboxes\' and \'angles\'.'
 
         return annotations_group
 
@@ -169,16 +171,18 @@ class Generator(keras.utils.Sequence):
                 (annotations['bboxes'][:, 0] < 0) |
                 (annotations['bboxes'][:, 1] < 0) |
                 (annotations['bboxes'][:, 2] > image.shape[1]) |
-                (annotations['bboxes'][:, 3] > image.shape[0])
+                (annotations['bboxes'][:, 3] > image.shape[0]) |
+                (np.sqrt(annotations['angles'][:, 0]**2 + annotations['angles'][:, 1]**2)  > 1.0)
             )[0]
 
             # delete invalid indices
             if len(invalid_indices):
-                warnings.warn('Image {} with id {} (shape {}) contains the following invalid boxes: {}.'.format(
+                warnings.warn('Image {} with id {} (shape {}) contains the following invalid boxes {} or angles {}.'.format(
                     self.image_path(group[index]),
                     group[index],
                     image.shape,
-                    annotations['bboxes'][invalid_indices, :]
+                    annotations['bboxes'][invalid_indices, :],
+                    annotations['angles'][invalid_indices, :]
                 ))
                 for k in annotations_group[index].keys():
                     annotations_group[index][k] = np.delete(annotations[k], invalid_indices, axis=0)
@@ -222,6 +226,7 @@ class Generator(keras.utils.Sequence):
             if transform is None:
                 transform = adjust_transform_for_image(next(self.transform_generator), image, self.transform_parameters.relative_translation)
 
+            print("transform", transform)
             # apply transformation to image
             image = apply_transform(transform, image, self.transform_parameters)
 
@@ -229,7 +234,7 @@ class Generator(keras.utils.Sequence):
             annotations['bboxes'] = annotations['bboxes'].copy()
             for index in range(annotations['bboxes'].shape[0]):
                 annotations['bboxes'][index, :] = transform_aabb(transform, annotations['bboxes'][index, :])
-
+                annotations['angles'][index, :] = transform_angle(transform, annotations['angles'][index, :])
         return image, annotations
 
     def random_transform_group(self, image_group, annotations_group):
