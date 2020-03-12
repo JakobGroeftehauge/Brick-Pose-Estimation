@@ -46,7 +46,7 @@ print("angles: ", annotations_group[0]["angles"])
 
 targets = generator.compute_targets(image_group, annotations_group)
 
-angles_batch, regression_batch, labels_batch = targets
+regression_batch, labels_batch, angles_batch = targets
 print("Angle Batch", angles_batch)
 print("Regression Batch", regression_batch)
 print("Classification batch", labels_batch)

@@ -121,7 +121,7 @@ def anchor_targets_bbox(
             labels_batch[index, indices, -1]     = -1
             regression_batch[index, indices, -1] = -1
 
-    return angles_batch, regression_batch, labels_batch
+    return regression_batch, labels_batch, angles_batch
 
 
 def compute_gt_annotations(
