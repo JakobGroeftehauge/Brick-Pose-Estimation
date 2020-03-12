@@ -23,6 +23,20 @@ def colvec(*args):
     """ Create a numpy array representing a column vector. """
     return np.array([args]).T
 
+def transform_angle(transform, angle):
+    """ Apply a transformation to the angle annotations
+
+    """
+    angleX, angleY = angle
+    
+    points = transform.dot([
+        [0, angleX],
+        [0, angleY],
+        [1, 1],
+    ])
+
+    # Maybe need for normalize coordiates.
+    return[(points[0][1] - points[0][0]), (points[1][1] - points[1][0])]
 
 def transform_aabb(transform, aabb):
     """ Apply a transformation to an axis aligned bounding box.

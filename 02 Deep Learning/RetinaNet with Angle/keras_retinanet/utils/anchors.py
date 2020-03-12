@@ -85,8 +85,10 @@ def anchor_targets_bbox(
 
     batch_size = len(image_group)
 
+    angles_batch =  np.zeros((batch_size, anchors.shape[0], 2 + 1), dtype=keras.backend.floatx()) # 2+1 - Two angle values one state value
     regression_batch  = np.zeros((batch_size, anchors.shape[0], 4 + 1), dtype=keras.backend.floatx())
     labels_batch      = np.zeros((batch_size, anchors.shape[0], num_classes + 1), dtype=keras.backend.floatx())
+
 
     # compute labels and regression targets
     for index, (image, annotations) in enumerate(zip(image_group, annotations_group)):
@@ -100,7 +102,12 @@ def anchor_targets_bbox(
             regression_batch[index, ignore_indices, -1]   = -1
             regression_batch[index, positive_indices, -1] = 1
 
+            angles_batch[index, ignore_indices, -1]   = -1
+            angles_batch[index, positive_indices, -1] = 1
+
             # compute target class labels
+            #angles_batch[index, positive_indices, annotations['angles'][argmax_overlaps_inds[positive_indices]].astype(int)] = 1
+            angles_batch[index, :, :-1] = annotations['angles'][argmax_overlaps_inds, :]
             labels_batch[index, positive_indices, annotations['labels'][argmax_overlaps_inds[positive_indices]].astype(int)] = 1
 
             regression_batch[index, :, :-1] = bbox_transform(anchors, annotations['bboxes'][argmax_overlaps_inds, :])
@@ -110,10 +117,11 @@ def anchor_targets_bbox(
             anchors_centers = np.vstack([(anchors[:, 0] + anchors[:, 2]) / 2, (anchors[:, 1] + anchors[:, 3]) / 2]).T
             indices = np.logical_or(anchors_centers[:, 0] >= image.shape[1], anchors_centers[:, 1] >= image.shape[0])
 
+            angles_batch[index, indices, -1]     = -1
             labels_batch[index, indices, -1]     = -1
             regression_batch[index, indices, -1] = -1
 
-    return regression_batch, labels_batch
+    return angles_batch, regression_batch, labels_batch
 
 
 def compute_gt_annotations(

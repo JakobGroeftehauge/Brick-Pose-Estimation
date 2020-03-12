@@ -67,7 +67,7 @@ def makedirs(path):
     except OSError:
         if not os.path.isdir(path):
             raise
-        
+
 
 def model_with_weights(model, weights, skip_mismatch):
     """ Load weights for model.
@@ -533,7 +533,7 @@ def main(args=None):
     print(HPM_train_model.history['loss'])
     print(HPM_train_model.history['val_loss'])
     print_loss_to_csv(HPM_train_model.history['loss'], HPM_train_model.history['val_loss'], '', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
-    
+
     return HPM_train_model
 
 
