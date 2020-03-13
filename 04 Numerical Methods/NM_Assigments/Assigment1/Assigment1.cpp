@@ -7,7 +7,7 @@
 #include "../../utilities.h"
 using namespace std;
 
-double residual(MatDoub A, VecDoub x, VecDoub b)
+double residual(MatDoub& A, VecDoub& x, VecDoub& b)
 {
 	return (A * x - b).length() / b.length();
 }
@@ -158,7 +158,7 @@ int main() {
 	param_std(delta_x_d1_new, svd_d1_new);
 	util::print(delta_x_d1_new);
 
-	svd_d2.solve(z_d2_new, q_d2_new);
+	svd_d2_new.solve(z_d2_new, q_d2_new);
 	cout << "d2 new solution: " << endl;
 	util::print(q_d2_new);
 	cout << "d2 new residual error: " << residual(A_d2_new, q_d2_new, z_d2_new) << endl;
