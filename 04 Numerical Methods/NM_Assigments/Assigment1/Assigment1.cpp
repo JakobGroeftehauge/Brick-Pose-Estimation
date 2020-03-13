@@ -56,8 +56,8 @@ int main() {
 
 	//------------------------- CONTRUCT DESIGN MATRIX --------------------------------
 
-	VecDoub q(4), z_d1(2 * theta1_d1.size(),0.0), z_d2(2 * theta1_d2.size(),0.0);
-	MatDoub A_d1(2 * theta1_d1.size(), q.size(),0.0), A_d2(2 * theta1_d1.size(), q.size(),0.0);
+	VecDoub q_d1(4), q_d2(4), z_d1(2 * theta1_d1.size(),0.0), z_d2(2 * theta1_d2.size(),0.0);
+	MatDoub A_d1(2 * theta1_d1.size(), q_d1.size(),0.0), A_d2(2 * theta1_d1.size(), q_d2.size(),0.0);
 	build_design_matrix(A_d1, theta1_d1, theta2_d1);
 	build_design_matrix(A_d2, theta1_d2, theta2_d2);
 	build_z(z_d1, x_d1, y_d1);
@@ -78,6 +78,15 @@ int main() {
 	util::print(svd_d2.w);
 	cout << "d2 inverse condition: " << svd_d2.inv_condition() << endl;
 
+	svd_d1.solve(z_d1, q_d1);
+	cout << "d1 solution: " << endl;
+	util::print(q_d1);
+	cout << "d1 residual error: " << residual(A_d1, q_d1, z_d1) << endl;
+
+	svd_d2.solve(z_d2, q_d2);
+	cout << "d2 solution: " << endl;
+	util::print(q_d2);
+	cout << "d2 residual error: " << residual(A_d2, q_d2, z_d2) << endl;
 
 	//MatDoub A_Filip(82, 11);
 	//for (int i = 0; i < A_Filip.nrows(); i++)
