@@ -306,8 +306,8 @@ def retinanet(
         num_anchors = AnchorParameters.default.num_anchors()
 
     if submodels is None:
-        submodels = default_submodels_and_angle(num_classes, num_anchors)
-        # original: submodels = default_submodels(num_classes, num_anchors)
+        #submodels = default_submodels_and_angle(num_classes, num_anchors)
+        submodels = default_submodels(num_classes, num_anchors) #  original
 
     C3, C4, C5 = backbone_layers
 
