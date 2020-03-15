@@ -127,9 +127,9 @@ def create_models(backbone_retinanet, num_classes, weights, multi_gpu=0,
     # compile model
     training_model.compile(
         loss={
-            'angle_regression'  : losses.smooth_l1(),
             'regression'        : losses.smooth_l1(),
-            'classification'    : losses.focal()
+            'classification'    : losses.focal(),
+            'angle_regression'  : losses.smooth_l1()
         },
         optimizer=keras.optimizers.adam(lr=lr, clipnorm=0.001)
     )
@@ -447,7 +447,6 @@ def parse_args(args):
 
     return check_args(parser.parse_args(args))
 
-
 def main(args=None):
     # parse arguments
     if args is None:
@@ -500,41 +499,6 @@ def main(args=None):
 
     # print model summary
     print(model.summary())
-
-    # this lets the generator compute backbone layer shapes using the actual backbone model
-    if 'vgg' in args.backbone or 'densenet' in args.backbone:
-        train_generator.compute_shapes = make_shapes_callback(model)
-        if validation_generator:
-            validation_generator.compute_shapes = train_generator.compute_shapes
-
-    # create the callbacks
-    callbacks = create_callbacks(
-        model,
-        training_model,
-        prediction_model,
-        validation_generator,
-        args,
-    )
-
-    if not args.compute_val_loss:
-        validation_generator = None
-
-    # start training
-    HPM_train_model = training_model.fit_generator(
-        generator=train_generator,
-        steps_per_epoch=args.steps,
-        epochs=args.epochs,
-        verbose=1,
-        callbacks=callbacks,
-        workers=args.workers,
-        use_multiprocessing=args.multiprocessing,
-        max_queue_size=args.max_queue_size,
-        validation_data=validation_generator,
-        initial_epoch=args.initial_epoch
-    )
-    print(HPM_train_model.history['loss'])
-    print(HPM_train_model.history['val_loss'])
-    print_loss_to_csv(HPM_train_model.history['loss'], HPM_train_model.history['val_loss'], '', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
 
     return HPM_train_model
 
