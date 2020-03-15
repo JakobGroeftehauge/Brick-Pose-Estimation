@@ -137,9 +137,26 @@ def angle_regression_model(num_values, num_anchors, pyramid_feature_size=256, re
     Returns
         A keras.models.Model that predicts regression values for each anchor.
     """
+    options = {
+        'kernel_size'        : 3,
+        'strides'            : 1,
+        'padding'            : 'same',
+        'kernel_initializer' : keras.initializers.normal(mean=0.0, stddev=0.01, seed=None),
+        'bias_initializer'   : 'zeros'
+    }
+
+
+    if keras.backend.image_data_format() == 'channels_first':
+        inputs  = keras.layers.Input(shape=(pyramid_feature_size, None, None))
+    else:
+        inputs  = keras.layers.Input(shape=(None, None, pyramid_feature_size))
+    outputs = keras.layers.Conv2D(num_anchors * num_values, name = 'dense_angle_net', **options)(inputs)
+    if keras.backend.image_data_format() == 'channels_first':
+        outputs = keras.layers.Permute((2, 3, 1), name='angle_regression_permute')(outputs)
+    outputs = keras.layers.Reshape((-1, num_values), name = 'dense_angle_reshape')(outputs)
 
     return default_regression_model(num_values, num_anchors, name=name)
-
+    #return keras.models.Model(inputs=inputs, outputs = outputs, name = 'angle_regression_submodel')
 
 def __create_pyramid_features(C3, C4, C5, feature_size=256):
     """ Creates the FPN layers on top of the backbone features.
@@ -208,13 +225,14 @@ def default_submodels_and_angle(num_classes, num_anchors):
     Returns
         A list of tuple, where the first element is the name of the submodel and the second element is the submodel itself.
     """
+
     tmp_models = [
         ('regression', default_regression_model(4, num_anchors)),
         ('classification', default_classification_model(num_classes, num_anchors)),
         ('angle_regression', angle_regression_model(2, num_anchors))
     ]
 
-    return [tmp_models[0], tmp_models[1]]
+    return tmp_models #[tmp_models[0], tmp_models[1]]
 
 
 def __build_model_pyramid(name, model, features):
