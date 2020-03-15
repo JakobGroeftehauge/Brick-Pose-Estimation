@@ -214,7 +214,7 @@ def default_submodels_and_angle(num_classes, num_anchors):
         ('angle_regression', angle_regression_model(2, num_anchors))
     ]
 
-    return [tmp_models[0], tmp_models[1]]
+    return [tmp_models[2], tmp_models[1]]
 
 
 def __build_model_pyramid(name, model, features):
