@@ -59,6 +59,15 @@ def print_loss_to_csv(train_loss, val_loss, path, name='losses.csv'):
         for i in range(len(train_loss)):
             file_writer.writerow([train_loss[i],val_loss[i]])
 
+def print_history_to_csv(history, path, name='losses.csv'):
+    with open(path + name, 'w', newline='') as csv_file:
+        file_writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        history_keys = list(history.keys())
+        file_writer.writerow(history_keys)
+        for i in range(len(history[history_keys[0]])):
+            file_writer.writerow([history[key][i] for key in history_keys])
+
+
 def makedirs(path):
     # Intended behavior: try to create the directory,
     # pass if the directory exists already, fails otherwise.
@@ -533,9 +542,9 @@ def main(args=None):
         validation_data=validation_generator,
         initial_epoch=args.initial_epoch
     )
-    print(HPM_train_model.history['loss'])
-    print(HPM_train_model.history['val_loss'])
-    print_loss_to_csv(HPM_train_model.history['loss'], HPM_train_model.history['val_loss'], '', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
+    print(HPM_train_model)
+    print(HPM_train_model.history)
+    print_history_to_csv(HPM_train_model.history, '', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
 
     return HPM_train_model
 
