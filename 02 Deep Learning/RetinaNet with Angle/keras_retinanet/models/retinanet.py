@@ -208,11 +208,13 @@ def default_submodels_and_angle(num_classes, num_anchors):
     Returns
         A list of tuple, where the first element is the name of the submodel and the second element is the submodel itself.
     """
-    return [
+    tmp_models = [
         ('regression', default_regression_model(4, num_anchors)),
         ('classification', default_classification_model(num_classes, num_anchors)),
         ('angle_regression', angle_regression_model(2, num_anchors))
     ]
+
+    return [tmp_models[0], tmp_models[1]]
 
 
 def __build_model_pyramid(name, model, features):
@@ -306,9 +308,9 @@ def retinanet(
         num_anchors = AnchorParameters.default.num_anchors()
 
     if submodels is None:
-        #submodels = default_submodels_and_angle(num_classes, num_anchors)
+        submodels = default_submodels_and_angle(num_classes, num_anchors)
         #submodels = submodels[0:1]
-        submodels = default_submodels(num_classes, num_anchors) #  original
+        #submodels = default_submodels(num_classes, num_anchors) #  original
 
     C3, C4, C5 = backbone_layers
 
