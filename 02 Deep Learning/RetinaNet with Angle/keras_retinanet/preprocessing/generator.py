@@ -226,7 +226,7 @@ class Generator(keras.utils.Sequence):
             if transform is None:
                 transform = adjust_transform_for_image(next(self.transform_generator), image, self.transform_parameters.relative_translation)
 
-            print("transform", transform)
+            #print("transform", transform)
             # apply transformation to image
             image = apply_transform(transform, image, self.transform_parameters)
 
