@@ -363,6 +363,9 @@ class Generator(keras.utils.Sequence):
         # compute network targets
         targets = self.compute_targets(image_group, annotations_group)
 
+        regression_batch, labels_batch, angles_batch = targets
+        targets = (regression_batch, labels_batch)
+
         return inputs, targets
 
     def __len__(self):
