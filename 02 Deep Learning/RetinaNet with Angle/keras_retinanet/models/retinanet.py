@@ -209,12 +209,12 @@ def default_submodels_and_angle(num_classes, num_anchors):
         A list of tuple, where the first element is the name of the submodel and the second element is the submodel itself.
     """
     tmp_models = [
-        ('regression2', default_regression_model(4, num_anchors)),
+        ('regression', default_regression_model(4, num_anchors)),
         ('classification', default_classification_model(num_classes, num_anchors)),
-        ('regression', angle_regression_model(2, num_anchors))
+        ('angle_regression', angle_regression_model(2, num_anchors))
     ]
 
-    return [tmp_models[2], tmp_models[1]]
+    return [tmp_models[0], tmp_models[1]]
 
 
 def __build_model_pyramid(name, model, features):
