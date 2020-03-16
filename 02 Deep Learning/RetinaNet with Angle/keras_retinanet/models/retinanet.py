@@ -140,6 +140,7 @@ def angle_regression_model(num_values, num_anchors, pyramid_feature_size=256, re
     # All new conv layers except the final one in the
     # RetinaNet (classification) subnets are initialized
     # with bias b = 0 and a Gaussian weight fill with stddev = 0.01.
+    """
     options = {
         'kernel_size'        : 3,
         'strides'            : 1,
@@ -166,9 +167,9 @@ def angle_regression_model(num_values, num_anchors, pyramid_feature_size=256, re
         outputs = keras.layers.Permute((2, 3, 1), name='pyramid_regression_permute')(outputs)
     outputs = keras.layers.Reshape((-1, num_values), name='pyramid_regression_reshape')(outputs)
 
-    return keras.models.Model(inputs=inputs, outputs=outputs, name=name)
-
-    #return default_regression_model(num_values, num_anchors, name=name)
+    #return keras.models.Model(inputs=inputs, outputs=outputs, name=name)
+"""
+    return default_regression_model(num_values, num_anchors, name=name)
     #return keras.models.Model(inputs=inputs, outputs = outputs, name = 'angle_regression_submodel')
 
 def __create_pyramid_features(C3, C4, C5, feature_size=256):
