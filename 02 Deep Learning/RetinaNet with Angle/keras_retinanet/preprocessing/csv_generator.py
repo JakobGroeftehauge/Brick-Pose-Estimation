@@ -86,8 +86,8 @@ def _read_annotations(csv_reader, classes):
         y2 = _parse(y2, int, 'line {}: malformed y2: {{}}'.format(line))
 
         angle = _parse(angle, float, 'line {}: malformed angle: {{}}'.format(line))
-        angleX = np.cos(angle * 2)
-        angleY = np.sin(angle * 2)
+        angleX = np.cos(angle/180 *np.pi * 2)
+        angleY = np.sin(angle/180 *np.pi * 2)
 
         angleX = _parse(angleX, float, 'line {}: malformed angle_x: {{}}'.format(line))
         angleY = _parse(angleY, float, 'line {}: malformed angle_y: {{}}'.format(line))
