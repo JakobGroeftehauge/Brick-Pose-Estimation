@@ -137,7 +137,9 @@ def angle_regression_model(num_values, num_anchors, pyramid_feature_size=256, re
     Returns
         A keras.models.Model that predicts regression values for each anchor.
     """
-    """
+    # All new conv layers except the final one in the
+    # RetinaNet (classification) subnets are initialized
+    # with bias b = 0 and a Gaussian weight fill with stddev = 0.01.
     options = {
         'kernel_size'        : 3,
         'strides'            : 1,
@@ -146,17 +148,27 @@ def angle_regression_model(num_values, num_anchors, pyramid_feature_size=256, re
         'bias_initializer'   : 'zeros'
     }
 
-
     if keras.backend.image_data_format() == 'channels_first':
         inputs  = keras.layers.Input(shape=(pyramid_feature_size, None, None))
     else:
         inputs  = keras.layers.Input(shape=(None, None, pyramid_feature_size))
-    outputs = keras.layers.Conv2D(num_anchors * num_values, name = 'dense_angle_net', **options)(inputs)
+    outputs = inputs
+    for i in range(4): # the names used here are not unique, however this may not be an issue
+        outputs = keras.layers.Conv2D(
+            filters=regression_feature_size,
+            activation='relu',
+            name='pyramid_regression_{}'.format(i),
+            **options
+        )(outputs)
+
+    outputs = keras.layers.Conv2D(num_anchors * num_values, activation = 'sigmoid', name='pyramid_regression', **options)(outputs)
     if keras.backend.image_data_format() == 'channels_first':
-        outputs = keras.layers.Permute((2, 3, 1), name='angle_regression_permute')(outputs)
-    outputs = keras.layers.Reshape((-1, num_values), name = 'dense_angle_reshape')(outputs)
-"""
-    return default_regression_model(num_values, num_anchors, name=name)
+        outputs = keras.layers.Permute((2, 3, 1), name='pyramid_regression_permute')(outputs)
+    outputs = keras.layers.Reshape((-1, num_values), name='pyramid_regression_reshape')(outputs)
+
+    return keras.models.Model(inputs=inputs, outputs=outputs, name=name)
+
+    #return default_regression_model(num_values, num_anchors, name=name)
     #return keras.models.Model(inputs=inputs, outputs = outputs, name = 'angle_regression_submodel')
 
 def __create_pyramid_features(C3, C4, C5, feature_size=256):
