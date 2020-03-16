@@ -54,3 +54,5 @@ print(angles_batch.shape)
 print(regression_batch.shape)
 print(labels_batch.shape)
 print(sum(labels_batch[0, :, 0]))
+
+print(angles_batch[:20])
