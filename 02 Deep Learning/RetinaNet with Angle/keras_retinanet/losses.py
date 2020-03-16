@@ -210,11 +210,10 @@ def smooth_l1_norm_penalized(sigma=3.0):
             0.5 * sigma_squared * keras.backend.pow(regression_diff, 2),
             regression_diff - 0.5 / sigma_squared
         )
-        regression_loss = regression_loss + keras.backend.pow((1-lengths),2)
-
+        
         # compute the normalizer: the number of positive anchors
         normalizer = keras.backend.maximum(1, keras.backend.shape(indices)[0])
         normalizer = keras.backend.cast(normalizer, dtype=keras.backend.floatx())
-        return keras.backend.sum(regression_loss) / normalizer
+        return (keras.backend.sum(regression_loss) + keras.backend.sum(keras.backend.pow((1-lengths),2)))  / normalizer
 
     return _smooth_l1
