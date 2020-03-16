@@ -147,7 +147,7 @@ def smooth_l1_angle(sigma=3.0):
         regression        = backend.gather_nd(regression, indices)
         lengths           = backend.norm(keras.backend.cast(regression, dtype=keras.backend.floatx()), axis = 1)
         regression        = backend.divide(regression,backend.transpose([lengths,lengths]))
-    
+
         regression_target = backend.gather_nd(regression_target, indices)
 
         # compute smooth L1 loss
@@ -160,6 +160,57 @@ def smooth_l1_angle(sigma=3.0):
             0.5 * sigma_squared * keras.backend.pow(regression_diff, 2),
             regression_diff - 0.5 / sigma_squared
         )
+
+        # compute the normalizer: the number of positive anchors
+        normalizer = keras.backend.maximum(1, keras.backend.shape(indices)[0])
+        normalizer = keras.backend.cast(normalizer, dtype=keras.backend.floatx())
+        return keras.backend.sum(regression_loss) / normalizer
+
+    return _smooth_l1
+
+def smooth_l1_norm_penalized(sigma=3.0):
+    """ Create a smooth L1 loss functor.
+
+    Args
+        sigma: This argument defines the point where the loss changes from L2 to L1.
+
+    Returns
+        A functor for computing the smooth L1 loss given target data and predicted data.
+    """
+    sigma_squared = sigma ** 2
+
+    def _smooth_l1(y_true, y_pred):
+        """ Compute the smooth L1 loss of y_pred w.r.t. y_true.
+
+        Args
+            y_true: Tensor from the generator of shape (B, N, 5). The last value for each box is the state of the anchor (ignore, negative, positive).
+            y_pred: Tensor from the network of shape (B, N, 4).
+
+        Returns
+            The smooth L1 loss of y_pred w.r.t. y_true.
+        """
+        # separate target and state
+        regression        = y_pred
+        regression_target = y_true[:, :, :-1]
+        anchor_state      = y_true[:, :, -1]
+
+        # filter out "ignore" anchors
+        indices           = backend.where(keras.backend.equal(anchor_state, 1))
+        regression        = backend.gather_nd(regression, indices)
+        lengths           = backend.norm(keras.backend.cast(regression, dtype=keras.backend.floatx()), axis = 1)
+        regression_target = backend.gather_nd(regression_target, indices)
+
+        # compute smooth L1 loss
+        # f(x) = 0.5 * (sigma * x)^2          if |x| < 1 / sigma / sigma
+        #        |x| - 0.5 / sigma / sigma    otherwise
+        regression_diff = regression - regression_target
+        regression_diff = keras.backend.abs(regression_diff)
+        regression_loss = backend.where(
+            keras.backend.less(regression_diff, 1.0 / sigma_squared),
+            0.5 * sigma_squared * keras.backend.pow(regression_diff, 2),
+            regression_diff - 0.5 / sigma_squared
+        )
+        regression_loss = regression_loss + keras.backend.pow((1-lengths),2)
 
         # compute the normalizer: the number of positive anchors
         normalizer = keras.backend.maximum(1, keras.backend.shape(indices)[0])
