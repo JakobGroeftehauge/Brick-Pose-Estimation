@@ -108,3 +108,12 @@ def unstack(*args, **kwargs):
     """ See https://www.tensorflow.org/api_docs/python/tf/unstack .
     """
     return tensorflow.unstack(*args, **kwargs)
+
+def norm(*args, **kwargs):
+    return tensorflow.norm(*args, **kwargs)
+
+def divide(*args, **kwargs):
+    return tensorflow.math.divide(*args, **kwargs)
+
+def transpose(*args, **kwargs):
+    return tensorflow.transpose(*args, **kwargs)
