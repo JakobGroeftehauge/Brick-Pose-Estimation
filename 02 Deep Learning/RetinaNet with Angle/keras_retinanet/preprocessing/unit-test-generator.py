@@ -11,7 +11,7 @@ __package__ = "keras_retinanet.preprocessing"
 from .csv_generator import CSVGenerator
 from ..utils.transform import random_transform_generator
 
-transform_generator = random_transform_generator(flip_x_chance=1.0)
+transform_generator = random_transform_generator(flip_x_chance=0.0)
 
 # Create train CSV generator
 class_path = 'keras_retinanet/preprocessing/Test-files/classes.csv'
@@ -27,23 +27,23 @@ image_group       = generator.load_image_group(group)
 annotations_group = generator.load_annotations_group(group)
 
 #print(annotations_group)
-print("bboxes: ", annotations_group[0]["bboxes"])
-print("labels: ", annotations_group[0]["labels"])
-print("angles: ", annotations_group[0]["angles"])
+#print("bboxes: ", annotations_group[0]["bboxes"])
+#print("labels: ", annotations_group[0]["labels"])
+#print("angles: ", annotations_group[0]["angles"])
 
 # check validity of annotations
-print("validation of annotations - No output is prefered")
+#print("validation of annotations - No output is prefered")
 image_group, annotations_group = generator.filter_annotations(image_group, annotations_group, group)
 
 # randomly transform data
-print("transform data")
+#print("transform data")
 image_group, annotations_group = generator.random_transform_group(image_group, annotations_group)
 
 #print(annotations_group)
-print("bboxes: ", annotations_group[0]["bboxes"])
-print("labels: ", annotations_group[0]["labels"])
+#print("bboxes: ", annotations_group[0]["bboxes"])
+#print("labels: ", annotations_group[0]["labels"])
 print("angles: ", annotations_group[0]["angles"])
-
+'''
 targets = generator.compute_targets(image_group, annotations_group)
 
 regression_batch, labels_batch, angles_batch = targets
@@ -54,5 +54,6 @@ print(angles_batch.shape)
 print(regression_batch.shape)
 print(labels_batch.shape)
 print(sum(labels_batch[0, :, 0]))
+'''
 
-print(angles_batch[:20])
+#print(angles_batch[:20])
