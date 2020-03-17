@@ -50,7 +50,6 @@ def transform_angle(transform, angle):
 
     # ensure that the vector is in the right half plane
     if angleX < 0:
-        print(angleX)
         angleX = -angleX
         angleY = -angleY
 
