@@ -28,15 +28,41 @@ def transform_angle(transform, angle):
 
     """
     angleX, angleY = angle
-    
+    # get angle from vector point
+    calc_angle = np.arctan2(angleY,angleX)
+
+    # divide angle by 2 to get original annotated angle
+    calc_angle = calc_angle/2
+    # get the vector associated with original annotation
+    angleX = np.cos(calc_angle)
+    angleY = np.sin(calc_angle)
+
+    # transform the vector associated with original annotation vector
     points = transform.dot([
         [0, angleX],
         [0, angleY],
         [1, 1],
     ])
 
+    # reconstruct the vector after transformation
+    angleX = points[0][1] - points[0][0]
+    angleY = points[1][1] - points[1][0]
+
+    # ensure that the vector is in the right half plane
+    if angleX < 0:
+        print(angleX)
+        angleX = -angleX
+        angleY = -angleY
+
+    # find angle of new vector and multiply with 2
+    calc_angle = np.arctan2(angleY,angleX) * 2
+    # find targets based on angle
+    angleX = np.cos(calc_angle)
+    angleY = np.sin(calc_angle)
+
     # Maybe need for normalize coordiates.
-    return[(points[0][1] - points[0][0]), (points[1][1] - points[1][0])]
+    #return[(points[0][1] - points[0][0]), (points[1][1] - points[1][0])]
+    return [angleX,angleY]
 
 def transform_aabb(transform, aabb):
     """ Apply a transformation to an axis aligned bounding box.
