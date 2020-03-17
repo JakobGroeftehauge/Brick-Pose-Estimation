@@ -11,7 +11,7 @@ __package__ = "keras_retinanet.preprocessing"
 from .csv_generator import CSVGenerator
 from ..utils.transform import random_transform_generator
 
-transform_generator = random_transform_generator(flip_x_chance=0.0)
+transform_generator = random_transform_generator(flip_x_chance=1.0)
 
 # Create train CSV generator
 class_path = 'keras_retinanet/preprocessing/Test-files/classes.csv'

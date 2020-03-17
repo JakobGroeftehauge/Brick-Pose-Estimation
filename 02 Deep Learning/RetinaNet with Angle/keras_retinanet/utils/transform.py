@@ -29,7 +29,8 @@ def transform_angle(transform, angle):
     """
     angleX, angleY = angle
     # get angle from vector point
-    calc_angle = np.arctan2(angleX,angleY)
+    calc_angle = np.arctan2(angleY,angleX)
+
     # divide angle by 2 to get original annotated angle
     calc_angle = calc_angle/2
     # get the vector associated with original annotation
@@ -49,11 +50,12 @@ def transform_angle(transform, angle):
 
     # ensure that the vector is in the right half plane
     if angleX < 0:
+        print(angleX)
         angleX = -angleX
         angleY = -angleY
 
     # find angle of new vector and multiply with 2
-    calc_angle = np.arctan2(angleX,angleY) * 2
+    calc_angle = np.arctan2(angleY,angleX) * 2
     # find targets based on angle
     angleX = np.cos(calc_angle)
     angleY = np.sin(calc_angle)
