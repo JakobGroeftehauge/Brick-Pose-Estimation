@@ -65,6 +65,7 @@ def transform_angle(transform, angle):
 
 def transform_aabb(transform, aabb):
     """ Apply a transformation to an axis aligned bounding box.
+    NOTE: Description is outdated
 
     The result is a new AABB in the same coordinate system as the original AABB.
     The new AABB contains all corner points of the original AABB after applying the given transformation.
@@ -78,14 +79,13 @@ def transform_aabb(transform, aabb):
     Returns
         The new AABB as tuple (x1, y1, x2, y2)
     """
-    x1, y1, x2, y2 = aabb
+    x1, y1, x2, y2, x3, y3, x4, y4 = aabb
     # Transform all 4 corners of the AABB.
     points = transform.dot([
-        [x1, x2, x1, x2],
-        [y1, y2, y2, y1],
+        [x1, x2, x3, x4],
+        [y1, y2, y3, y4],
         [1,  1,  1,  1 ],
     ])
-
     # Extract the min and max corners again.
     min_corner = points.min(axis=1)
     max_corner = points.max(axis=1)

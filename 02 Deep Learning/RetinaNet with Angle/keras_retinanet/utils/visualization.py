@@ -19,6 +19,18 @@ import numpy as np
 
 from .colors import label_color
 
+def draw_vector(img, x, y, box):
+    length = np.linalg.norm([x,y])*25
+    angle = np.arctan2(y,x)
+    angle = angle/2
+    center_x = (box[0]+box[2])/2
+    center_y = (box[1]+box[3])/2
+    pt1_x = -length*np.cos(angle)+center_x
+    pt1_y = -length*np.sin(angle)+center_y
+    pt2_x = length*np.cos(angle)+center_x
+    pt2_y = length*np.sin(angle)+center_y
+    cv2.line(img, (int(pt1_x),int(pt1_y)), (int(pt2_x), int(pt2_y)), color = (0, 255,255), thickness = 2, lineType = 2)
+    return
 
 def draw_box(image, box, color, thickness=2):
     """ Draws a box on an image with a given color.

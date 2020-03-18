@@ -166,12 +166,24 @@ class Generator(keras.utils.Sequence):
         for index, (image, annotations) in enumerate(zip(image_group, annotations_group)):
             # test x2 < x1 | y2 < y1 | x1 < 0 | y1 < 0 | x2 <= 0 | y2 <= 0 | x2 >= image.shape[1] | y2 >= image.shape[0]
             invalid_indices = np.where(
-                (annotations['bboxes'][:, 2] <= annotations['bboxes'][:, 0]) |
-                (annotations['bboxes'][:, 3] <= annotations['bboxes'][:, 1]) |
+                #(annotations['bboxes'][:, 2] <= annotations['bboxes'][:, 0]) |
+                #(annotations['bboxes'][:, 3] <= annotations['bboxes'][:, 1]) |
                 (annotations['bboxes'][:, 0] < 0) |
                 (annotations['bboxes'][:, 1] < 0) |
+                (annotations['bboxes'][:, 2] < 0) |
+                (annotations['bboxes'][:, 3] < 0) |
+                (annotations['bboxes'][:, 4] < 0) |
+                (annotations['bboxes'][:, 5] < 0) |
+                (annotations['bboxes'][:, 6] < 0) |
+                (annotations['bboxes'][:, 7] < 0) |
+                (annotations['bboxes'][:, 0] > image.shape[1]) |
+                (annotations['bboxes'][:, 1] > image.shape[0]) |
                 (annotations['bboxes'][:, 2] > image.shape[1]) |
                 (annotations['bboxes'][:, 3] > image.shape[0]) |
+                (annotations['bboxes'][:, 4] > image.shape[1]) |
+                (annotations['bboxes'][:, 5] > image.shape[0]) |
+                (annotations['bboxes'][:, 6] > image.shape[1]) |
+                (annotations['bboxes'][:, 7] > image.shape[0]) |
                 (np.sqrt(annotations['angles'][:, 0]**2 + annotations['angles'][:, 1]**2)  > 1.0)
             )[0]
 
@@ -232,9 +244,12 @@ class Generator(keras.utils.Sequence):
 
             # Transform the bounding boxes in the annotations.
             annotations['bboxes'] = annotations['bboxes'].copy()
+            anno = {'bboxes': np.empty((annotations['bboxes'].shape[0], 4))}
             for index in range(annotations['bboxes'].shape[0]):
-                annotations['bboxes'][index, :] = transform_aabb(transform, annotations['bboxes'][index, :])
-                annotations['angles'][index, :] = transform_angle(transform, annotations['angles'][index, :])
+                #annotations['bboxes'][index,:] = transform_aabb(transform, annotations['bboxes'][index, :])
+                anno['bboxes'][index,:] = transform_aabb(transform, annotations['bboxes'][index, :])
+                annotations['angles'][index,:] = transform_angle(transform, annotations['angles'][index, :])
+            annotations['bboxes'] = anno['bboxes']
         return image, annotations
 
     def random_transform_group(self, image_group, annotations_group):
