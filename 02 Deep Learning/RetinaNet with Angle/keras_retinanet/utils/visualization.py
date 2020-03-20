@@ -22,7 +22,7 @@ from .colors import label_color
 def draw_vector(img, x, y, box):
     length = np.linalg.norm([x,y])*25
     angle = np.arctan2(y,x)
-    angle = angle/2
+    angle = angle
     center_x = (box[0]+box[2])/2
     center_y = (box[1]+box[3])/2
     pt1_x = -length*np.cos(angle)+center_x

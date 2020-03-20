@@ -14,19 +14,19 @@ from ..utils.transform import random_transform_generator
 from ..utils.visualization import draw_box, draw_vector
 
 
-#transform_generator = random_transform_generator(flip_x_chance=0)
-transform_generator = random_transform_generator(
-            min_rotation=-0.5,
-            max_rotation=0.5,
-            min_translation=(-0.1, -0.1),
-            max_translation=(0.1, 0.1),
-            min_shear= 0.0, # -0.1,
-            max_shear= 0.0, #0.1,
-            min_scaling=(0.9, 0.9),
-            max_scaling=(1.1, 1.1),
-            flip_x_chance=0,
-            flip_y_chance=0,
-        )
+transform_generator = random_transform_generator(flip_x_chance=0)
+# transform_generator = random_transform_generator(
+#             min_rotation=-0.5,
+#             max_rotation=0.5,
+#             min_translation=(-0.1, -0.1),
+#             max_translation=(0.1, 0.1),
+#             min_shear= 0.0, # -0.1,
+#             max_shear= 0.0, #0.1,
+#             min_scaling=(0.9, 0.9),
+#             max_scaling=(1.1, 1.1),
+#             flip_x_chance=0,
+#             flip_y_chance=0,
+#         )
 
 # Create train CSV generator
 class_path = 'keras_retinanet/preprocessing/Test-files/classes.csv'
