@@ -254,7 +254,7 @@ class Generator(keras.utils.Sequence):
             annotations['bboxes'] = anno['bboxes']
             annotations['angles'] = anno['angles']
         else: #if no tranform exist. convert rotated bounding boxes to axis alligned bounding boxes. dot with identity matrix.
-            anno = {'bboxes': np.empty((annotations['bboxes'].shape[0], 4))}
+            anno = {'bboxes': np.empty((annotations['bboxes'].shape[0], 4)), 'angles': np.empty((annotations['angles'].shape[0], 1))}
             for index in range(annotations['bboxes'].shape[0]):
                 anno['bboxes'][index,:] = transform_aabb(np.asarray([[1,0,0],[0,1,0],[0,0,1]]), annotations['bboxes'][index, :])
                 anno['angles'][index,:] = transform_angle(np.asarray([[1,0,0],[0,1,0],[0,0,1]]), annotations['angles'][index, :])
