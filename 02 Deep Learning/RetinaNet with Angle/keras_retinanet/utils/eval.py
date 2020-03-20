@@ -141,6 +141,9 @@ def _get_annotations(generator):
         annotations = generator.load_annotations(i)
 
         #TODO: fix for mAP
+        # Suggestion, when loading the annotations, load the eight values into a different entry in the dictionary
+        #  - make sure that what is stored in 'bbox' is always an aligned bbox.
+        #  - only in the case of the transform, the other entry will be used to replace the bbox
 
         # copy detections to all_annotations
         for label in range(generator.num_classes()):
