@@ -53,8 +53,8 @@ def transform_angle(transform, angle):
         angleX = -angleX
         angleY = -angleY
 
-    # find angle of new vector and multiply with 2
-    calc_angle = np.arctan2(angleY,angleX) * 2
+    # find angle of new vector and multiply with 2 EDIT: for Vector_Only_Right_Half_Plane, multiplication is removed.
+    calc_angle = np.arctan2(angleY,angleX) #* 2
     # find targets based on angle
     angleX = np.cos(calc_angle)
     angleY = np.sin(calc_angle)
