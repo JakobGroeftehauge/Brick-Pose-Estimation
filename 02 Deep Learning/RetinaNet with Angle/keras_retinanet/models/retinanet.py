@@ -75,8 +75,10 @@ def default_classification_model(
         outputs = keras.layers.Permute((2, 3, 1), name='pyramid_classification_permute')(outputs)
     outputs = keras.layers.Reshape((-1, num_classes), name='pyramid_classification_reshape')(outputs)
     outputs = keras.layers.Activation('sigmoid', name='pyramid_classification_sigmoid')(outputs)
+    ret_model = keras.models.Model(inputs=inputs, outputs=outputs, name=name)
+    #print(ret_model.summary())
 
-    return keras.models.Model(inputs=inputs, outputs=outputs, name=name)
+    return ret_model
 
 
 def default_regression_model(num_values, num_anchors, pyramid_feature_size=256, regression_feature_size=256, name='regression_submodel'):
@@ -167,7 +169,9 @@ def angle_regression_model(num_values, num_anchors, pyramid_feature_size=256, re
         outputs = keras.layers.Permute((2, 3, 1), name='pyramid_regression_permute')(outputs)
     outputs = keras.layers.Reshape((-1, num_values), name='pyramid_regression_reshape')(outputs)
 
-    return keras.models.Model(inputs=inputs, outputs=outputs, name=name)
+    ret_model = keras.models.Model(inputs=inputs, outputs=outputs, name=name)
+    #print("angle net summary: ", ret_model.summary())
+    return ret_model
 
     #return default_regression_model(num_values, num_anchors, name=name)
     #return keras.models.Model(inputs=inputs, outputs = outputs, name = 'angle_regression_submodel')
@@ -260,6 +264,8 @@ def __build_model_pyramid(name, model, features):
     Returns
         A tensor containing the response from the submodel on the FPN features.
     """
+    # generates a list containing models with each feature pyramid level as input.
+    # the outputs of each model are then concatenated.
     return keras.layers.Concatenate(axis=1, name=name)([model(f) for f in features])
 
 
@@ -347,10 +353,10 @@ def retinanet(
     C3, C4, C5 = backbone_layers
 
     # compute pyramid features as per https://arxiv.org/abs/1708.02002
-    features = create_pyramid_features(C3, C4, C5)
+    features = create_pyramid_features(C3, C4, C5) # features contains [P3, P4, P5, P6, P7]
 
     # for all pyramid levels, run available submodels
-    pyramids = __build_pyramid(submodels, features)
+    pyramids = __build_pyramid(submodels, features) # returns a list of submodels, in our case 3, including the angle estimation
 
     return keras.models.Model(inputs=inputs, outputs=pyramids, name=name)
 

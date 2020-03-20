@@ -10,8 +10,8 @@ from . import retinanet
 from . import resnet
 
 
-model = retinanet.default_submodels_and_angle(1, 300)
-print(model)
+#model = retinanet.default_submodels_and_angle(1, 300)
+#print(model)
 
 retinanet_model = resnet.resnet_retinanet(1)
 print(retinanet_model.summary())

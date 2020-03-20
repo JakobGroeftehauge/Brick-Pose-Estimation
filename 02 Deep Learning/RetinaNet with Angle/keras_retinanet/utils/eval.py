@@ -140,6 +140,8 @@ def _get_annotations(generator):
         # load the annotations
         annotations = generator.load_annotations(i)
 
+        #TODO: fix for mAP
+
         # copy detections to all_annotations
         for label in range(generator.num_classes()):
             if not generator.has_label(label):

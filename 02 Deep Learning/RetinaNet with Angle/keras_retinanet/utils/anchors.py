@@ -272,8 +272,8 @@ def shift(shape, stride, anchors):
     # cell K shifts (K, 1, 4) to get
     # shift anchors (K, A, 4)
     # reshape to (K*A, 4) shifted anchors
-    A = anchors.shape[0]
-    K = shifts.shape[0]
+    A = anchors.shape[0] # number of anchors
+    K = shifts.shape[0] # number og shifts to make
     all_anchors = (anchors.reshape((1, A, 4)) + shifts.reshape((1, K, 4)).transpose((1, 0, 2)))
     all_anchors = all_anchors.reshape((K * A, 4))
 
