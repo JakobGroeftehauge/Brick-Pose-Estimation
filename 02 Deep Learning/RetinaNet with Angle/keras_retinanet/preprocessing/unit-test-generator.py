@@ -70,7 +70,7 @@ for box, angle in zip(annotations_group[0]["bboxes"],annotations_group[0]["angle
     # scores are sorted so we can break
     b = box.astype(int)
     draw_box(draw, b, color=(0,0,255))
-    draw_vector(draw, angle[0], angle[1],box)
+    draw_vector(draw, angle, box)
 
 cv2.imshow("test", draw)
 cv2.waitKey(0)

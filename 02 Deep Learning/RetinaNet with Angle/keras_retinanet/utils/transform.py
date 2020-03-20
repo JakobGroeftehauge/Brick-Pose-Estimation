@@ -54,14 +54,13 @@ def transform_angle(transform, angle):
         angleY = -angleY
 
     # find angle of new vector and multiply with 2
-    calc_angle = np.arctan2(angleY,angleX) * 2
+    calc_angle = np.arctan2(angleY,angleX) #* 2
     # find targets based on angle
     angleX = np.cos(calc_angle)
     angleY = np.sin(calc_angle)
 
-    # Maybe need for normalize coordiates.
-    #return[(points[0][1] - points[0][0]), (points[1][1] - points[1][0])]
-    return [angleX,angleY]
+    # For Regular_Angle, only return the angle value.
+    return calc_angle #[angleX,angleY]
 
 def transform_aabb(transform, aabb):
     """ Apply a transformation to an axis aligned bounding box.

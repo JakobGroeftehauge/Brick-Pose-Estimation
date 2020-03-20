@@ -244,16 +244,21 @@ class Generator(keras.utils.Sequence):
 
             # Transform the bounding boxes in the annotations.
             annotations['bboxes'] = annotations['bboxes'].copy()
-            anno = {'bboxes': np.empty((annotations['bboxes'].shape[0], 4))}
+            # this is a mess. Somewhat comprehensive restructure is needed in order to clean up
+            # first create placeholder with the actual correct sizes
+            anno = {'bboxes': np.empty((annotations['bboxes'].shape[0], 4)), 'angles': np.empty((annotations['angles'].shape[0], 1))}
             for index in range(annotations['bboxes'].shape[0]):
                 #annotations['bboxes'][index,:] = transform_aabb(transform, annotations['bboxes'][index, :])
                 anno['bboxes'][index,:] = transform_aabb(transform, annotations['bboxes'][index, :])
-                annotations['angles'][index,:] = transform_angle(transform, annotations['angles'][index, :])
+                anno['angles'][index,:] = transform_angle(transform, annotations['angles'][index, :])
             annotations['bboxes'] = anno['bboxes']
+            annotations['angles'] = anno['angles']
         else: #if no tranform exist. convert rotated bounding boxes to axis alligned bounding boxes. dot with identity matrix.
             anno = {'bboxes': np.empty((annotations['bboxes'].shape[0], 4))}
             for index in range(annotations['bboxes'].shape[0]):
                 anno['bboxes'][index,:] = transform_aabb(np.asarray([[1,0,0],[0,1,0],[0,0,1]]), annotations['bboxes'][index, :])
+                anno['angles'][index,:] = transform_aabb(np.asarray([[1,0,0],[0,1,0],[0,0,1]]), annotations['angles'][index, :])
+            annotations['angles'] = anno['angles']
             annotations['bboxes'] = anno['bboxes']
         return image, annotations
 
