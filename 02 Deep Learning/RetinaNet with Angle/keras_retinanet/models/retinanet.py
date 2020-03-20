@@ -243,11 +243,11 @@ def default_submodels_and_angle(num_classes, num_anchors):
     Returns
         A list of tuple, where the first element is the name of the submodel and the second element is the submodel itself.
     """
-
+    # number of values for angle regression changed to 1 to only output a single value, namely the angle. 
     tmp_models = [
         ('regression', default_regression_model(4, num_anchors)),
         ('classification', default_classification_model(num_classes, num_anchors)),
-        ('angle_regression', angle_regression_model(2, num_anchors))
+        ('angle_regression', angle_regression_model(1, num_anchors))
     ]
 
     return tmp_models #[tmp_models[0], tmp_models[1]]
