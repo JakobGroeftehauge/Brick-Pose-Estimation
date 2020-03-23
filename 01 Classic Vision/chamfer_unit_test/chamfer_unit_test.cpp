@@ -5,7 +5,7 @@
 int main()
 {
     cv::Mat image;
-    image = cv::imread("../../03 Data/Simple Dataset/colorIMG_6.png");
+    image = cv::imread("../../03 Data/Simple Dataset/colorIMG_38.png");
     Chamfer_brick_detector chamfer_detector(image);
     cv::imshow("test", chamfer_detector.chamfer_img);
     std::cout << "Hello World!\n";
