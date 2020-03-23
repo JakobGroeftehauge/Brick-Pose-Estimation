@@ -16,8 +16,8 @@ int main()
 
     while (test_evaluator.evaluate_next_img(0.95))
     {
-        //cv::imshow("Image", test_evaluator.img_to_print);
-        //cv::waitKey(1);
+        cv::imshow("Image", test_evaluator.img_to_print);
+        cv::waitKey(1);
     }
 
     return 0;

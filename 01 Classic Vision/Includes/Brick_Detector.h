@@ -2,11 +2,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include "Hough_space.h"
-struct prediction {
-	cv::Rect rect;
-	cv::RotatedRect rotated_rect;
-	cv::Point2d angle_vector;
-};
+#include "predictions.h"
 
 class Brick_Detector
 {

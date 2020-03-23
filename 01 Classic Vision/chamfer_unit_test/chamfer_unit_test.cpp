@@ -1,10 +1,15 @@
 #include <iostream>
-#include "../Includes/Brick_Detector.h"
 #include "../Includes/Evaluator.h"
+#include "../Includes/Chamfer_brick_detector.h"
 
 int main()
 {
+    cv::Mat image;
+    image = cv::imread("../../03 Data/Simple Dataset/colorIMG_6.png");
+    Chamfer_brick_detector chamfer_detector(image);
+    cv::imshow("test", chamfer_detector.chamfer_img);
     std::cout << "Hello World!\n";
+    cv::waitKey(0);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
