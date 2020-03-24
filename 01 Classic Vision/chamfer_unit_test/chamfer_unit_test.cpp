@@ -19,7 +19,7 @@ int main()
 
     std::cout << "best rect lenght:" << chamfer_detector.best_rects.size() << std::endl;
 
-    util::print_rotated_bounding_boxes(image, chamfer_detector.best_rects);
+    util::print_rotated_bounding_boxes(image, chamfer_detector.pred_candidates);
     cv::imshow("image with rectangles", image);
 
     cv::waitKey(0);

@@ -16,7 +16,8 @@ Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 	cv::matchTemplate(this->chamfer_img, this->model_template, this->matching_space, CV_TM_CCORR);
 	std::vector<cv::Point> locations;
 	apply_NMS(locations,1000);
-	create_rot_rect_at_locations(locations, r_rect, this->best_rects);
+	this->pred_candidates.empty();
+	create_rot_rect_at_locations(locations, r_rect);
 }
 
 void Chamfer_brick_detector::set_img(cv::Mat img)
@@ -60,14 +61,15 @@ cv::RotatedRect Chamfer_brick_detector::create_template(float scale, float angle
 	return rect;
 }
 
-void Chamfer_brick_detector::create_rot_rect_at_locations(std::vector<cv::Point> &locations, cv::RotatedRect template_rect, std::vector<cv::RotatedRect> &dst_rects)
+void Chamfer_brick_detector::create_rot_rect_at_locations(std::vector<cv::Point> &locations, cv::RotatedRect template_rect)
 {
 	cv::Point shift = template_rect.center;
-	dst_rects.empty();
+	prediction_candidate candidate;
 	for (int i = 0; i < locations.size(); i++)
 	{
-		cv::RotatedRect rect(locations[i]+shift, template_rect.size, template_rect.angle);
-		dst_rects.push_back(rect);
+		candidate.distance_score = this->matching_space.at<float>(locations[i]);
+		candidate.rotated_rect = cv::RotatedRect(locations[i] + shift, template_rect.size, template_rect.angle);
+		this->pred_candidates.push_back(candidate);
 	}
 }
 
