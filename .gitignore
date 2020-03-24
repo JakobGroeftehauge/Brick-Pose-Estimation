@@ -28,6 +28,7 @@ Baseline_method/Baseline_method
 01 Classic Vision/Load_JSON/Load_JSON
 01 Classic Vision/Resize_and_crop_img/Resize_and_crop_img
 01 Classic Vision/real_sense/real_sense
+01 Classic Vision/chamfer_unit_test/chamfer_unit_test
 
 ## Paperspace server
 cuda-repo-ubuntu1804_10.1.243-1_amd64.deb
