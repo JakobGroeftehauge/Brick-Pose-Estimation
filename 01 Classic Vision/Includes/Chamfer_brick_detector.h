@@ -3,6 +3,7 @@
 #include <vector>
 #include "predictions.h"
 #include <math.h>
+#include <chrono>
 
 class Chamfer_brick_detector
 {

@@ -13,7 +13,11 @@ Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 	this->img = img;
 	compute_chamfer_img();
 	create_template(1, 9);
+	auto start = std::chrono::high_resolution_clock::now();
 	ChamferMatching(this->chamfer_img, this->model_template, this->matching_space);
+	auto stop = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+	std::cout << duration.count() << std::endl;
 }
 
 void Chamfer_brick_detector::set_img(cv::Mat img)

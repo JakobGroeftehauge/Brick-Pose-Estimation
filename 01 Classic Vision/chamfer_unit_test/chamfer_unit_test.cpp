@@ -7,7 +7,9 @@ int main()
     cv::Mat image;
     image = cv::imread("../../03 Data/Simple Dataset/colorIMG_38.png");
     Chamfer_brick_detector chamfer_detector(image);
-    cv::imshow("test", chamfer_detector.chamfer_img);
+    cv::Mat chamfer = chamfer_detector.chamfer_img;
+    cv::normalize(chamfer, chamfer, 0, 1.0, cv::NORM_MINMAX);
+    cv::imshow("test", chamfer);
     cv::imshow("template", chamfer_detector.model_template);
 
     cv::Mat matching = chamfer_detector.matching_space;
