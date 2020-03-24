@@ -5,6 +5,11 @@
 #include <math.h>
 #include <chrono>
 
+struct prediction_candidate {
+	cv::RotatedRect rotated_rect;
+	float distance_score;
+};
+
 class Chamfer_brick_detector
 {
 public:
@@ -17,24 +22,23 @@ public:
 	cv::Mat chamfer_img;
 	cv::Mat model_template;
 	cv::Mat matching_space;
-	void ChamferMatching(cv::Mat& chamfer_image, cv::Mat& model, cv::Mat& matching_image);
+	std::vector<cv::RotatedRect> best_rects;
 
 private:
     cv::Mat img;
-
-
+	void find_edges(cv::Mat& src, cv::Mat& dst);
+	void apply_NMS(std::vector<cv::Point>& dst_locations, float thresh);
 	void compute_chamfer_img();
-	void create_template(float scale, float angle);
-
-    int canny_thres_low;
+	cv::RotatedRect create_template(float scale, float angle);
+	void create_rot_rect_at_locations(std::vector<cv::Point> &locations, cv::RotatedRect template_rect, std::vector<cv::RotatedRect> &dst_rects);
+    
+	int canny_thres_low;
     int canny_thres_high;
+
 
     void clear_all();
     void clear_predictions();
-    void find_edges(cv::Mat& src, cv::Mat& dst);
-
     bool accept_detection(cv::RotatedRect rotated_BB);
-
 
 };
 

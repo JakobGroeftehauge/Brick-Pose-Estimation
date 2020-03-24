@@ -16,6 +16,12 @@ int main()
     cv::normalize(matching, matching, 0, 1.0, cv::NORM_MINMAX);
     cv::imshow("matching space", matching);
     std::cout << "Hello World!\n";
+
+    std::cout << "best rect lenght:" << chamfer_detector.best_rects.size() << std::endl;
+
+    util::print_rotated_bounding_boxes(image, chamfer_detector.best_rects);
+    cv::imshow("image with rectangles", image);
+
     cv::waitKey(0);
 }
 
