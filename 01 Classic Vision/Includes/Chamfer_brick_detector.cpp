@@ -57,7 +57,15 @@ cv::RotatedRect Chamfer_brick_detector::create_template(float scale, float angle
 	cv::Point2f vertices[4];
 	rect.points(vertices);
 	for (int i = 0; i < 4; i++)
-		line(this->model_template, vertices[i], vertices[(i + 1) % 4], cv::Scalar(1.0), 2);
+		// gives ability to change weight of some lines over others.
+		if (i % 2 == 0)
+		{
+			line(this->model_template, vertices[i], vertices[(i + 1) % 4], cv::Scalar(1.0), 2);
+		}
+		else
+		{
+			line(this->model_template, vertices[i], vertices[(i + 1) % 4], cv::Scalar(1.0), 2);
+		}
 	return rect;
 }
 

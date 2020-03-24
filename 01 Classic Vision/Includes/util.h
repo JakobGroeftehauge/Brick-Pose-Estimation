@@ -73,6 +73,7 @@ inline void print_rotated_bounding_boxes(cv::Mat& img, std::vector<prediction_ca
 {
     for (unsigned int i = 0; i < preds.size(); i++)
     {
+        cv::Point center = preds[i].rotated_rect.center;
         cv::Point2f rect_points[4];
         preds[i].rotated_rect.points(rect_points);
 
@@ -80,6 +81,7 @@ inline void print_rotated_bounding_boxes(cv::Mat& img, std::vector<prediction_ca
         {
             cv::line(img, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
         }
+        cv::putText(img, std::to_string((int)preds[i].distance_score), center - cv::Point(7,-7), 1, 1, cv::Scalar(255, 255, 255));
     }
 }
 
