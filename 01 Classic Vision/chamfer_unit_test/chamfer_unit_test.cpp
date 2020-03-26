@@ -22,6 +22,7 @@ int main()
     util::print_rotated_bounding_boxes(image, chamfer_detector.pred_candidates);
     cv::imshow("image with rectangles", image);
 
+    //chamfer_detector.create_matchingspace(1, 30);
     cv::waitKey(0);
 
     return 0;

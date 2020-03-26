@@ -18,7 +18,9 @@ public:
 	cv::Mat model_template;
 	cv::Mat matching_space;
 	std::vector<cv::RotatedRect> best_rects;
-	std::vector<prediction_candidate> pred_candidates;
+    std::vector<prediction_candidate> pred_candidates;
+    cv::Mat create_matchingspace(int num_angles, float scale);
+
 
 private:
     cv::Mat img;
@@ -35,6 +37,11 @@ private:
     void clear_all();
     void clear_predictions();
     bool accept_detection(cv::RotatedRect rotated_BB);
+
+    void set_macth_template();
+    int template_padding = 0; //How many pixels to add to the circumfrence of the template Mat.
+    // OBS: size passer ikke! Skal lige regnes igen.
+    cv::RotatedRect brick_template = cv::RotatedRect(cv::Point2f(0.5, 0.5), cv::Size2f(0.236297, 0.971681), 0);
 
 };
 
