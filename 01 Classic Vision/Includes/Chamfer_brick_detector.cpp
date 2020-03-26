@@ -142,31 +142,49 @@ void Chamfer_brick_detector::generate_candidates(std::vector<cv::Point>& best_ma
 void Chamfer_brick_detector::apply_IOU_NMS(const std::vector<prediction_candidate>& candidates_src, float thresh, std::vector<prediction_candidate>& candidates_dst)
 {
 	int i = 0;
+	int j = 0;
 	std::vector<prediction_candidate> candidates_src_copy(candidates_src);
 	auto itv = candidates_src_copy.begin();
 	auto itv2 = std::next(itv, 1);
-	while (itv != candidates_src_copy.end())
-	{
-		itv2 = std::next(itv, 1);
-		while (itv2 != candidates_src_copy.end())
-		{
-			if (itv == itv2)
-				std::cout << "They are the same" << itv->distance_score << std::endl;
-			std::cout << "itv: " << std::distance(candidates_src_copy.begin(), itv) << " itv2: " << std::distance(candidates_src_copy.begin(), itv2) << " Length: "<< candidates_src_copy.size() << std::endl;
 
-			if (rotated_rect_IOU(itv->rotated_rect, itv2->rotated_rect) > thresh)
+	while (i < candidates_src_copy.size()-1)
+	{
+		j = i + 1;
+		while (j < candidates_src_copy.size())
+		{
+			if (rotated_rect_IOU(candidates_src_copy[i].rotated_rect, candidates_src_copy[j].rotated_rect) > thresh)
 			{
-				itv2 = candidates_src_copy.erase(itv2);
+				candidates_src_copy.erase(candidates_src_copy.begin() +  j);
 			}
 			else
 			{
-				++itv2;
+				j++;
 			}
-
 		}
-		++itv;
 		i++;
 	}
+
+	//while (itv != candidates_src_copy.end()-1)
+	//{
+	//	itv2 = std::next(itv, 1);
+	//	while (itv2 < candidates_src_copy.end())
+	//	{
+	//		if (itv == itv2)
+	//			std::cout << "They are the same" << itv->distance_score << std::endl;
+	//		std::cout << "itv: " << std::distance(candidates_src_copy.begin(), itv) << " itv2: " << std::distance(candidates_src_copy.begin(), itv2) << " Length: "<< candidates_src_copy.size() << std::endl;
+
+	//		if (rotated_rect_IOU(itv->rotated_rect, itv2->rotated_rect) > thresh)
+	//		{
+	//			itv2 = candidates_src_copy.erase(itv2);
+	//		}
+	//		else
+	//		{
+	//			++itv2;
+	//		}
+
+	//	}
+	//	++itv;
+	//}
 	candidates_dst = candidates_src_copy;
 }
 
