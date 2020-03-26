@@ -131,7 +131,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
             }
         }
         complete_contours.push_back(contour);
-        contour.empty();
+        contour.clear();
 
     }
     

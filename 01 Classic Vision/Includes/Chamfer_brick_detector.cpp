@@ -11,10 +11,19 @@ Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 {
 	this->canny_thres_high = 85;
 	this->canny_thres_low = 25;
-	this->NMS_thresh = 130;
+	this->NMS_thresh = 120;
 	this->img = img;
 	compute_chamfer_img();
 	find_rectangle_candidates(30, 100, 110, 2);
+	//sort list
+	std::sort(this->pred_candidates.begin(),this->pred_candidates.end());
+	/*for (int i = 0; i < this->pred_candidates.size(); i++)
+	{
+		std::cout << this->pred_candidates[i].distance_score << std::endl;
+	}*/
+	std::cout << "Length before IOU NMS: " << this->pred_candidates.size() << std::endl;
+	apply_IOU_NMS(this->pred_candidates, 0.3, this->pred_candidates);
+	std::cout << "Length after IOU NMS: " << this->pred_candidates.size() << std::endl;
 }
 
 void Chamfer_brick_detector::set_img(cv::Mat img)
@@ -108,9 +117,9 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 		{
 			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);
 			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCORR);
-			match_locations.empty();
+			match_locations.clear();
 			apply_NMS(tmp_matching_space, match_locations);
-			tmp_candidates.empty();
+			tmp_candidates.clear();
 			generate_candidates(match_locations, tmp_matching_space, tmp_rect, tmp_candidates);
 			// Insert intermediate NMS on tmp_candidates here
 			this->pred_candidates.insert(this->pred_candidates.end(), tmp_candidates.begin(), tmp_candidates.end());
@@ -128,6 +137,49 @@ void Chamfer_brick_detector::generate_candidates(std::vector<cv::Point>& best_ma
 		tmp_candidate.rotated_rect = cv::RotatedRect(template_rect.center + shift, template_rect.size, template_rect.angle);
 		candidates_dst.push_back(tmp_candidate);
 	}
+}
+
+void Chamfer_brick_detector::apply_IOU_NMS(const std::vector<prediction_candidate>& candidates_src, float thresh, std::vector<prediction_candidate>& candidates_dst)
+{
+	int i = 0;
+	std::vector<prediction_candidate> candidates_src_copy(candidates_src);
+	auto itv = candidates_src_copy.begin();
+	auto itv2 = std::next(itv, 1);
+	while (itv != candidates_src_copy.end());
+	{
+		itv2 = std::next(itv, 1);
+		while (itv2 < candidates_src_copy.end())
+		{
+			if (itv == itv2)
+				std::cout << "They are the same" << itv->distance_score << std::endl;
+			std::cout << "itv: " << std::distance(candidates_src_copy.begin(), itv) << " itv2: " << std::distance(candidates_src_copy.begin(), itv2) << " Length: "<< candidates_src_copy.size() << std::endl;
+
+			if (rotated_rect_IOU(itv->rotated_rect, itv2->rotated_rect) > thresh)
+			{
+				itv2 = candidates_src_copy.erase(itv2);
+			}
+			else
+			{
+				++itv2;
+			}
+
+		}
+		++itv;
+	}
+	candidates_dst = candidates_src_copy;
+}
+
+float Chamfer_brick_detector::rotated_rect_IOU(cv::RotatedRect rect1, cv::RotatedRect rect2)
+{
+	float intersection_area = 0.0;
+	std::vector<cv::Point2f> intersection_cont;
+	cv::rotatedRectangleIntersection(rect1, rect2, intersection_cont);
+	if (intersection_cont.size() > 2)
+	{
+		intersection_area = cv::contourArea(intersection_cont);
+	}
+	float union_area = rect1.size.area() + rect2.size.area() - intersection_area;
+	return intersection_area/union_area;
 }
 
 

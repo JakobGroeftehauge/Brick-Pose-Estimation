@@ -5,6 +5,10 @@
 struct prediction_candidate {
 	cv::RotatedRect rotated_rect;
 	float distance_score;
+    bool operator < (const prediction_candidate & candidate) 
+    { 
+        return (distance_score < candidate.distance_score); 
+    }
 };
 
 

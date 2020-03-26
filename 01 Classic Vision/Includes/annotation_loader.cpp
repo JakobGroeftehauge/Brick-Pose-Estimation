@@ -25,7 +25,7 @@ void Annotation_loader::loadAnnotation(std::string path)
             annotation_points.push_back(cv::Point2f(Annotation[j][0].real(), Annotation[j][1].real()));
         }
         annotation_point_list.push_back(annotation_points);
-        annotation_points.empty();
+        annotation_points.clear();
     }
     Rect_list = annotation_point_list;
 

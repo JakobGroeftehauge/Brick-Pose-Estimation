@@ -5,13 +5,15 @@
 int main()
 {
     cv::Mat image;
-    image = cv::imread("../../03 Data/Simple Dataset/colorIMG_70.png");
+    image = cv::imread("../../03 Data/Simple Dataset/colorIMG_170.png");
 
     //cv::resize(image, image, cv::Size(image.size().width * 1.2, image.size().height * 1.2), 0, 0);
 
     Chamfer_brick_detector chamfer_detector(image);
     
     std::cout << chamfer_detector.pred_candidates.size() << std::endl;
+    std::vector<prediction_candidate> candidates;
+    candidates.insert(candidates.end(), chamfer_detector.pred_candidates.begin(), chamfer_detector.pred_candidates.begin()+35);
     util::print_rotated_bounding_boxes(image, chamfer_detector.pred_candidates);
 
     imshow("image", image);
