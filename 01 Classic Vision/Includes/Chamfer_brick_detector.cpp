@@ -145,10 +145,10 @@ void Chamfer_brick_detector::apply_IOU_NMS(const std::vector<prediction_candidat
 	std::vector<prediction_candidate> candidates_src_copy(candidates_src);
 	auto itv = candidates_src_copy.begin();
 	auto itv2 = std::next(itv, 1);
-	while (itv != candidates_src_copy.end());
+	while (itv != candidates_src_copy.end())
 	{
 		itv2 = std::next(itv, 1);
-		while (itv2 < candidates_src_copy.end())
+		while (itv2 != candidates_src_copy.end())
 		{
 			if (itv == itv2)
 				std::cout << "They are the same" << itv->distance_score << std::endl;
@@ -165,6 +165,7 @@ void Chamfer_brick_detector::apply_IOU_NMS(const std::vector<prediction_candidat
 
 		}
 		++itv;
+		i++;
 	}
 	candidates_dst = candidates_src_copy;
 }
