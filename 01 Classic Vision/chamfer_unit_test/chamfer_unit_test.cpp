@@ -5,22 +5,17 @@
 int main()
 {
     cv::Mat image;
-    image = cv::imread("../../03 Data/Simple Dataset/colorIMG_38.png");
+    image = cv::imread("../../03 Data/Simple Dataset/colorIMG_70.png");
+
+    //cv::resize(image, image, cv::Size(image.size().width * 1.2, image.size().height * 1.2), 0, 0);
+
     Chamfer_brick_detector chamfer_detector(image);
-    cv::Mat chamfer = chamfer_detector.chamfer_img;
-    cv::normalize(chamfer, chamfer, 0, 1.0, cv::NORM_MINMAX);
-    cv::imshow("test", chamfer);
-    cv::imshow("template", chamfer_detector.model_template);
-
-    cv::Mat matching = chamfer_detector.matching_space;
-    cv::normalize(matching, matching, 0, 1.0, cv::NORM_MINMAX);
-    cv::imshow("matching space", matching);
-    std::cout << "Hello World!\n";
-
-    std::cout << "best rect lenght:" << chamfer_detector.best_rects.size() << std::endl;
-
+    
+    std::cout << chamfer_detector.pred_candidates.size() << std::endl;
     util::print_rotated_bounding_boxes(image, chamfer_detector.pred_candidates);
-    cv::imshow("image with rectangles", image);
+
+    imshow("image", image);
+
 
     //chamfer_detector.create_matchingspace(1, 30);
     cv::waitKey(0);

@@ -3,21 +3,18 @@
 Chamfer_brick_detector::Chamfer_brick_detector()
 {
 	this->canny_thres_high = 140;
-	this->canny_thres_low = 60;
+	this->canny_thres_low = 20;
+	this->NMS_thresh = 200;
 }
 
 Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 {
-	this->canny_thres_high = 140;
-	this->canny_thres_low = 35;
+	this->canny_thres_high = 85;
+	this->canny_thres_low = 25;
+	this->NMS_thresh = 130;
 	this->img = img;
 	compute_chamfer_img();
-    cv::RotatedRect r_rect = create_template(200, 30);
-	cv::matchTemplate(this->chamfer_img, this->model_template, this->matching_space, CV_TM_CCORR);
-	std::vector<cv::Point> locations;
-	apply_NMS(locations,1000);
-	this->pred_candidates.empty();
-	create_rot_rect_at_locations(locations, r_rect);
+	find_rectangle_candidates(30, 100, 110, 2);
 }
 
 void Chamfer_brick_detector::set_img(cv::Mat img)
@@ -27,7 +24,7 @@ void Chamfer_brick_detector::set_img(cv::Mat img)
 
 cv::Mat Chamfer_brick_detector::create_matchingspace(int num_angles, float scale)
 {
-    double angle_res = M_PI/num_angles;
+    double angle_res = CV_PI/num_angles;
 
     int match_width = img.cols - brick_template.size.width * scale - template_padding * 2;
     int match_heigt = img.rows - brick_template.size.height * scale - template_padding * 2;
@@ -37,7 +34,7 @@ cv::Mat Chamfer_brick_detector::create_matchingspace(int num_angles, float scale
 
     for(int i = 0; i < num_angles; i++)
     {
-         std::cout << " height " << match_heigt << " width "<< match_width << std::endl;
+        std::cout << " height " << match_heigt << " width "<< match_width << std::endl;
         cv::Mat match_space = cv::Mat::ones(match_width, match_heigt, CV_32F);
         std::cout << "Dim 0 " << match_space.size[0] << " Dim 1 " << match_space.size[1] << std::endl;
         int mapping_channels[] = {0,0 , 1,1, 2,i};
@@ -48,15 +45,15 @@ cv::Mat Chamfer_brick_detector::create_matchingspace(int num_angles, float scale
 }
 
 
-void Chamfer_brick_detector::apply_NMS(std::vector<cv::Point>& dst_locations, float thresh)
+void Chamfer_brick_detector::apply_NMS(cv::Mat &matching_space, std::vector<cv::Point>& best_match_locations)
 {
 	cv::Mat eroded, thresholded_matching_space, local_minima, thresholded_8bit;
-	erode(this->matching_space, eroded, cv::Mat());
-	compare(this->matching_space, eroded, local_minima, cv::CMP_EQ);
-	threshold(this->matching_space, thresholded_matching_space, thresh, 255, cv::THRESH_BINARY_INV);
+	erode(matching_space, eroded, cv::Mat());
+	compare(matching_space, eroded, local_minima, cv::CMP_EQ);
+	threshold(matching_space, thresholded_matching_space, this->NMS_thresh, 255, cv::THRESH_BINARY_INV);
 	thresholded_matching_space.convertTo(thresholded_8bit, CV_8U);
 	bitwise_and(local_minima, thresholded_8bit, local_minima);
-	cv::findNonZero(local_minima, dst_locations);
+	cv::findNonZero(local_minima, best_match_locations);
 }
 
 void Chamfer_brick_detector::compute_chamfer_img()
@@ -71,7 +68,7 @@ void Chamfer_brick_detector::compute_chamfer_img()
 
 
 
-cv::RotatedRect Chamfer_brick_detector::create_template(float scale, float angle)
+void Chamfer_brick_detector::create_template(float scale, float angle, cv::Mat &template_img_dst, cv::RotatedRect &rect_dst)
 {
     // Scale and shift brick template
     cv::Mat template_ = cv::Mat::zeros(scale + template_padding * 2, scale + template_padding * 2, CV_32F); // add zeropixels around the circumfrance of the template.
@@ -87,24 +84,54 @@ cv::RotatedRect Chamfer_brick_detector::create_template(float scale, float angle
         line(template_, vertices[i], vertices[(i + 1) % 4], cv::Scalar(1.0), 2);
     }
 
-    template_ = template_ * 0.5;
-    this->model_template = template_;
+	//Calculate norm kind of
+	int white_pixels = cv::countNonZero(template_);
+	template_ = template_ / float(white_pixels)*100;
 
-    return rect;
-
+	// set destination variables
+	template_img_dst = template_;
+	rect_dst = rect;
 }
 
-void Chamfer_brick_detector::create_rot_rect_at_locations(std::vector<cv::Point> &locations, cv::RotatedRect template_rect)
+
+void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float scale_min, float scale_max, int scale_steps)
 {
-	cv::Point shift = template_rect.center;
-	prediction_candidate candidate;
-	for (int i = 0; i < locations.size(); i++)
+	float angle_res = 180.0 / angle_steps;
+	float scale_res = (scale_max - scale_min) / scale_steps;
+	cv::Mat template_img, tmp_matching_space;
+	cv::RotatedRect tmp_rect;
+	std::vector<cv::Point> match_locations;
+	std::vector<prediction_candidate> tmp_candidates;
+	for (int i = 0; i < angle_steps; i++)
 	{
-		candidate.distance_score = this->matching_space.at<float>(locations[i]);
-		candidate.rotated_rect = cv::RotatedRect(locations[i] + shift, template_rect.size, template_rect.angle);
-		this->pred_candidates.push_back(candidate);
-    }
+		for (int j = 0; j < scale_steps; j++)
+		{
+			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);
+			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCORR);
+			match_locations.empty();
+			apply_NMS(tmp_matching_space, match_locations);
+			tmp_candidates.empty();
+			generate_candidates(match_locations, tmp_matching_space, tmp_rect, tmp_candidates);
+			// Insert intermediate NMS on tmp_candidates here
+			this->pred_candidates.insert(this->pred_candidates.end(), tmp_candidates.begin(), tmp_candidates.end());
+		}
+	}
 }
+
+void Chamfer_brick_detector::generate_candidates(std::vector<cv::Point>& best_match_locations, cv::Mat& matching_space, cv::RotatedRect template_rect, std::vector<prediction_candidate> &candidates_dst)
+{
+	prediction_candidate tmp_candidate;
+	for (int i = 0; i < best_match_locations.size(); i++)
+	{
+		cv::Point2f shift = best_match_locations[i];
+		tmp_candidate.distance_score = matching_space.at<float>(best_match_locations[i]);
+		tmp_candidate.rotated_rect = cv::RotatedRect(template_rect.center + shift, template_rect.size, template_rect.angle);
+		candidates_dst.push_back(tmp_candidate);
+	}
+}
+
+
+
 
 
 void Chamfer_brick_detector::find_edges(cv::Mat& src, cv::Mat& dst)
@@ -112,6 +139,7 @@ void Chamfer_brick_detector::find_edges(cv::Mat& src, cv::Mat& dst)
 	cv::Mat gray_img;
 	cv::cvtColor(src, gray_img, CV_BGR2GRAY);
 	cv::Mat filter_img;
-	cv::medianBlur(gray_img, filter_img, 5);
+	//cv::medianBlur(gray_img, filter_img, 3);
+	cv::GaussianBlur(gray_img, filter_img, cv::Size(3,3),0,0);
 	cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
 }
