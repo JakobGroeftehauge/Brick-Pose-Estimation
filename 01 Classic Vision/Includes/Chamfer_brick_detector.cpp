@@ -16,12 +16,12 @@ Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 	compute_chamfer_img();
 	find_rectangle_candidates(60, 100, 110, 5);
 	//sort list
-	std::sort(this->pred_candidates.begin(),this->pred_candidates.end());
+    std::sort(this->pred_candidates.begin(),this->pred_candidates.end());
 	/*for (int i = 0; i < this->pred_candidates.size(); i++)
 	{
 		std::cout << this->pred_candidates[i].distance_score << std::endl;
 	}*/
-	std::cout << "Length before IOU NMS: " << this->pred_candidates.size() << std::endl;
+     std::cout << "Length before IOU NMS: " << this->pred_candidates.size() << std::endl;
 	apply_IOU_NMS(this->pred_candidates, 0.2, this->pred_candidates);
 	std::cout << "Length after IOU NMS: " << this->pred_candidates.size() << std::endl;
 	this->predictions.clear();
@@ -165,12 +165,12 @@ void Chamfer_brick_detector::apply_IOU_NMS(const std::vector<prediction_candidat
 			}
 			else
 			{
+
 				j++;
 			}
 		}
 		i++;
 	}
-
 	//while (itv != candidates_src_copy.end()-1)
 	//{
 	//	itv2 = std::next(itv, 1);
@@ -199,10 +199,11 @@ float Chamfer_brick_detector::rotated_rect_IOU(cv::RotatedRect rect1, cv::Rotate
 {
 	float intersection_area = 0.0;
 	std::vector<cv::Point2f> intersection_cont;
-
-	if (cv::rotatedRectangleIntersection(rect1, rect2, intersection_cont))
+    if (cv::INTERSECT_NONE != cv::rotatedRectangleIntersection(rect1, rect2, intersection_cont))
 	{
-		intersection_area = cv::contourArea(intersection_cont);
+        std::vector<cv::Point2f> hull;
+        cv::convexHull(intersection_cont, hull);
+        intersection_area = cv::contourArea(hull);
 	}
 	else
 	{
@@ -215,7 +216,7 @@ float Chamfer_brick_detector::rotated_rect_IOU(cv::RotatedRect rect1, cv::Rotate
 void Chamfer_brick_detector::predictions_from_candidates(std::vector<prediction_candidate>& candidates, std::vector<prediction>& predictions)
 {
 	prediction tmp_pred;
-	for (int i = 0; i < candidates.size(); i++)
+    for (unsigned int i = 0; i < candidates.size(); i++)
 	{
 		tmp_pred.rotated_rect = candidates[i].rotated_rect;
 		tmp_pred.rect = candidates[i].rotated_rect.boundingRect(); // maybe use the boundingRectf instead
