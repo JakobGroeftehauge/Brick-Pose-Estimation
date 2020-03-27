@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
+import sys
 import numpy as np
 import random
 import warnings
@@ -402,8 +402,9 @@ class Generator(keras.utils.Sequence):
         """
         group = self.groups[index]
         inputs, targets = self.compute_input_output(group)
+        np.set_printoptions(threshold=sys.maxsize)
         file = open("targets.txt",'a')
-        file.write(targets)
+        file.write(np.array2string(targets[0]) + "\n\n")
         file.close()
 
         return inputs, targets

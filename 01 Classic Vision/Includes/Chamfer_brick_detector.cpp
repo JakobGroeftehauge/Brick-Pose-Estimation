@@ -16,6 +16,7 @@ Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 	compute_chamfer_img();
 	find_rectangle_candidates(60, 100, 110, 5);
 	//sort list
+	std::cout << "Length before sort: " << this->pred_candidates.size() << std::endl;
 	std::sort(this->pred_candidates.begin(),this->pred_candidates.end());
 	/*for (int i = 0; i < this->pred_candidates.size(); i++)
 	{
