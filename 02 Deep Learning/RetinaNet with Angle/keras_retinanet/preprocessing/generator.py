@@ -402,5 +402,8 @@ class Generator(keras.utils.Sequence):
         """
         group = self.groups[index]
         inputs, targets = self.compute_input_output(group)
+        file = open("targets.txt",'a')
+        file.write(targets)
+        file.close()
 
         return inputs, targets
