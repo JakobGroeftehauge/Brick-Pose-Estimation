@@ -376,6 +376,11 @@ class Generator(keras.utils.Sequence):
 
         # perform preprocessing steps
         image_group, annotations_group = self.preprocess_group(image_group, annotations_group)
+        np.set_printoptions(threshold=sys.maxsize)
+        file = open("targets.txt",'a')
+        for x, y in annotations_group[0]["angles"]:
+            file.write(str(x) + ", " + str(y) + "\n")
+        file.close()
 
         # compute network inputs
         inputs = self.compute_inputs(image_group)
@@ -402,9 +407,6 @@ class Generator(keras.utils.Sequence):
         """
         group = self.groups[index]
         inputs, targets = self.compute_input_output(group)
-        np.set_printoptions(threshold=sys.maxsize)
-        file = open("targets.txt",'a')
-        file.write(np.array2string(targets[0]) + "\n\n")
-        file.close()
+
 
         return inputs, targets
