@@ -5,7 +5,31 @@
 #include <math.h>
 #include <chrono>
 
+struct Timer
+{
+	std::chrono::time_point<std::chrono::steady_clock> start, end;
+	std::chrono::duration<float> duration;
+	std::string timer_name;
 
+	Timer()
+	{
+		start = std::chrono::high_resolution_clock::now();
+	}
+
+	Timer(std::string name)
+	{
+		timer_name = name;
+		start = std::chrono::high_resolution_clock::now();
+	}
+
+	~Timer()
+	{
+		end = std::chrono::high_resolution_clock::now();
+		duration = end - start;
+		float ms = duration.count() * 1000.0f;
+		std::cout << "Timer \"" + timer_name + "\" took: " << ms << "ms" << std::endl;
+	}
+};
 
 class Chamfer_brick_detector
 {
@@ -34,6 +58,7 @@ private:
 	void generate_candidates(std::vector<cv::Point> &best_match_locations, cv::Mat &matching_space, cv::RotatedRect template_rect, std::vector<prediction_candidate>& candidates_dst);
 	void apply_IOU_NMS(const std::vector<prediction_candidate>& candidates_src, float thresh, std::vector<prediction_candidate>& candidates_dst);
 	float rotated_rect_IOU(cv::RotatedRect rect1, cv::RotatedRect rect2);
+	void predictions_from_candidates(std::vector<prediction_candidate> &candidates, std::vector<prediction> &predictions);
 
 	int canny_thres_low;
 	int canny_thres_high;
