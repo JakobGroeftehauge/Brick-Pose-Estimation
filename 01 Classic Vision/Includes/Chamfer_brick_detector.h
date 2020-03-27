@@ -1,4 +1,4 @@
-#pragma once
+//#pragma once
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include "predictions.h"
@@ -7,8 +7,11 @@
 
 struct Timer
 {
-	std::chrono::time_point<std::chrono::steady_clock> start, end;
-	std::chrono::duration<float> duration;
+    //std::chrono::time_point<std::chrono::steady_clock> start;
+    //std::chrono::time_point<std::chrono::steady_clock> end;
+    std::chrono::high_resolution_clock::time_point end;
+    std::chrono::high_resolution_clock::time_point start;
+    std::chrono::duration<float> duration;
 	std::string timer_name;
 
 	Timer()
