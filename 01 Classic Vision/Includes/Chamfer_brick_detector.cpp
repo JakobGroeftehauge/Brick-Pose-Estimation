@@ -130,7 +130,7 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 void Chamfer_brick_detector::generate_candidates(std::vector<cv::Point>& best_match_locations, cv::Mat& matching_space, cv::RotatedRect template_rect, std::vector<prediction_candidate> &candidates_dst)
 {
 	prediction_candidate tmp_candidate;
-	for (int i = 0; i < best_match_locations.size(); i++)
+    for (unsigned int i = 0; i < best_match_locations.size(); i++)
 	{
 		cv::Point2f shift = best_match_locations[i];
 		tmp_candidate.distance_score = matching_space.at<float>(best_match_locations[i]);
@@ -141,8 +141,8 @@ void Chamfer_brick_detector::generate_candidates(std::vector<cv::Point>& best_ma
 
 void Chamfer_brick_detector::apply_IOU_NMS(const std::vector<prediction_candidate>& candidates_src, float thresh, std::vector<prediction_candidate>& candidates_dst)
 {
-	int i = 0;
-	int j = 0;
+    unsigned int i = 0;
+    unsigned int j = 0;
 	std::vector<prediction_candidate> candidates_src_copy(candidates_src);
 	auto itv = candidates_src_copy.begin();
 	auto itv2 = std::next(itv, 1);
@@ -193,7 +193,7 @@ float Chamfer_brick_detector::rotated_rect_IOU(cv::RotatedRect rect1, cv::Rotate
 	float intersection_area = 0.0;
 	std::vector<cv::Point2f> intersection_cont;
 	cv::rotatedRectangleIntersection(rect1, rect2, intersection_cont);
-	if (intersection_cont.size() > 2)
+    if (cv::rotatedRectangleIntersection(rect1, rect2, intersection_cont))
 	{
 		intersection_area = cv::contourArea(intersection_cont);
 	}
