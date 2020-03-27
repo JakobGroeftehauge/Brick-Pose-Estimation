@@ -11,7 +11,6 @@ struct prediction_candidate {
     }
 };
 
-
 struct prediction {
     cv::Rect rect;
     cv::RotatedRect rotated_rect;
