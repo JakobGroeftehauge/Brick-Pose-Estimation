@@ -29,6 +29,11 @@ Evaluator::Evaluator(std::string path_to_folder, std::string img_list_csv)
     this->loader = Data_loader(path_to_folder, img_list_csv);
 }
 
+void Evaluator::set_detector(Detector* detector_addr)
+{
+    this->detector = detector_addr;
+}
+
 void Evaluator::set_path(std::string path)
 {
 
@@ -43,7 +48,7 @@ bool Evaluator::evaluate_next_img(double threshold)
     }
 	if (loader.loadNext())
 	{
-		this->detector.detect(loader.img);
+		this->detector->detect(loader.img);
         evaluate(threshold);
 		return true;
 	}
@@ -79,9 +84,9 @@ void Evaluator::evaluate(double threshold)
     std::cout << "Threshold: " << threshold << std::endl;
 	std::vector<cv::Rect> annotations(this->loader.Bounding_boxes);
 	std::vector<cv::Rect> predictions;
-    for (unsigned int i = 0; i < detector.predictions.size(); i++)
+    for (unsigned int i = 0; i < detector->predictions.size(); i++)
 	{
-		predictions.push_back(detector.predictions[i].rect);
+		predictions.push_back(detector->predictions[i].rect);
 	}
     unsigned int i = 0;
     while (i < predictions.size())
@@ -115,7 +120,7 @@ void Evaluator::evaluate(double threshold)
 
     this->false_positive = predictions;
 
-    int true_pos = this->detector.predictions.size() - predictions.size();
+    int true_pos = this->detector->predictions.size() - predictions.size();
     int false_pos = predictions.size();
     int false_neg = annotations.size();
     save_evaluation(true_pos, false_pos, false_neg);
@@ -134,7 +139,7 @@ void Evaluator::save_evaluation(int true_pos, int false_pos, int false_neg)
     //util::print_bounding_boxes(img_to_print, detector.predictions, cv::Scalar(255, 255, 0));
     util::print_bounding_boxes(this->img_to_print, this->false_positive, cv::Scalar(0,0,255));
     util::print_bounding_boxes(this->img_to_print, this->true_positive, cv::Scalar(255, 0, 0));
-    util::print_lines(this->img_to_print, this->detector.lines, cv::Scalar(255, 255, 255));
+    //util::print_lines(this->img_to_print, this->detector->lines, cv::Scalar(255, 255, 255));
 
     cv::imwrite(loader.path_folder + "/evaluations/" + loader.file_name, img_to_print);
 }

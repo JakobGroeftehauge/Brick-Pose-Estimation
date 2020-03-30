@@ -46,21 +46,10 @@ void Brick_Detector::detect(cv::Mat img)
     detect();
 }
 
-void Brick_Detector::set_img(cv::Mat img)
-{
-    this->img = img;
-    std::cout << this->img.size().width << std::endl;
-}
-
 void Brick_Detector::clear_all()
 {
     this->img.release();
     clear_predictions();
-}
-
-void Brick_Detector::clear_predictions()
-{
-    this->predictions = {};
 }
 
 void Brick_Detector::find_lines()
@@ -212,9 +201,9 @@ std::vector<cv::Point2f> Brick_Detector::get_points_on_line(std::vector<double> 
 
 void Brick_Detector::convert_intections_to_BB(std::vector<std::vector<cv::Point2f> > intersection_matrix)
 {
-    for(unsigned int i = 0; i < intersection_matrix.size() - 1; i++)
+    for(int i = 0; i < intersection_matrix.size() - 1; i++)
     {
-        for(unsigned int j = 0; j < intersection_matrix[i].size() - 1; j++)
+        for(int j = 0; j < intersection_matrix[i].size() - 1; j++)
         {
             std::vector<cv::Point2f> contour = {intersection_matrix[i][j], intersection_matrix[i][j + 1], intersection_matrix[i + 1][j], intersection_matrix[i + 1][j + 1]};
             cv::RotatedRect BB_rotated = cv::minAreaRect(contour);

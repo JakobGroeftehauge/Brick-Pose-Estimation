@@ -1,15 +1,18 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 #include <iostream>
-#include "data_loader.h"
-#include "Brick_Detector.h"
 #include "util.h"
+#include "data_loader.h"
+#include "Detector.h"
+#include "Brick_Detector.h"
+#include "Chamfer_brick_detector.h"
 class Evaluator
 {
 public:
 	Evaluator();
 	Evaluator(std::string path);
 	Evaluator(std::string path_to_folder, std::string img_list_csv);
+	void set_detector(Detector * detector_addr);
 	void set_path(std::string path);
 	bool evaluate_next_img(double threshold = 0.5);
 	void open_file();
@@ -24,7 +27,7 @@ private:
 	//std::string folder_path;
 	Data_loader loader;
 	std::ofstream file;
-	Brick_Detector detector;
+	Detector * detector;
     std::vector<cv::Rect> false_positive;
     std::vector<cv::Rect> true_positive;
 };

@@ -1,10 +1,10 @@
 #pragma once
 #include <opencv2/opencv.hpp>
 #include <vector>
+#include "Detector.h"
 #include "Hough_space.h"
-#include "predictions.h"
 
-class Brick_Detector
+class Brick_Detector: public Detector
 {
 
 public:
@@ -12,18 +12,14 @@ public:
 	Brick_Detector(cv::Mat img);
 	void detect();
 	void detect(cv::Mat img);
-	void set_img(cv::Mat img);
-	std::vector<prediction> predictions;
     std::vector<std::vector<double>> lines;
 
 private:
-	cv::Mat img;
     Hough_space hough;
     int canny_thres_low;
     int canny_thres_high;
 
     void clear_all();
-    void clear_predictions();
     void find_lines();
     void find_BB(std::vector<std::vector<std::vector<double>>> clustered_lines);
     void find_edges(cv::Mat &src, cv::Mat &dst);
