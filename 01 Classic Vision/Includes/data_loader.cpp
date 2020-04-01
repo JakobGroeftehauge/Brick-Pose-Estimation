@@ -15,7 +15,7 @@ Data_loader::Data_loader(std::string path_to_folder)
 {
     this->path_folder = path_to_folder;
     this->file_paths_iterator = 0;
-    std::cout << this->path_folder << std::endl;
+    //std::cout << this->path_folder << std::endl;
     //Store path to all .json files in folder
     for(const auto & entry : std::experimental::filesystem::directory_iterator(path_to_folder))
     {
@@ -34,14 +34,14 @@ Data_loader::Data_loader(std::string path_to_folder, std::string img_list_csv)
 {
     this->path_folder = path_to_folder;
     this->file_paths_iterator = 0;
-    std::cout << this->path_folder << std::endl;
+    //std::cout << this->path_folder << std::endl;
     std::ifstream fin;
     std::string word;
     // Open an existing file 
     fin.open(img_list_csv);
     while (std::getline(fin, word))
     {
-        std::cout << word.substr(0, word.find_last_of(".")) + ".json" << std::endl;
+        //std::cout << word.substr(0, word.find_last_of(".")) + ".json" << std::endl;
         this->file_paths.push_back(path_to_folder + "/" + word.substr(0, word.find_last_of(".")) + ".json");
     }
     fin.close();

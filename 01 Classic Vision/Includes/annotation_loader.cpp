@@ -8,10 +8,10 @@ Annotation_loader::Annotation_loader()
 
 void Annotation_loader::loadAnnotation(std::string path)
 {
-    std::cout << path << std::endl;
+    //std::cout << path << std::endl;
     replace_null(path);
     cv::FileStorage file(path, cv::FileStorage::READ);
-    std::cout << path << std::endl;
+    //std::cout << path << std::endl;
     cv::FileNode root = file["shapes"];
     std::vector<std::vector<cv::Point2f>> annotation_point_list;
 
@@ -31,7 +31,7 @@ void Annotation_loader::loadAnnotation(std::string path)
 
     cv::FileNode img_path   = file["imagePath"];
     image_file_name = img_path.string();
-    std::cout << image_file_name << std::endl;
+    //std::cout << image_file_name << std::endl;
 }
 
 void Annotation_loader::replace_null(std::string path)

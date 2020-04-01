@@ -17,10 +17,13 @@ public:
 	bool evaluate_next_img(double threshold = 0.5);
 	void open_file();
 	void close_file();
+	void reset_counters();
+	void print_metrics();
 	cv::Mat img_to_print;
 
 private:
 	double calculate_IoU(cv::Rect rect1, cv::Rect rect2);
+	float evaluate_threshold;
 	//void print_results_to_csv();
 	void evaluate(double threshold);
 	void save_evaluation(int true_pos, int false_pos, int false_neg);
@@ -30,5 +33,8 @@ private:
 	Detector * detector;
     std::vector<cv::Rect> false_positive;
     std::vector<cv::Rect> true_positive;
+	float total_true_positive;
+	float total_false_positive;
+	float total_false_negative;
 };
 

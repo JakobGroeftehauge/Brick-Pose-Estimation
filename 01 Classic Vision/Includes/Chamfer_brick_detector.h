@@ -31,7 +31,7 @@ private:
 	int canny_thres_high;
 	float NMS_thresh;
 
-	int template_padding = 0; //How many pixels to add to the circumfrence of the template Mat.
+	int template_padding = 2; //How many pixels to add to the circumfrence of the template Mat.
 	 // OBS: size passer ikke! Skal lige regnes igen.
 	cv::RotatedRect brick_template = cv::RotatedRect(cv::Point2f(0.5, 0.5), cv::Size2f(0.971681, 0.236297), 0);
 

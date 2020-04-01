@@ -15,9 +15,9 @@ int main()
     std::cout << chamfer_detector.pred_candidates.size() << std::endl;
     std::vector<prediction_candidate> candidates;
     //candidates.insert(candidates.end(), chamfer_detector.pred_candidates.begin(), chamfer_detector.pred_candidates.begin()+35);
-    util::print_bounding_boxes(image, chamfer_detector.predictions);
+    util::print_rotated_bounding_boxes(image, chamfer_detector.pred_candidates);
 
-    std::cout << "angle" << chamfer_detector.predictions[6].angle_vector << " score: " << chamfer_detector.pred_candidates[6].distance_score << std::endl;
+    //std::cout << "angle" << chamfer_detector.predictions[6].angle_vector << " score: " << chamfer_detector.pred_candidates[6].distance_score << std::endl;
 
     imshow("image", image);
 

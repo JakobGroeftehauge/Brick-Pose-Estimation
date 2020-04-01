@@ -55,13 +55,14 @@ void Brick_Detector::clear_all()
 void Brick_Detector::find_lines()
 {
     cv::Mat edge_img;
+    //cv::imshow("src image", this->img);
     find_edges(this->img, edge_img);
-    cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(50, edge_img.size().height - 1), 0, -1); //mask out pallet
+    //cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(50, edge_img.size().height - 1), 0, -1); //mask out pallet
     cv::imshow("edge_img", edge_img);
     this->hough = Hough_space(edge_img);
 
     this->lines =  hough.find_lines();
-    std::cout << this->lines.size() << std::endl;
+    //std::cout << this->lines.size() << std::endl;
 }
 
 void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
@@ -71,6 +72,7 @@ void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
 
     cv::Mat filter_img;
     cv::medianBlur(gray_img, filter_img, 5);
+    cv::imshow("filtered image", filter_img);
 
     cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
 }
