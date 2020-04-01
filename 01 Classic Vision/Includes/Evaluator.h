@@ -25,7 +25,8 @@ private:
 	double calculate_IoU(cv::Rect rect1, cv::Rect rect2);
 	float evaluate_threshold;
 	//void print_results_to_csv();
-	void evaluate(double threshold);
+	void evaluate(double threshold, int* false_neg_out, int* false_pos_out, int* true_pos_out);
+	void evaluate_range(std::vector<double> thresholds);
 	void save_evaluation(int true_pos, int false_pos, int false_neg);
 	//std::string folder_path;
 	Data_loader loader;
@@ -36,5 +37,8 @@ private:
 	float total_true_positive;
 	float total_false_positive;
 	float total_false_negative;
+	std::vector<float> total_true_positive_list;
+	std::vector<float> total_false_positive_list;
+	std::vector<float> total_false_negative_list;
 };
 

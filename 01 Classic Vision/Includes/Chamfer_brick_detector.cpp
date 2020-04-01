@@ -20,7 +20,7 @@ void Chamfer_brick_detector::detect()
 	this->predictions.clear();
 	this->pred_candidates.clear();
 	compute_chamfer_img();
-	find_rectangle_candidates(2, 100, 110, 3);
+	find_rectangle_candidates(60, 100, 110, 5);
 	//std::cout << this->pred_candidates.size() << std::endl;;
 	//sort list
 	std::sort(this->pred_candidates.begin(), this->pred_candidates.end());
@@ -124,7 +124,7 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 			//Timer inner_loop("Inner loop");
 			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);
 
-			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_SQDIFF); // typically 5-10 ms. CV_TM_CCORR sometimes more. Release
+			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCORR); // typically 5-10 ms. CV_TM_CCORR sometimes more. Release
 			if (i == angle_steps / 2 + 2 && j == scale_steps / 2)
 			{
 				cv::Mat _tmp_template;
@@ -169,12 +169,13 @@ void Chamfer_brick_detector::apply_IOU_NMS(const std::vector<prediction_candidat
 	std::vector<prediction_candidate> candidates_src_copy(candidates_src);
 
 
-	while (i < int(candidates_src_copy.size())-1)
+	while (i < candidates_src_copy.size()-1)
 	{
 		while (j < candidates_src_copy.size())
 		{
 			if (rotated_rect_IOU(candidates_src_copy[i].rotated_rect, candidates_src_copy[j].rotated_rect) > thresh)
 			{
+				std::cout << rotated_rect_IOU(candidates_src_copy[i].rotated_rect, candidates_src_copy[j].rotated_rect) << std::endl;
 				candidates_src_copy.erase(candidates_src_copy.begin() +  j);
 			}
 			else

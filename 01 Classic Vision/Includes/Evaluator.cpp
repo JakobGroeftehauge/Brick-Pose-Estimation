@@ -50,7 +50,9 @@ bool Evaluator::evaluate_next_img(double threshold)
 	if (loader.loadNext())
 	{
 		this->detector->detect(loader.img);
-        evaluate(this->evaluate_threshold);
+        std::vector<double> thresholds;
+        thresholds.push_back(this->evaluate_threshold);
+        evaluate_range(thresholds);
 		return true;
 	}
 	else
@@ -98,7 +100,8 @@ double Evaluator::calculate_IoU(cv::Rect rect1, cv::Rect rect2)
 	return (double)(rect1 & rect2).area() / (double)(rect1 | rect2).area();
 }
 
-void Evaluator::evaluate(double threshold)
+//Evaluates detections in one image at one threshold
+void Evaluator::evaluate(double threshold, int* false_neg_out, int* false_pos_out, int* true_pos_out)
 {
     this->false_positive = {};
     this->true_positive = {};
@@ -141,14 +144,30 @@ void Evaluator::evaluate(double threshold)
 
     this->false_positive = predictions;
 
-    int true_pos = this->detector->predictions.size() - predictions.size();
-    int false_pos = predictions.size();
-    int false_neg = annotations.size();
-    save_evaluation(true_pos, false_pos, false_neg);
-    this->total_false_negative += false_neg;
-    this->total_false_positive += false_pos;
-    this->total_true_positive += true_pos;
+    *true_pos_out = this->detector->predictions.size() - predictions.size();
+    *false_pos_out = predictions.size();
+    std::cout << "internal true pos:" << this->detector->predictions.size() - predictions.size() << std::endl;
+    *false_neg_out = annotations.size();
+    save_evaluation(*true_pos_out, *false_pos_out, *false_neg_out);
+    //this->total_false_negative += false_neg;
+    //this->total_false_positive += false_pos;
+    //this->total_true_positive += true_pos;
 }
+
+void Evaluator::evaluate_range(std::vector<double> thresholds)
+{
+    for (int i = 0; i < thresholds.size(); i++)
+    {
+        int false_neg = 0;
+        int false_pos = 0;
+        int true_pos = 0;
+        evaluate(thresholds[i], &false_neg, &false_pos, &true_pos);
+        std::cout << i << " external true pos: " << true_pos << std::endl;
+        //this->total_false_negative_list[i] += false_neg;
+    }
+}
+
+
 
 void Evaluator::save_evaluation(int true_pos, int false_pos, int false_neg)
 {

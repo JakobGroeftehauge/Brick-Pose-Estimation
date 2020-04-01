@@ -30,3 +30,7 @@ int main()
     }
     return 0;
 }
+
+// What we want 
+// for one threshold value, calculate the average f1 score for different thresholds. 
+    // to save time, calculate the whole array of f1 at once.
