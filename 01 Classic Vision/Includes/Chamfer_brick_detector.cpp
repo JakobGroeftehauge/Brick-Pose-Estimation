@@ -119,7 +119,7 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 		{
 			//Timer inner_loop("Inner loop");
 			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);
-			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCORR); // typically 5-10 ms. sometimes more. Release
+            cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCOEFF); // typically 5-10 ms. sometimes more. Release
 			match_locations.clear();
 			apply_NMS(tmp_matching_space, match_locations);
 			tmp_candidates.clear();
