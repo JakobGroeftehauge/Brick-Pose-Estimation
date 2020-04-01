@@ -357,14 +357,14 @@ cv::Point2f Hough_space::get_weighted_average(std::vector<cv::Point> contour, in
     int accumulator_sum = 0;
     for (unsigned int i = 0; i < contour.size(); i++)
     {
-        std::cout << "contour x: " << contour[i].x << " contour y: " << contour[i].y << " weight: " << hough_matrix_copy.at<ushort>(contour[i]) << std::endl;
+        //std::cout << "contour x: " << contour[i].x << " contour y: " << contour[i].y << " weight: " << hough_matrix_copy.at<ushort>(contour[i]) << std::endl;
         accumulator_sum += hough_matrix_copy.at<ushort>(contour[i]);
         point_sum.x += contour[i].x* hough_matrix_copy.at<ushort>(contour[i]);
         point_sum.y += contour[i].y * hough_matrix_copy.at<ushort>(contour[i]);
     }
     point_sum.x /= accumulator_sum;
     point_sum.y /= accumulator_sum;
-    std::cout << "weighted x: " << point_sum.x << " weighted y: " << point_sum.y << std::endl;
+    //std::cout << "weighted x: " << point_sum.x << " weighted y: " << point_sum.y << std::endl;
     return point_sum;
 }
 

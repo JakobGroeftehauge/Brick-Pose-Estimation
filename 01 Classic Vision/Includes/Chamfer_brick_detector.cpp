@@ -20,7 +20,8 @@ void Chamfer_brick_detector::detect()
 	this->predictions.clear();
 	this->pred_candidates.clear();
 	compute_chamfer_img();
-	find_rectangle_candidates(60, 100, 110, 5);
+	find_rectangle_candidates(2, 100, 110, 3);
+	//std::cout << this->pred_candidates.size() << std::endl;;
 	//sort list
 	std::sort(this->pred_candidates.begin(), this->pred_candidates.end());
 	std::cout << "Length before IOU NMS: " << this->pred_candidates.size() << std::endl;
@@ -35,26 +36,26 @@ void Chamfer_brick_detector::detect(cv::Mat img)
 	detect();
 }
 
-cv::Mat Chamfer_brick_detector::create_matchingspace(int num_angles, float scale)
-{
-    double angle_res = CV_PI/num_angles;
-
-    int match_width = img.cols - brick_template.size.width * scale - template_padding * 2;
-    int match_heigt = img.rows - brick_template.size.height * scale - template_padding * 2;
-
-    std::vector<int> dims = {match_width, match_heigt, num_angles};  //macth_height and
-    cv::Mat stacked_matching_space(dims, CV_32F);
-
-    for(int i = 0; i < num_angles; i++)
-    {
-        std::cout << " height " << match_heigt << " width "<< match_width << std::endl;
-        cv::Mat match_space = cv::Mat::ones(match_width, match_heigt, CV_32F);
-        std::cout << "Dim 0 " << match_space.size[0] << " Dim 1 " << match_space.size[1] << std::endl;
-        int mapping_channels[] = {0,0 , 1,1, 2,i};
-        mixChannels(&match_space, 1, &stacked_matching_space, num_angles, mapping_channels, 4);
-    }
-    return stacked_matching_space;
-}
+//cv::Mat Chamfer_brick_detector::create_matchingspace(int num_angles, float scale)
+//{
+//    double angle_res = CV_PI/num_angles;
+//
+//    int match_width = img.cols - brick_template.size.width * scale - template_padding * 2;
+//    int match_heigt = img.rows - brick_template.size.height * scale - template_padding * 2;
+//
+//    std::vector<int> dims = {match_width, match_heigt, num_angles};  //macth_height and
+//    cv::Mat stacked_matching_space(dims, CV_32F);
+//
+//    for(int i = 0; i < num_angles; i++)
+//    {
+//        std::cout << " height " << match_heigt << " width "<< match_width << std::endl;
+//        cv::Mat match_space = cv::Mat::ones(match_width, match_heigt, CV_32F);
+//        std::cout << "Dim 0 " << match_space.size[0] << " Dim 1 " << match_space.size[1] << std::endl;
+//        int mapping_channels[] = {0,0 , 1,1, 2,i};
+//        mixChannels(&match_space, 1, &stacked_matching_space, num_angles, mapping_channels, 4);
+//    }
+//    return stacked_matching_space;
+//}
 
 
 void Chamfer_brick_detector::apply_NMS(cv::Mat &matching_space, std::vector<cv::Point>& best_match_locations)
@@ -76,6 +77,9 @@ void Chamfer_brick_detector::compute_chamfer_img()
 	cv::imshow("edge img", edge_img);
 	cv::threshold(edge_img, edge_img, 127, 255, cv::THRESH_BINARY_INV);
 	cv::distanceTransform(edge_img, this->chamfer_img, CV_DIST_L2, 3);
+	cv::Mat tmp_img;
+	cv::normalize(this->chamfer_img, tmp_img, 0, 1.0, cv::NORM_MINMAX, CV_32F);
+	cv::imshow("Distance map", tmp_img);
 }
 
 void Chamfer_brick_detector::create_template(float scale, float angle, cv::Mat &template_img_dst, cv::RotatedRect &rect_dst)
@@ -106,7 +110,7 @@ void Chamfer_brick_detector::create_template(float scale, float angle, cv::Mat &
 
 void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float scale_min, float scale_max, int scale_steps)
 {
-	util::Timer rectangle_candidate_timer("find candidates");
+	//util::Timer rectangle_candidate_timer("find candidates");
 	float angle_res = 180.0 / angle_steps;
 	float scale_res = (scale_max - scale_min) / scale_steps;
 	cv::Mat template_img, tmp_matching_space;
@@ -119,9 +123,21 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 		{
 			//Timer inner_loop("Inner loop");
 			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);
-            cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCOEFF); // typically 5-10 ms. sometimes more. Release
+
+			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_SQDIFF); // typically 5-10 ms. CV_TM_CCORR sometimes more. Release
+			if (i == angle_steps / 2 + 2 && j == scale_steps / 2)
+			{
+				cv::Mat _tmp_template;
+				cv::Mat _tmp_matching;
+				cv::normalize(template_img, _tmp_template, 0, 1.0, cv::NORM_MINMAX, CV_32F);
+				cv::normalize(tmp_matching_space, _tmp_matching, 0, 1.0, cv::NORM_MINMAX, CV_32F);
+				cv::imshow("template", _tmp_template);
+				cv::imshow("matching space", _tmp_matching);
+			}
+
 			match_locations.clear();
 			apply_NMS(tmp_matching_space, match_locations);
+			std::cout << match_locations.size() << std::endl;
 			tmp_candidates.clear();
 			generate_candidates(match_locations, tmp_matching_space, tmp_rect, tmp_candidates);
 			// Insert intermediate NMS on tmp_candidates here
@@ -146,17 +162,15 @@ void Chamfer_brick_detector::generate_candidates(std::vector<cv::Point>& best_ma
 void Chamfer_brick_detector::apply_IOU_NMS(const std::vector<prediction_candidate>& candidates_src, float thresh, std::vector<prediction_candidate>& candidates_dst)
 {
 
-    util::Timer timer("Apply IOU NMS");
-    unsigned int i = 0;
-    unsigned int j = 0;
+    //util::Timer timer("Apply IOU NMS");
+    int i = 0;
+    int j = 0;
 
 	std::vector<prediction_candidate> candidates_src_copy(candidates_src);
-	auto itv = candidates_src_copy.begin();
-	auto itv2 = std::next(itv, 1);
 
-	while (i < candidates_src_copy.size()-1)
+
+	while (i < int(candidates_src_copy.size())-1)
 	{
-		j = i + 1;
 		while (j < candidates_src_copy.size())
 		{
 			if (rotated_rect_IOU(candidates_src_copy[i].rotated_rect, candidates_src_copy[j].rotated_rect) > thresh)
