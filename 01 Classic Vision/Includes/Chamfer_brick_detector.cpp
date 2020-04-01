@@ -20,7 +20,7 @@ void Chamfer_brick_detector::detect()
 	this->predictions.clear();
 	this->pred_candidates.clear();
 	compute_chamfer_img();
-	find_rectangle_candidates(60, 100, 110, 5);
+	find_rectangle_candidates(3, 100, 110, 5);
 	//std::cout << this->pred_candidates.size() << std::endl;;
 	//sort list
 	std::sort(this->pred_candidates.begin(), this->pred_candidates.end());
@@ -164,13 +164,15 @@ void Chamfer_brick_detector::apply_IOU_NMS(const std::vector<prediction_candidat
 
     //util::Timer timer("Apply IOU NMS");
     int i = 0;
-    int j = 0;
+    unsigned int j = 0;
 
 	std::vector<prediction_candidate> candidates_src_copy(candidates_src);
 
 
-	while (i < candidates_src_copy.size()-1)
+	while (i < int(candidates_src_copy.size())-1)
 	{
+		std::cout << i << int(candidates_src_copy.size()) - 1 << std::endl;
+		j = i + 1;
 		while (j < candidates_src_copy.size())
 		{
 			if (rotated_rect_IOU(candidates_src_copy[i].rotated_rect, candidates_src_copy[j].rotated_rect) > thresh)
