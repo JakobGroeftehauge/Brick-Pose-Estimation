@@ -11,6 +11,7 @@ public:
 	Detector(cv::Mat img);
 	virtual void detect();
 	virtual void detect(cv::Mat img);
+	virtual void set_NMS_thresh(double thresh); //remove after use
 	void set_img(cv::Mat img);
 	std::vector<prediction> predictions;
 
