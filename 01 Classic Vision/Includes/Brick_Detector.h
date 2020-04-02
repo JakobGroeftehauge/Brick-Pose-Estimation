@@ -13,9 +13,10 @@ public:
 	void detect();
 	void detect(cv::Mat img);
     std::vector<std::vector<double>> lines;
+    Hough_space hough;
+    std::vector<std::vector<cv::Point2f>> intersection_mat;
 
 private:
-    Hough_space hough;
     int canny_thres_low;
     int canny_thres_high;
 
