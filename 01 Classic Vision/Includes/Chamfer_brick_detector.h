@@ -14,6 +14,7 @@ public:
 	cv::Mat chamfer_img;
 	cv::Mat model_template;
 	cv::Mat matching_space;
+    cv::Mat matching_space_disp;
 	std::vector<cv::RotatedRect> best_rects;
 	std::vector<prediction_candidate> pred_candidates;
 	void create_template(float scale, float angle, cv::Mat& template_img_dst, cv::RotatedRect& rect_dst);

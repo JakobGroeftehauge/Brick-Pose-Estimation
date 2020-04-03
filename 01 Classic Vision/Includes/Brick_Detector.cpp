@@ -13,6 +13,7 @@ Brick_Detector::Brick_Detector(cv::Mat img)
     this->img = img;
     this->canny_thres_high = 140;
     this->canny_thres_low = 60;
+
 }
 
 void Brick_Detector::detect()
@@ -158,7 +159,7 @@ std::vector<std::vector<cv::Point2f> > Brick_Detector::find_intersection_matrix(
             intersection_matrix[i].push_back(intersection);
         }
     }
-
+    this->intersection_mat = intersection_matrix;
     return intersection_matrix;
 }
 

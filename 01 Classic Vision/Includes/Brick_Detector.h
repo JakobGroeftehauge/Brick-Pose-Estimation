@@ -14,9 +14,10 @@ public:
 	void detect(cv::Mat img);
     //void set_NMS_thresh(double thresh); // not used. Only added to support the one in the other detector
     std::vector<std::vector<double>> lines;
+    Hough_space hough;
+    std::vector<std::vector<cv::Point2f>> intersection_mat;
 
 private:
-    Hough_space hough;
     int canny_thres_low;
     int canny_thres_high;
 

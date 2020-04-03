@@ -47,13 +47,13 @@ void run_evaluation(double NMS_thresh) {
 }
 
 int main()
-{   
+{
     double steps = 20;
     double min = 0;
     double max = 500;//169942;
     double step_size = (max - min) / steps;
     for (int i = 1; i <= steps; i++)
-    {   
+    {
         run_evaluation(i * step_size);
         std::cout << "--------------------------------------------------------------------------------- \n" << std::endl;
     }
@@ -61,28 +61,6 @@ int main()
     return 0;
 }
 
-//int main()
-//{
-//    Data_loader tmp_loader("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
-//    std::vector<double> thresholds({ 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95 });
-//    Chamfer_brick_detector detector;
-//    double glob_min = 1000;
-//    double glob_max = 0;
-//
-//    double min;
-//    double max;
-//
-//    while (0)//tmp_loader.loadNext())
-//    {
-//        detector.set_img(tmp_loader.img);
-//        detector.compute_chamfer_img();
-//        cv::minMaxLoc(detector.chamfer_img, &min, &max);
-//        if (min < glob_min)
-//            glob_min = min;
-//        if (max > glob_max)
-//            glob_max = max;
-//        std::cout << "Min: " << min << " Max: " << max << std::endl;
-//    }
-//    ;       std::cout << "Global Min: " << glob_min << " Global Max: " << glob_max << std::endl;
-//    return 0;
-//}
+// What we want
+// for one threshold value, calculate the average f1 score for different thresholds.
+    // to save time, calculate the whole array of f1 at once.

@@ -94,6 +94,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
         if (split_value > 0)
         {
             shift_hough(hough_space_bin, hough_space_bin, split_value);
+            this->hough_rotated = hough_space_bin;
         }
         else
         {
