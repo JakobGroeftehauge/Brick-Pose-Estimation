@@ -54,7 +54,11 @@ int main()
     cv::imshow("img lines", img_lines);
     cv::imshow("predictions", img_detections);
 
+    //For the preprocessing section
+    cv::imshow("edge_img1", detector.hough.edge_img);
+
     //Save images to disk
+    imwrite("edge_img.png", detector.hough.edge_img);
     imwrite( "hough_space.png", hough );
     imwrite( "hough_space_rot.png", hough_rot);
     imwrite( "lines_hough.png", img_lines);

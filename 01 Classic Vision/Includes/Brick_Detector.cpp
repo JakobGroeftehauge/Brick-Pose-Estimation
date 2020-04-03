@@ -13,6 +13,7 @@ Brick_Detector::Brick_Detector(cv::Mat img)
     this->img = img;
     this->canny_thres_high = 140;
     this->canny_thres_low = 60;
+
 }
 
 void Brick_Detector::detect()

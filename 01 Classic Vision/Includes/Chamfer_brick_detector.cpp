@@ -132,7 +132,10 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 				cv::normalize(template_img, _tmp_template, 0, 1.0, cv::NORM_MINMAX, CV_32F);
 				cv::normalize(tmp_matching_space, _tmp_matching, 0, 1.0, cv::NORM_MINMAX, CV_32F);
 				cv::imshow("template", _tmp_template);
+                this->model_template = _tmp_template;
 				cv::imshow("matching space", _tmp_matching);
+                cv::normalize(tmp_matching_space, this->matching_space_disp, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+
 			}
 
 			match_locations.clear();
