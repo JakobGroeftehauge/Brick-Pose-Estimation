@@ -20,6 +20,7 @@ public:
 	void close_file();
 	void reset_counters();
 	void print_metrics();
+	Detector* detector;
 	cv::Mat img_to_print;
 	std::vector<double> true_positive_range;
 	std::vector<double> false_positive_range;
@@ -36,7 +37,6 @@ private:
 	//std::string folder_path;
 	Data_loader loader;
 	std::ofstream file;
-	Detector* detector;
     std::vector<cv::Rect> false_positive;
     std::vector<cv::Rect> true_positive;
 	float total_true_positive;

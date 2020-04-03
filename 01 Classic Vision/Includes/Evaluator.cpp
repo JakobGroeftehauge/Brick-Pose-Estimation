@@ -149,7 +149,7 @@ void Evaluator::evaluate(double threshold, int* false_neg_out, int* false_pos_ou
 
     *true_pos_out = this->detector->predictions.size() - predictions.size();
     *false_pos_out = predictions.size();
-    std::cout << "internal true pos:" << this->detector->predictions.size() - predictions.size() << std::endl;
+    //std::cout << "internal true pos:" << this->detector->predictions.size() - predictions.size() << std::endl;
     *false_neg_out = annotations.size();
     save_evaluation(*true_pos_out, *false_pos_out, *false_neg_out);
     //this->total_false_negative += false_neg;
@@ -168,7 +168,7 @@ void Evaluator::evaluate_range(std::vector<double> thresholds)
         int false_pos = 0;
         int true_pos = 0;
         evaluate(thresholds[i], &false_neg, &false_pos, &true_pos);
-        std::cout << i << " external true pos: " << true_pos << std::endl;
+        //std::cout << i << " external true pos: " << true_pos << std::endl;
         this->false_negative_range.push_back(false_neg);
         this->false_positive_range.push_back(false_pos);
         this->true_positive_range.push_back(true_pos);

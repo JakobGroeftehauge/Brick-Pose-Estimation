@@ -4,7 +4,7 @@ Chamfer_brick_detector::Chamfer_brick_detector()
 {
 	this->canny_thres_high = 70;
 	this->canny_thres_low = 25;
-	this->NMS_thresh = 120;
+	this->NMS_thresh = 1200;
 }
 
 Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
@@ -17,6 +17,11 @@ Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 
 void Chamfer_brick_detector::detect()
 {
+	//util::Timer timer("Detection time");
+	std::chrono::high_resolution_clock::time_point end;
+	std::chrono::high_resolution_clock::time_point start;
+	std::chrono::duration<float> duration;
+	start = std::chrono::high_resolution_clock::now();
 	this->predictions.clear();
 	this->pred_candidates.clear();
 	compute_chamfer_img();
@@ -24,10 +29,14 @@ void Chamfer_brick_detector::detect()
 	//std::cout << this->pred_candidates.size() << std::endl;;
 	//sort list
 	std::sort(this->pred_candidates.begin(), this->pred_candidates.end());
-	std::cout << "Length before IOU NMS: " << this->pred_candidates.size() << std::endl;
+	//std::cout << "Length before IOU NMS: " << this->pred_candidates.size() << std::endl;
 	apply_IOU_NMS(this->pred_candidates, 0.2, this->pred_candidates);
-	std::cout << "Length after IOU NMS: " << this->pred_candidates.size() << std::endl;
+	//std::cout << "Length after IOU NMS: " << this->pred_candidates.size() << std::endl;
 	predictions_from_candidates(this->pred_candidates, this->predictions);
+	end = std::chrono::high_resolution_clock::now();
+	duration = end - start;
+	float ms = duration.count() * 1000.0f;
+	this->time += ms;
 }
 
 void Chamfer_brick_detector::detect(cv::Mat img)
@@ -43,6 +52,13 @@ void Chamfer_brick_detector::apply_NMS(cv::Mat &matching_space, std::vector<cv::
 	erode(matching_space, eroded, cv::Mat());
 	compare(matching_space, eroded, local_minima, cv::CMP_EQ);
 	threshold(matching_space, thresholded_matching_space, this->NMS_thresh, 255, cv::THRESH_BINARY_INV);
+	//double max, min;
+	//cv::minMaxLoc(matching_space, &min, &max);
+	//std::cout << "Max" << max << "min " << min << std::endl;
+	//cv::imshow("thresholded matching space", thresholded_matching_space);
+	//cv::minMaxLoc(thresholded_matching_space, &min, &max);
+	//std::cout << "Max" << max << std::endl;
+	//cv::waitKey(0);
 	thresholded_matching_space.convertTo(thresholded_8bit, CV_8U);
 	bitwise_and(local_minima, thresholded_8bit, local_minima);
 	cv::findNonZero(local_minima, best_match_locations);
@@ -52,12 +68,12 @@ void Chamfer_brick_detector::compute_chamfer_img()
 {
 	cv::Mat edge_img;
 	find_edges(this->img, edge_img);
-	cv::imshow("edge img", edge_img);
+	//cv::imshow("edge img", edge_img);
 	cv::threshold(edge_img, edge_img, 127, 255, cv::THRESH_BINARY_INV);
 	cv::distanceTransform(edge_img, this->chamfer_img, CV_DIST_L2, 3);
-	cv::Mat tmp_img;
-	cv::normalize(this->chamfer_img, tmp_img, 0, 1.0, cv::NORM_MINMAX, CV_32F);
-	cv::imshow("Distance map", tmp_img);
+	/*cv::Mat tmp_img;
+	cv::normalize(this->chamfer_img, tmp_img, 0, 1.0, cv::NORM_MINMAX, CV_32F);*/
+	//cv::imshow("Distance map", tmp_img);
 }
 
 void Chamfer_brick_detector::set_NMS_thresh(double thresh)
@@ -84,7 +100,7 @@ void Chamfer_brick_detector::create_template(float scale, float angle, cv::Mat &
 
 	//Calculate norm kind of
 	int white_pixels = cv::countNonZero(template_);
-	template_ = template_ / float(white_pixels)*100;
+	template_ = template_ / float(white_pixels) * 100;
 
 	// set destination variables
 	template_img_dst = template_;
@@ -108,15 +124,16 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);
 
 			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCORR); // typically 5-10 ms. CV_TM_CCORR sometimes more. Release
-			//if (i == angle_steps / 2 + 2 && j == scale_steps / 2)
-			//{
-			//	cv::Mat _tmp_template;
-			//	cv::Mat _tmp_matching;
-			//	cv::normalize(template_img, _tmp_template, 0, 1.0, cv::NORM_MINMAX, CV_32F);
-			//	cv::normalize(tmp_matching_space, _tmp_matching, 0, 1.0, cv::NORM_MINMAX, CV_32F);
-			//	cv::imshow("template", _tmp_template);
-			//	cv::imshow("matching space", _tmp_matching);
-			//}
+	/*		if (i == angle_steps / 2 + 2 && j == scale_steps / 2)
+			{
+				cv::Mat _tmp_template;
+				cv::Mat _tmp_matching;
+				cv::normalize(template_img, _tmp_template, 0, 1.0, cv::NORM_MINMAX, CV_32F);
+				cv::normalize(tmp_matching_space, _tmp_matching, 0, 1.0, cv::NORM_MINMAX, CV_32F);
+				cv::imshow("template", _tmp_template);
+				cv::imshow("matching space", _tmp_matching);
+				cv::waitKey(0);
+			}*/
 
 			match_locations.clear();
 			apply_NMS(tmp_matching_space, match_locations);

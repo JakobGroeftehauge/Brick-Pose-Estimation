@@ -36,6 +36,14 @@ struct Timer
     }
 };
 
+inline void draw_points(cv::Mat& img, std::vector<cv::Point2f> pt_list, int radius, cv::Scalar color)
+{
+    for (int j = 0; j < pt_list.size(); j++)
+    {
+        cv::circle(img, pt_list[j], radius, color, -1, CV_AA);
+    }
+}
+
 inline void print_bounding_boxes(cv::Mat& img, std::vector<prediction> preds, cv::Scalar color = cv::Scalar(255,0,0))
 {
     for(unsigned int i = 0; i < preds.size(); i++)

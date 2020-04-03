@@ -14,10 +14,12 @@ public:
 	virtual void set_NMS_thresh(double thresh); //remove after use
 	void set_img(cv::Mat img);
 	std::vector<prediction> predictions;
+	double time = 0;
 
 protected:
 	cv::Mat img;
 	void clear_predictions();
+
 
 };
 
