@@ -388,7 +388,7 @@
     }
   ],
   "imagePath": "colorIMG_100.png",
-  "imageData": null,
+  "imageData": 1,
   "imageHeight": 480,
   "imageWidth": 640
 }

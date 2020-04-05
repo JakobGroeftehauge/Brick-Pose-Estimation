@@ -12,6 +12,7 @@ public:
 	Brick_Detector(cv::Mat img);
 	void detect();
 	void detect(cv::Mat img);
+    //void set_NMS_thresh(double thresh); // not used. Only added to support the one in the other detector
     std::vector<std::vector<double>> lines;
     Hough_space hough;
     std::vector<std::vector<cv::Point2f>> intersection_mat;

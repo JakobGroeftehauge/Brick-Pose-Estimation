@@ -40,19 +40,16 @@ void Evaluator::set_path(std::string path)
 	this->loader = Data_loader(path);
 }
 
-bool Evaluator::evaluate_next_img(double threshold)
+bool Evaluator::evaluate_next_img()
 {
-    this->evaluate_threshold = threshold;
     if (file.is_open() == false)
     {
         open_file();
     }
 	if (loader.loadNext())
 	{
-		this->detector->detect(loader.img);
-        std::vector<double> thresholds;
-        thresholds.push_back(this->evaluate_threshold);
-        evaluate_range(thresholds);
+		this->detector->detect(loader.img); 
+        evaluate_range(this->evaluate_thresholds);
 		return true;
 	}
 	else
@@ -61,6 +58,11 @@ bool Evaluator::evaluate_next_img(double threshold)
         close_file();
 		return false;
 	}
+}
+
+void Evaluator::set_thresholds(std::vector<double> thresholds)
+{
+    this->evaluate_thresholds = thresholds;
 }
 
 void Evaluator::open_file()
@@ -84,7 +86,8 @@ void Evaluator::reset_counters()
 
 void Evaluator::print_metrics()
 {
-    std::cout << "Threshold: " << this->evaluate_threshold << std::endl;
+    //this function ahs to be changed or deleted
+    //std::cout << "Threshold: " << this->evaluate_threshold << std::endl;
     std::cout << "Total False Negatives: " << this->total_false_negative << " Total False Positives: " << this->total_false_positive << "Total True positives: " << this->total_true_positive << std::endl;
     float precision = this->total_true_positive / (this->total_true_positive + this->total_false_positive);
     float recall = this->total_true_positive / (this->total_true_positive + this->total_false_negative);
@@ -146,7 +149,7 @@ void Evaluator::evaluate(double threshold, int* false_neg_out, int* false_pos_ou
 
     *true_pos_out = this->detector->predictions.size() - predictions.size();
     *false_pos_out = predictions.size();
-    std::cout << "internal true pos:" << this->detector->predictions.size() - predictions.size() << std::endl;
+    //std::cout << "internal true pos:" << this->detector->predictions.size() - predictions.size() << std::endl;
     *false_neg_out = annotations.size();
     save_evaluation(*true_pos_out, *false_pos_out, *false_neg_out);
     //this->total_false_negative += false_neg;
@@ -156,14 +159,19 @@ void Evaluator::evaluate(double threshold, int* false_neg_out, int* false_pos_ou
 
 void Evaluator::evaluate_range(std::vector<double> thresholds)
 {
+    this->false_negative_range.clear();
+    this->false_positive_range.clear();
+    this->true_positive_range.clear();
     for (int i = 0; i < thresholds.size(); i++)
     {
         int false_neg = 0;
         int false_pos = 0;
         int true_pos = 0;
         evaluate(thresholds[i], &false_neg, &false_pos, &true_pos);
-        std::cout << i << " external true pos: " << true_pos << std::endl;
-        //this->total_false_negative_list[i] += false_neg;
+        //std::cout << i << " external true pos: " << true_pos << std::endl;
+        this->false_negative_range.push_back(false_neg);
+        this->false_positive_range.push_back(false_pos);
+        this->true_positive_range.push_back(true_pos);
     }
 }
 

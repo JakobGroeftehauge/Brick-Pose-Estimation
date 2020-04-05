@@ -17,6 +17,10 @@ void Detector::detect(cv::Mat img)
 {
 }
 
+void Detector::set_NMS_thresh(double thresh)
+{
+}
+
 void Detector::set_img(cv::Mat img)
 {
 	this->img = img;
