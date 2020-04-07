@@ -7,7 +7,7 @@ using namespace std;
 
 void img_1(cv::Mat &img, Brick_Detector &detector)
 {
-    util::print_lines(img, detector.lines, cv::Scalar(200, 0, 0));
+    util::print_lines(img, detector.lines, cv::Scalar(255, 255, 255));
 
     for(int i = 0; i < detector.intersection_mat.size(); i++)
     {
@@ -16,34 +16,34 @@ void img_1(cv::Mat &img, Brick_Detector &detector)
         {
             circle(img, points[j], 3, cv::Scalar(0,0,255), cv::FILLED, CV_AA);
             string number = to_string(i * points.size() + j);
-            putText(img, number, points[j]+ cv::Point2f(5,2), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 0.55, cv::Scalar(255, 255, 255), 1, 8, false);
+            putText(img, number, points[j]+ cv::Point2f(1,-9), cv::FONT_HERSHEY_SCRIPT_SIMPLEX, 0.55, cv::Scalar(255, 255, 255), 1, 8, false);
         }
     }
 }
 
 void img_2(cv::Mat &img, Brick_Detector &detector)
 {
-    util::print_bounding_boxes(img, detector.predictions, cv::Scalar(0,255, 0));
+    util::print_bounding_boxes(img, detector.predictions, cv::Scalar(255,0, 255));
 }
 
 int main()
 {
-    cv::Mat img = cv::imread("../../03 Data/Simple Dataset/colorIMG_12.png");
+    cv::Mat img = cv::imread("../../03 Data/Simple Dataset/colorIMG_193.png");
     cv::imshow("raw img", img);
     Brick_Detector detector(img);
     detector.detect();
     cv::Mat hough = detector.hough.hough_matrix;
     cv::Mat hough_rot = detector.hough.hough_rotated;
 
+
     double min, max;
     cv::minMaxLoc(hough, &min, &max);
     std::cout << min << "  " << max << std::endl;
     cv::normalize(hough, hough, 0, 255, cv::NORM_MINMAX, CV_8UC1);
     cv::imshow("hough space", hough);
-
-
     cv::imshow("hough space rot", hough_rot);
 
+    cv::waitKey(0);
     cout << "Hello World!" << endl;
     cout << detector.hough.split_angle << endl;
     cv::Mat img_lines = img.clone();

@@ -101,6 +101,10 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
             std::cout << "Could not find appropriate splitting line" << std::endl;
         }
     }
+    else
+    {
+        this->hough_rotated = hough_space_bin;
+    }
     //Dilate the clusters to "grow" them together
     //cv::imshow("hough space bin", hough_space_bin);
     cv::Mat kernel = cv::Mat::ones(3, 3, CV_8U);
