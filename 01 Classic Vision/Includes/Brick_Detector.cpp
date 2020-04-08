@@ -2,24 +2,13 @@
 
 Brick_Detector::Brick_Detector()
 {
-<<<<<<< HEAD
-    this->canny_thres_high = 154;
-    this->canny_thres_low = 51;
-=======
     set_canny_thresh(60, 140);
->>>>>>> 523590b224639efdb17e5d7148f02e45155dedf0
 }
 
 Brick_Detector::Brick_Detector(cv::Mat img)
 {
     this->img = img;
-<<<<<<< HEAD
-    this->canny_thres_high = 154;
-    this->canny_thres_low = 51;
-
-=======
     set_canny_thresh(60, 140);
->>>>>>> 523590b224639efdb17e5d7148f02e45155dedf0
 }
 
 void Brick_Detector::detect()
@@ -77,12 +66,8 @@ void Brick_Detector::find_lines()
     //cv::imshow("src image", this->img);
     find_edges(this->img, edge_img);
     cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(50, edge_img.size().height - 1), 0, -1); //mask out pallet
-<<<<<<< HEAD
-    cv::imshow("edge_img", edge_img);
-=======
     //cv::imshow("edge_img", edge_img);
     //cv::waitKey(0);
->>>>>>> 523590b224639efdb17e5d7148f02e45155dedf0
     this->hough = Hough_space(edge_img);
 
     this->lines =  hough.find_lines();
@@ -276,4 +261,3 @@ bool Brick_Detector::accept_detection(cv::RotatedRect rotated_BB)
         return true;
     }
 }
-

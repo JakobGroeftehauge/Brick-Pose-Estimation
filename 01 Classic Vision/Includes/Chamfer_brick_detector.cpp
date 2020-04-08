@@ -2,14 +2,8 @@
 
 Chamfer_brick_detector::Chamfer_brick_detector()
 {
-<<<<<<< HEAD
-    this->canny_thres_high = 70;
-    this->canny_thres_low = 25;
-    this->NMS_thresh = 120;
-=======
 	set_canny_thresh(25, 70);
 	this->NMS_thresh = 120;
->>>>>>> 523590b224639efdb17e5d7148f02e45155dedf0
 }
 
 Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
