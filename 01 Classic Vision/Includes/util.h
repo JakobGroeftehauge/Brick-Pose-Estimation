@@ -38,7 +38,7 @@ struct Timer
 
 inline void draw_points(cv::Mat& img, std::vector<cv::Point2f> pt_list, int radius, cv::Scalar color)
 {
-    for (int j = 0; j < pt_list.size(); j++)
+    for (unsigned int j = 0; j < pt_list.size(); j++)
     {
         cv::circle(img, pt_list[j], radius, color, -1, CV_AA);
     }
@@ -104,7 +104,7 @@ inline void print_rotated_bounding_boxes(cv::Mat& img, std::vector<cv::RotatedRe
     }
 }
 
-inline void print_rotated_bounding_boxes(cv::Mat& img, std::vector<prediction_candidate> preds, cv::Scalar color = cv::Scalar(0, 0, 255))
+inline void print_rotated_bounding_boxes(cv::Mat& img, std::vector<prediction_candidate> preds, cv::Scalar color = cv::Scalar(0, 0, 255), bool print_score = true)
 {
     for (unsigned int i = 0; i < preds.size(); i++)
     {
@@ -116,7 +116,11 @@ inline void print_rotated_bounding_boxes(cv::Mat& img, std::vector<prediction_ca
         {
             cv::line(img, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
         }
-        cv::putText(img, std::to_string((int)preds[i].distance_score), center - cv::Point(7,-7), 1, 1, cv::Scalar(255, 255, 255));
+        if(print_score == true)
+        {
+             cv::putText(img, std::to_string((int)preds[i].distance_score), center - cv::Point(7,-7), 1, 1, cv::Scalar(255, 255, 255));
+        }
+
     }
 }
 

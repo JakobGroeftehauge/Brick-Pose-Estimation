@@ -11,13 +11,16 @@ public:
 	void detect(cv::Mat img);
 	void compute_chamfer_img();
 	void set_NMS_thresh(double thresh);
+    void set_resolution(int angle_step, float scale_min, float scale_max, float scale_step);
 	cv::Mat chamfer_img;
 	cv::Mat model_template;
 	cv::Mat matching_space;
     cv::Mat matching_space_disp;
 	std::vector<cv::RotatedRect> best_rects;
 	std::vector<prediction_candidate> pred_candidates;
+    std::vector<prediction_candidate> pred_candidates_unfiltered;
 	void create_template(float scale, float angle, cv::Mat& template_img_dst, cv::RotatedRect& rect_dst);
+
 
 private:
 	void find_edges(cv::Mat& src, cv::Mat& dst);
@@ -30,10 +33,14 @@ private:
 
 	int canny_thres_low;
 	int canny_thres_high;
-	double NMS_thresh;
+    double NMS_thresh;
 
-	int template_padding = 2; //How many pixels to add to the circumfrence of the template Mat.
-	 // OBS: size passer ikke! Skal lige regnes igen.
+    int angle_step = 60;
+    float scale_min = 100.0;
+    float scale_max = 110.0;
+    float scale_step = 5;
+
+    int template_padding = 2;
 	cv::RotatedRect brick_template = cv::RotatedRect(cv::Point2f(0.5, 0.5), cv::Size2f(0.971681, 0.236297), 0);
 
 };

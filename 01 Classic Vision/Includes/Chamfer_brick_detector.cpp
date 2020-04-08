@@ -4,7 +4,7 @@ Chamfer_brick_detector::Chamfer_brick_detector()
 {
     this->canny_thres_high = 70;
     this->canny_thres_low = 25;
-	this->NMS_thresh = 1200;
+    this->NMS_thresh = 120;
 }
 
 Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
@@ -25,11 +25,12 @@ void Chamfer_brick_detector::detect()
 	this->predictions.clear();
 	this->pred_candidates.clear();
 	compute_chamfer_img();
-	find_rectangle_candidates(60, 100, 110, 5);
+    find_rectangle_candidates(angle_step, scale_min, scale_max, scale_step);
 	//std::cout << this->pred_candidates.size() << std::endl;;
 	//sort list
 	std::sort(this->pred_candidates.begin(), this->pred_candidates.end());
 	//std::cout << "Length before IOU NMS: " << this->pred_candidates.size() << std::endl;
+    this->pred_candidates_unfiltered = this->pred_candidates;
 	apply_IOU_NMS(this->pred_candidates, 0.2, this->pred_candidates);
 	//std::cout << "Length after IOU NMS: " << this->pred_candidates.size() << std::endl;
 	predictions_from_candidates(this->pred_candidates, this->predictions);
@@ -78,7 +79,15 @@ void Chamfer_brick_detector::compute_chamfer_img()
 
 void Chamfer_brick_detector::set_NMS_thresh(double thresh)
 {
-	this->NMS_thresh = thresh;
+    this->NMS_thresh = thresh;
+}
+
+void Chamfer_brick_detector::set_resolution(int angle_step, float scale_min, float scale_max, float scale_step)
+{
+    this->angle_step = angle_step;
+    this->scale_min = scale_min;
+    this->scale_max = scale_max;
+    this->scale_step = scale_step;
 }
 
 void Chamfer_brick_detector::create_template(float scale, float angle, cv::Mat &template_img_dst, cv::RotatedRect &rect_dst)
@@ -118,7 +127,7 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 	std::vector<prediction_candidate> tmp_candidates;
 	for (int i = 0; i < angle_steps; i++)
 	{
-		for (int j = 0; j < scale_steps; j++)
+        for (int j = 0; j < scale_steps; j++)
 		{
 			//Timer inner_loop("Inner loop");
 			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);

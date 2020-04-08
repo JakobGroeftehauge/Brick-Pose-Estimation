@@ -41,7 +41,7 @@ int main()
     std::cout << min << "  " << max << std::endl;
     cv::normalize(hough, hough, 0, 255, cv::NORM_MINMAX, CV_8UC1);
     cv::imshow("hough space", hough);
-    cv::imshow("hough space rot", hough_rot);
+    //cv::imshow("hough space rot", hough_rot);
 
     cv::waitKey(0);
     cout << "Hello World!" << endl;
@@ -58,9 +58,9 @@ int main()
     cv::imshow("edge_img1", detector.hough.edge_img);
 
     //Save images to disk
-    imwrite("edge_img.png", detector.hough.edge_img);
+    imwrite("edge_img_204_405.png", detector.hough.edge_img);
     imwrite( "hough_space.png", hough );
-    imwrite( "hough_space_rot.png", hough_rot);
+    //imwrite( "hough_space_rot.png", hough_rot);
     imwrite( "lines_hough.png", img_lines);
     imwrite( "BB_hough.png", img_detections);
 
