@@ -28,8 +28,8 @@ private:
 	float rotated_rect_IOU(cv::RotatedRect rect1, cv::RotatedRect rect2);
 	void predictions_from_candidates(std::vector<prediction_candidate> &candidates, std::vector<prediction> &predictions);
 
-	int canny_thres_low;
-	int canny_thres_high;
+	//int canny_thres_low;
+	//int canny_thres_high;
 	double NMS_thresh;
 
 	int template_padding = 2; //How many pixels to add to the circumfrence of the template Mat.

@@ -18,8 +18,8 @@ public:
     std::vector<std::vector<cv::Point2f>> intersection_mat;
 
 private:
-    int canny_thres_low;
-    int canny_thres_high;
+    //int canny_thres_low;
+    //int canny_thres_high;
 
     void clear_all();
     void find_lines();

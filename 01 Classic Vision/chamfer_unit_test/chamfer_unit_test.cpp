@@ -37,6 +37,7 @@ int main()
 
     cv::imshow("mat roi", conv_template);
     cv::imshow("Template", white_template);
+    cv::imshow("distance map", chamfer_detector.chamfer_img);
     imwrite("Distance_transform.png", chamfer_detector.chamfer_img);
     imwrite("Matching_space.png", white_template);
 

@@ -151,7 +151,7 @@ void Evaluator::evaluate(double threshold, int* false_neg_out, int* false_pos_ou
     *false_pos_out = predictions.size();
     //std::cout << "internal true pos:" << this->detector->predictions.size() - predictions.size() << std::endl;
     *false_neg_out = annotations.size();
-    save_evaluation(*true_pos_out, *false_pos_out, *false_neg_out);
+    //save_evaluation(*true_pos_out, *false_pos_out, *false_neg_out);
     //this->total_false_negative += false_neg;
     //this->total_false_positive += false_pos;
     //this->total_true_positive += true_pos;

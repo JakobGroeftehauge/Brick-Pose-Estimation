@@ -4,11 +4,12 @@ Chamfer_brick_detector::Chamfer_brick_detector()
 {
 	this->canny_thres_high = 70;
 	this->canny_thres_low = 25;
-	this->NMS_thresh = 1200;
+	this->NMS_thresh = 120;
 }
 
 Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 {
+	set_canny_thresh(25, 70);
 	this->canny_thres_high = 70;
 	this->canny_thres_low = 25;
 	this->NMS_thresh = 120;
@@ -124,7 +125,7 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);
 
 			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCORR); // typically 5-10 ms. CV_TM_CCORR sometimes more. Release
-			/*if (i == angle_steps / 2 + 2 && j == scale_steps / 2)
+			if (i == angle_steps / 2 + 2 && j == scale_steps / 2)
 			{
 				cv::Mat _tmp_template;
 				cv::Mat _tmp_matching;
@@ -135,7 +136,7 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 				cv::imshow("matching space", _tmp_matching);
                 cv::normalize(tmp_matching_space, this->matching_space_disp, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 
-			}*/
+			}
 
 			match_locations.clear();
 			apply_NMS(tmp_matching_space, match_locations);
