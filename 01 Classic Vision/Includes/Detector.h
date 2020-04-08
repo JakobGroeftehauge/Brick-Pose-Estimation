@@ -12,12 +12,15 @@ public:
 	virtual void detect();
 	virtual void detect(cv::Mat img);
 	virtual void set_NMS_thresh(double thresh); //remove after use
+	void set_canny_thresh(int low, int high);
 	void set_img(cv::Mat img);
 	std::vector<prediction> predictions;
 	double time = 0;
 
 protected:
 	cv::Mat img;
+	int canny_thres_low;
+	int canny_thres_high;
 	void clear_predictions();
 
 

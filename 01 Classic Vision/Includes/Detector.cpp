@@ -21,6 +21,12 @@ void Detector::set_NMS_thresh(double thresh)
 {
 }
 
+void Detector::set_canny_thresh(int low, int high)
+{
+	this->canny_thres_low = low;
+	this->canny_thres_high = high;
+}
+
 void Detector::set_img(cv::Mat img)
 {
 	this->img = img;

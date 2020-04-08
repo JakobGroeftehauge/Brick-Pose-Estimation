@@ -11,7 +11,7 @@ int main()
 
     Chamfer_brick_detector chamfer_detector(image);
     chamfer_detector.detect(image);
-    
+
     std::cout << chamfer_detector.pred_candidates.size() << std::endl;
     std::vector<prediction_candidate> candidates;
     //candidates.insert(candidates.end(), chamfer_detector.pred_candidates.begin(), chamfer_detector.pred_candidates.begin()+35);
@@ -31,8 +31,10 @@ int main()
     matRoi = white_template(cv::Rect(chamfer_detector.model_template.cols-1,chamfer_detector.model_template.rows-1,chamfer_detector.matching_space_disp.cols, chamfer_detector.matching_space_disp.rows));
     chamfer_detector.matching_space_disp.copyTo(matRoi);
 
-    //cv::imshow("mat roi", conv_template);
-    cv::imshow("Matching space with template", white_template);
+
+    cv::imshow("mat roi", conv_template);
+    cv::imshow("Template", white_template);
+    cv::imshow("distance map", chamfer_detector.chamfer_img);
     imwrite("Distance_transform.png", chamfer_detector.chamfer_img);
     imwrite("Matching_space.png", white_template);
 
@@ -42,4 +44,3 @@ int main()
 
     return 0;
 }
-

@@ -1,23 +1,35 @@
 #include "Brick_Detector.h"
 
-
-
 Brick_Detector::Brick_Detector()
 {
+<<<<<<< HEAD
     this->canny_thres_high = 154;
     this->canny_thres_low = 51;
+=======
+    set_canny_thresh(60, 140);
+>>>>>>> 523590b224639efdb17e5d7148f02e45155dedf0
 }
 
 Brick_Detector::Brick_Detector(cv::Mat img)
 {
     this->img = img;
+<<<<<<< HEAD
     this->canny_thres_high = 154;
     this->canny_thres_low = 51;
 
+=======
+    set_canny_thresh(60, 140);
+>>>>>>> 523590b224639efdb17e5d7148f02e45155dedf0
 }
 
 void Brick_Detector::detect()
 {
+    // ---------------- for timing -------------------
+    std::chrono::high_resolution_clock::time_point end;
+    std::chrono::high_resolution_clock::time_point start;
+    std::chrono::duration<float> duration;
+    start = std::chrono::high_resolution_clock::now();
+    // ------------------------------------------------
     clear_predictions();
     find_lines();
 
@@ -38,7 +50,12 @@ void Brick_Detector::detect()
     {
        return;  //TO DO: determine what to do when no lines has been located.
     }
-
+    // ---------------- for timing -------------------
+    end = std::chrono::high_resolution_clock::now();
+    duration = end - start;
+    float ms = duration.count() * 1000.0f;
+    this->time += ms;
+    // ------------------------------------------------
 }
 
 void Brick_Detector::detect(cv::Mat img)
@@ -46,6 +63,7 @@ void Brick_Detector::detect(cv::Mat img)
     set_img(img);
     detect();
 }
+
 
 void Brick_Detector::clear_all()
 {
@@ -59,7 +77,12 @@ void Brick_Detector::find_lines()
     //cv::imshow("src image", this->img);
     find_edges(this->img, edge_img);
     cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(50, edge_img.size().height - 1), 0, -1); //mask out pallet
+<<<<<<< HEAD
     cv::imshow("edge_img", edge_img);
+=======
+    //cv::imshow("edge_img", edge_img);
+    //cv::waitKey(0);
+>>>>>>> 523590b224639efdb17e5d7148f02e45155dedf0
     this->hough = Hough_space(edge_img);
 
     this->lines =  hough.find_lines();
@@ -73,9 +96,10 @@ void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
 
     cv::Mat filter_img;
     cv::medianBlur(gray_img, filter_img, 5);
-    cv::imshow("filtered image", filter_img);
-
+    //cv::GaussianBlur(gray_img, filter_img, cv::Size(3, 3), 0, 0);
     cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
+    //cv::imshow("edge image", dst);
+;
 }
 
 void Brick_Detector::find_BB(std::vector<std::vector<std::vector<double>>> clustered_lines)
