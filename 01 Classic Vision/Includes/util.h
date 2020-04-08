@@ -120,6 +120,22 @@ inline void print_rotated_bounding_boxes(cv::Mat& img, std::vector<prediction_ca
     }
 }
 
+inline void print_filled_rotated_bounding_boxes(cv::Mat &img, std::vector<prediction> preds, float alpha = 0.5, cv::Scalar color = cv::Scalar(0, 0, 255))
+{
+    cv::Mat img_copy = img.clone();
+    for(unsigned int  i = 0; i < preds.size(); i++)
+    {
+        cv::Point2f f_points[4];
+        preds[i].rotated_rect.points(f_points);
+        std::vector<cv::Point2f> f_points_vec(f_points, f_points + sizeof f_points / sizeof f_points[0]);
+        std::vector<cv::Point2i> points;
+
+        cv::Mat(f_points_vec).convertTo(points, cv::Mat(points).type());
+        cv::fillConvexPoly(img_copy, points, color, CV_AA);
+    }
+    cv::addWeighted(img, 1-alpha, img_copy, alpha, 0.0, img);
+}
+
 
 }
 #endif // UTIL_H
