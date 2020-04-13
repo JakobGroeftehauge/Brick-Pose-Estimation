@@ -6,13 +6,13 @@
 #include "../Includes/realsense_camera.h"
 
 using namespace std;
-const string img_folder = "../Strojer_Images/Simple Dataset/";
+const string img_folder = "../../03 Data/Dataset3_oldbricks/";
 
 int main()
 {
     //float pixel[2] = {500,600};
     //float point[3];
-    int img_counter = 62;
+    int img_counter = 32;
     Realsense_camera camera;
     //camera.capture();
     //cout << "intrinsics: \nfx:  " << camera.get_intrinsics().fx << " fy: " << camera.get_intrinsics().fy << endl; 

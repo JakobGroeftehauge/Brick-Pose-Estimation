@@ -4,8 +4,11 @@
 #include "depth_processor.h"
 
 Realsense_camera::Realsense_camera()
-{
-    this->pipe.start();
+{ 
+    this->cfg.enable_stream(RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_BGR8, 6);
+    this->cfg.enable_stream(RS2_STREAM_DEPTH, 640, 480, RS2_FORMAT_Z16, 6);
+    this->pipe.start(this->cfg);
+    //this->pipe.start();
 }
 
 void Realsense_camera::capture()
@@ -54,9 +57,9 @@ rs2_intrinsics Realsense_camera::get_intrinsics()
 
 void Realsense_camera::save_image(std::string path, int number)
 {
-    cv::imwrite(path + "colorIMG_" + std::to_string(number) + ".png", this->RGB_image);
-    save_intrinsics(path + "intrinsics_" + std::to_string(number) + ".csv");
-    save_depth(path + "depth_" + std::to_string(number) + ".csv");
+    cv::imwrite(path + "OB_colorIMG_" + std::to_string(number) + ".png", this->RGB_image);
+    save_intrinsics(path + "OB_intrinsics_" + std::to_string(number) + ".csv");
+    save_depth(path + "OB_depth_" + std::to_string(number) + ".csv");
 
 }
 
