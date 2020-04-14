@@ -39,8 +39,8 @@ void create_annotation_file(annotation_file anno)
     file["fillColor"] = {255, 0, 0, 128};
     file["imageData"] = {};
     file["imagePath"] = anno.file_name;
-    file["imageHeight"] = 480;
-    file["imageWidth"] = 640;
+    file["imageHeight"] = anno.img_height;
+    file["imageWidth"] = anno.img_width;
 
     std::string json_file_name = anno.file_name;
     json_file_name.erase(json_file_name.end()-4, json_file_name.end());

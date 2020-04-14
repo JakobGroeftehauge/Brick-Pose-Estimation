@@ -2,13 +2,13 @@
 
 Chamfer_brick_detector::Chamfer_brick_detector()
 {
-	set_canny_thresh(30, 70);
+	set_canny_thresh(25, 70);
 	this->NMS_thresh = 120;
 }
 
 Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 {
-	set_canny_thresh(30, 70);
+	set_canny_thresh(25, 70);
 	this->NMS_thresh = 120;
 	this->img = img;
 }
@@ -72,7 +72,7 @@ void Chamfer_brick_detector::compute_chamfer_img()
 	cv::distanceTransform(edge_img, this->chamfer_img, CV_DIST_L2, 3);
     cv::Mat tmp_img;
     cv::normalize(this->chamfer_img, tmp_img, 0, 1.0, cv::NORM_MINMAX, CV_32F);
-    cv::imshow("Distance map", tmp_img);
+    //cv::imshow("Distance map", tmp_img);
 }
 
 void Chamfer_brick_detector::set_NMS_thresh(double thresh)
@@ -131,18 +131,18 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);
 
 			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCORR); // typically 5-10 ms. CV_TM_CCORR sometimes more. Release
-            if (i == angle_steps / 2 - 5 && j == scale_steps / 2)
-			{
-				cv::Mat _tmp_template;
-				cv::Mat _tmp_matching;
-				cv::normalize(template_img, _tmp_template, 0, 1.0, cv::NORM_MINMAX, CV_32F);
-				cv::normalize(tmp_matching_space, _tmp_matching, 0, 1.0, cv::NORM_MINMAX, CV_32F);
-				cv::imshow("template", _tmp_template);
-                this->model_template = _tmp_template;
-				cv::imshow("matching space", _tmp_matching);
-                cv::normalize(tmp_matching_space, this->matching_space_disp, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-				//cv::waitKey(0);
-			}
+   //         if (i == angle_steps / 2 - 5 && j == scale_steps / 2)
+			//{
+			//	cv::Mat _tmp_template;
+			//	cv::Mat _tmp_matching;
+			//	cv::normalize(template_img, _tmp_template, 0, 1.0, cv::NORM_MINMAX, CV_32F);
+			//	cv::normalize(tmp_matching_space, _tmp_matching, 0, 1.0, cv::NORM_MINMAX, CV_32F);
+			//	cv::imshow("template", _tmp_template);
+   //             this->model_template = _tmp_template;
+			//	cv::imshow("matching space", _tmp_matching);
+   //             cv::normalize(tmp_matching_space, this->matching_space_disp, 0, 255, cv::NORM_MINMAX, CV_8UC1);
+			//	//cv::waitKey(0);
+			//}
 
 			match_locations.clear();
 			apply_NMS(tmp_matching_space, match_locations);
@@ -238,6 +238,6 @@ void Chamfer_brick_detector::find_edges(cv::Mat& src, cv::Mat& dst)
 	//cv::medianBlur(gray_img, filter_img, 3);
 	cv::GaussianBlur(gray_img, filter_img, cv::Size(3,3),0,0);
 	cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
-	cv::imshow("edge", dst);
+	//cv::imshow("edge", dst);
 	//cv::waitKey(0);
 }
