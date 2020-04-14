@@ -1,0 +1,60 @@
+{
+    "fillColor": [
+        255,
+        0,
+        0,
+        128
+    ],
+    "flags": {},
+    "imageData": null,
+    "imageHeight": 480,
+    "imagePath": "testing1.png",
+    "imageWidth": 640,
+    "lineColor": [
+        0,
+        255,
+        0,
+        128
+    ],
+    "shapes": [
+        {
+            "fill_color": null,
+            "flags": {},
+            "label": "Brick",
+            "line_color": null,
+            "points": [
+                [
+                    2.0,
+                    3.0
+                ],
+                [
+                    2.0,
+                    3.0
+                ],
+                [
+                    2.0,
+                    3.0
+                ]
+            ],
+            "shape_type": "polygon"
+        },
+        {
+            "fill_color": null,
+            "flags": {},
+            "label": "Brick",
+            "line_color": null,
+            "points": [
+                [
+                    2.0,
+                    3.0
+                ],
+                [
+                    2.0,
+                    3.0
+                ]
+            ],
+            "shape_type": "polygon"
+        }
+    ],
+    "version": "3.21.1"
+}
