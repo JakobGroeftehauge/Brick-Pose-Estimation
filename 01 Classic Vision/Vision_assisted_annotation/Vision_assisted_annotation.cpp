@@ -5,19 +5,18 @@
 int main()
 {
     std::cout << "Hello World!\n";
+    std::string folder_path;
+    std::string image_list = "";
+    std::vector<std::string> image_paths;
 
-
-    this->path_folder = path_to_folder;
-    this->file_paths_iterator = 0;
-    //std::cout << this->path_folder << std::endl;
     std::ifstream fin;
     std::string word;
     // Open an existing file 
-    fin.open(img_list_csv);
+    fin.open(image_list);
     while (std::getline(fin, word))
     {
         //std::cout << word.substr(0, word.find_last_of(".")) + ".json" << std::endl;
-        this->file_paths.push_back(path_to_folder + "/" + word.substr(0, word.find_last_of(".")) + ".json");
+        image_paths.push_back(folder_path + "/" + word);
     }
     fin.close();
 }
