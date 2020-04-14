@@ -2,13 +2,13 @@
 
 Chamfer_brick_detector::Chamfer_brick_detector()
 {
-	set_canny_thresh(25, 70);
+	set_canny_thresh(30, 70);
 	this->NMS_thresh = 120;
 }
 
 Chamfer_brick_detector::Chamfer_brick_detector(cv::Mat img)
 {
-	set_canny_thresh(25, 70);
+	set_canny_thresh(30, 70);
 	this->NMS_thresh = 120;
 	this->img = img;
 }
@@ -29,7 +29,7 @@ void Chamfer_brick_detector::detect()
 	std::sort(this->pred_candidates.begin(), this->pred_candidates.end());
 	//std::cout << "Length before IOU NMS: " << this->pred_candidates.size() << std::endl;
     this->pred_candidates_unfiltered = this->pred_candidates;
-	apply_IOU_NMS(this->pred_candidates, 0.2, this->pred_candidates);
+	apply_IOU_NMS(this->pred_candidates, 0.15, this->pred_candidates);
 	//std::cout << "Length after IOU NMS: " << this->pred_candidates.size() << std::endl;
 	predictions_from_candidates(this->pred_candidates, this->predictions);
 	end = std::chrono::high_resolution_clock::now();
@@ -141,7 +141,7 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
                 this->model_template = _tmp_template;
 				cv::imshow("matching space", _tmp_matching);
                 cv::normalize(tmp_matching_space, this->matching_space_disp, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-
+				//cv::waitKey(0);
 			}
 
 			match_locations.clear();
@@ -238,4 +238,6 @@ void Chamfer_brick_detector::find_edges(cv::Mat& src, cv::Mat& dst)
 	//cv::medianBlur(gray_img, filter_img, 3);
 	cv::GaussianBlur(gray_img, filter_img, cv::Size(3,3),0,0);
 	cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
+	cv::imshow("edge", dst);
+	//cv::waitKey(0);
 }

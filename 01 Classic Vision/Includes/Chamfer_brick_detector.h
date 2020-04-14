@@ -31,14 +31,12 @@ private:
 	float rotated_rect_IOU(cv::RotatedRect rect1, cv::RotatedRect rect2);
 	void predictions_from_candidates(std::vector<prediction_candidate> &candidates, std::vector<prediction> &predictions);
 
-	int canny_thres_low;
-	int canny_thres_high;
     double NMS_thresh;
 
-    int angle_step = 60;
+    int angle_step = 90;
     float scale_min = 100.0;
-    float scale_max = 110.0;
-    float scale_step = 5;
+	float scale_max = 135.0;
+    float scale_step = 10;
 
     int template_padding = 2;
 	cv::RotatedRect brick_template = cv::RotatedRect(cv::Point2f(0.5, 0.5), cv::Size2f(0.971681, 0.236297), 0);
