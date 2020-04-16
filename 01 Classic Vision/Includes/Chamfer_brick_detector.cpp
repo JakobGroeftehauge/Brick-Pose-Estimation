@@ -217,15 +217,15 @@ float Chamfer_brick_detector::rotated_rect_IOU(cv::RotatedRect rect1, cv::Rotate
 	return intersection_area/union_area;
 }
 
-void Chamfer_brick_detector::predictions_from_candidates(std::vector<prediction_candidate>& candidates, std::vector<prediction>& predictions)
+void Chamfer_brick_detector::predictions_from_candidates(std::vector<prediction_candidate>& candidates, std::vector<bounding_box>& predictions)
 {
-	prediction tmp_pred;
     for (unsigned int i = 0; i < candidates.size(); i++)
 	{
-		tmp_pred.rotated_rect = candidates[i].rotated_rect;
-		tmp_pred.rect = candidates[i].rotated_rect.boundingRect2f(); // maybe use the boundingRectf instead
-		tmp_pred.angle_vector = cv::Point2d(std::cos(candidates[i].rotated_rect.angle / 180.0 * CV_PI), std::sin(candidates[i].rotated_rect.angle / 180.0 * CV_PI));
-		predictions.push_back(tmp_pred);
+		//tmp_pred.rotated_rect = candidates[i].rotated_rect;
+		//tmp_pred.rect = candidates[i].rotated_rect.boundingRect2f(); // maybe use the boundingRectf instead
+		//tmp_pred.angle_vector = cv::Point2d(std::cos(candidates[i].rotated_rect.angle / 180.0 * CV_PI), std::sin(candidates[i].rotated_rect.angle / 180.0 * CV_PI));
+		//tmp_pred.angle = candidates[i].rotated_rect.angle;
+		predictions.push_back(bounding_box(candidates[i].rotated_rect));
 	}
 }
 

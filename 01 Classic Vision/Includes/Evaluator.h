@@ -6,6 +6,19 @@
 #include "Detector.h"
 #include "Brick_Detector.h"
 #include "Chamfer_brick_detector.h"
+struct annotation_match {
+	annotation_match(int prediction_idx_, int annotation_idx_, double IoU_)
+	{
+		this->annotation_idx = annotation_idx_;
+		this->prediction_idx = prediction_idx_;
+		this->IoU = IoU_;
+	}
+
+	int annotation_idx;
+	int prediction_idx;
+	double IoU;
+};
+
 class Evaluator
 {
 public:
@@ -29,12 +42,15 @@ public:
 
 private:
 	double calculate_IoU(cv::Rect rect1, cv::Rect rect2);
+	double calculate_IoU(cv::RotatedRect rect1, cv::RotatedRect rect2);
 	std::vector<double> evaluate_thresholds;
 	//void print_results_to_csv();
-	void evaluate(double threshold, int* false_neg_out, int* false_pos_out, int* true_pos_out);
+	void evaluate_bb(double threshold, int list[3]);
 	void evaluate_range(std::vector<double> thresholds);
 	void save_evaluation(int true_pos, int false_pos, int false_neg);
 	//std::string folder_path;
+	void match_annotations(int rect_type);
+	std::vector<annotation_match> annotation_matches;
 	Data_loader loader;
 	std::ofstream file;
     std::vector<cv::Rect> false_positive;

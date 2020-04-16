@@ -103,58 +103,90 @@ double Evaluator::calculate_IoU(cv::Rect rect1, cv::Rect rect2)
 	return (double)(rect1 & rect2).area() / (double)(rect1 | rect2).area();
 }
 
-//Evaluates detections in one image at one threshold
-void Evaluator::evaluate(double threshold, int* false_neg_out, int* false_pos_out, int* true_pos_out)
+double Evaluator::calculate_IoU(cv::RotatedRect rect1, cv::RotatedRect rect2)
 {
-    this->false_positive = {};
-    this->true_positive = {};
-    //std::cout << "Threshold: " << threshold << std::endl;
-	std::vector<cv::Rect> annotations(this->loader.Bounding_boxes);
-	std::vector<cv::Rect> predictions;
-    for (unsigned int i = 0; i < detector->predictions.size(); i++)
-	{
-		predictions.push_back(detector->predictions[i].rect);
-	}
-    unsigned int i = 0;
-    while (i < predictions.size())
+    double intersection_area = 0.0;
+    std::vector<cv::Point2f> intersection_cont;
+    if (cv::INTERSECT_NONE != cv::rotatedRectangleIntersection(rect1, rect2, intersection_cont))
     {
-        //Find the BB with the greatest intersection over union.
-        double max_IOU = 0;
-        int index_max_IOU = 0;
-        for (unsigned int j = 0; j < annotations.size(); j++)
-        {
-            double IOU = calculate_IoU(predictions[i], annotations[j]);
-            //std::cout << IOU << std::endl;
-            if (IOU > max_IOU)
-            {
-                max_IOU = IOU;
-                index_max_IOU = j;
-            }
-        }
-
-        if (max_IOU > threshold)
-        {
-            //Remove elements form annotation list and prediction list.
-            this->true_positive.push_back(predictions[i]);
-            predictions.erase(predictions.begin() + i);
-            annotations.erase(annotations.begin() + index_max_IOU);
-        }
-        else
-        {
-            i++;
-        }
+        std::vector<cv::Point2f> hull;
+        cv::convexHull(intersection_cont, hull);
+        intersection_area = cv::contourArea(hull);
     }
+    else
+    {
+        intersection_area = 0.0;
+    }
+    double union_area = rect1.size.area() + rect2.size.area() - intersection_area;
+    return intersection_area / union_area;
+}
 
-    this->false_positive = predictions;
+//Evaluates detections in one image at one threshold
+//void Evaluator::evaluate(double threshold, int* false_neg_out, int* false_pos_out, int* true_pos_out)
+//{
+//    this->false_positive = {};
+//    this->true_positive = {};
+//    //std::cout << "Threshold: " << threshold << std::endl;
+//	std::vector<cv::Rect> annotations(this->loader.Bounding_boxes);
+//	std::vector<cv::Rect> predictions;
+//    for (unsigned int i = 0; i < detector->predictions.size(); i++)
+//	{
+//		predictions.push_back(detector->predictions[i].rect);
+//	}
+//    unsigned int i = 0;
+//    while (i < predictions.size())
+//    {
+//        //Find the BB with the greatest intersection over union.
+//        double max_IOU = 0;
+//        int index_max_IOU = 0;
+//        for (unsigned int j = 0; j < annotations.size(); j++)
+//        {
+//            double IOU = calculate_IoU(predictions[i], annotations[j]);
+//            //std::cout << IOU << std::endl;
+//            if (IOU > max_IOU)
+//            {
+//                max_IOU = IOU;
+//                index_max_IOU = j;
+//            }
+//        }
+//        if (max_IOU > threshold)
+//        {
+//            //Remove elements form annotation list and prediction list.
+//            this->true_positive.push_back(predictions[i]);
+//            predictions.erase(predictions.begin() + i);
+//            annotations.erase(annotations.begin() + index_max_IOU);
+//        }
+//        else
+//        {
+//            i++;
+//        }
+//    }
+//    this->false_positive = predictions;
+//    *true_pos_out = this->detector->predictions.size() - predictions.size();
+//    *false_pos_out = predictions.size();
+//    //std::cout << "internal true pos:" << this->detector->predictions.size() - predictions.size() << std::endl;
+//    *false_neg_out = annotations.size();
+//    //save_evaluation(*true_pos_out, *false_pos_out, *false_neg_out);
+//    //this->total_false_negative += false_neg;
+//    //this->total_false_positive += false_pos;
+//    //this->total_true_positive += true_pos;
+//}
 
-    *true_pos_out = this->detector->predictions.size() - predictions.size();
-    *false_pos_out = predictions.size();
-    //std::cout << "internal true pos:" << this->detector->predictions.size() - predictions.size() << std::endl;
-    *false_neg_out = annotations.size();
-    //save_evaluation(*true_pos_out, *false_pos_out, *false_neg_out);
-    //this->total_false_negative += false_neg;
-    //this->total_false_positive += false_pos;
-    //this->total_true_positive += true_pos;
+void Evaluator::evaluate_bb(double threshold, int list[3])
+{
+    int true_pos = 0;
+    int i = 0;
+    while (!(annotation_matches.empty())&&annotation_matches[i].IoU > threshold)
+    {
+        i++;
+        true_pos++;
+    }
+    int false_pos = this->detector->predictions.size() - true_pos;
+    int false_neg = this->loader.annotations.size() - true_pos;
+    std::cout << "tru_pos: " << true_pos << " false pos: " << false_pos << " false neg: " << false_neg << std::endl;
+    list[0] = true_pos;
+    list[1] = false_pos;
+    list[2] = false_neg;
 }
 
 void Evaluator::evaluate_range(std::vector<double> thresholds)
@@ -162,16 +194,16 @@ void Evaluator::evaluate_range(std::vector<double> thresholds)
     this->false_negative_range.clear();
     this->false_positive_range.clear();
     this->true_positive_range.clear();
+    match_annotations(0); // 0 - use axis aligned
+    std::cout << "annotation matches length: " << this->annotation_matches.size() << std::endl;
     for (int i = 0; i < thresholds.size(); i++)
     {
-        int false_neg = 0;
-        int false_pos = 0;
-        int true_pos = 0;
-        evaluate(thresholds[i], &false_neg, &false_pos, &true_pos);
+        int res[3];
+        evaluate_bb(thresholds[i], res);
         //std::cout << i << " external true pos: " << true_pos << std::endl;
-        this->false_negative_range.push_back(false_neg);
-        this->false_positive_range.push_back(false_pos);
-        this->true_positive_range.push_back(true_pos);
+        this->false_negative_range.push_back(res[2]);
+        this->false_positive_range.push_back(res[1]);
+        this->true_positive_range.push_back(res[0]);
     }
 }
 
@@ -186,7 +218,7 @@ void Evaluator::save_evaluation(int true_pos, int false_pos, int false_neg)
     file << "\n";
     // color code true_pos, false_pos etc:
     this->img_to_print = loader.img.clone();
-    util::print_bounding_boxes(img_to_print, loader.Bounding_boxes, cv::Scalar(0, 255, 0));
+    util::print_bounding_boxes(img_to_print, loader.annotations, cv::Scalar(0, 255, 0));
     //util::print_bounding_boxes(img_to_print, detector.predictions, cv::Scalar(255, 255, 0));
     util::print_bounding_boxes(this->img_to_print, this->false_positive, cv::Scalar(0,0,255));
     util::print_bounding_boxes(this->img_to_print, this->true_positive, cv::Scalar(255, 0, 0));
@@ -194,3 +226,41 @@ void Evaluator::save_evaluation(int true_pos, int false_pos, int false_neg)
 
     cv::imwrite(loader.path_folder + "/evaluations/" + loader.file_name, img_to_print);
 }
+
+void Evaluator::match_annotations(int rect_type)
+// Calling the function with 0 uses axis aligned bounding boxes, otherwise rotated are used.
+{
+    annotation_matches.clear();
+    if (detector->predictions.empty() || loader.annotations.empty())
+    {
+        return;
+    }
+    std::cout << "prediction length: " << detector->predictions.size() << "annotations length: " << loader.annotations.size() << std::endl;
+    cv::Mat IoU_mat = cv::Mat::zeros(detector->predictions.size(), loader.annotations.size(), CV_64F);
+    for (int i = 0; i < detector->predictions.size(); i++)
+    {
+        for (int j = 0; j < loader.annotations.size(); j++)
+        {
+            if (rect_type == 0) // axis aligned boundingbox
+            {
+                IoU_mat.at<double>(i,j) = calculate_IoU(detector->predictions[i].rect, loader.annotations[j].rect);
+            }
+            else
+            {
+                IoU_mat.at<double>(i, j) = calculate_IoU(detector->predictions[i].rotated_rect, loader.annotations[j].rotated_rect);
+            }      
+        }
+    }
+    double max;
+    int max_idx[2];
+    do
+    {
+
+        cv::minMaxIdx(IoU_mat, NULL, &max, NULL, max_idx);
+        std::cout << "max: " << max << " max idx 1:" << max_idx[0] << " idx 2: " << max_idx[1] << std::endl;
+        IoU_mat.row(max_idx[0]) = 0;
+        IoU_mat.col(max_idx[1]) = 0;
+        this->annotation_matches.push_back(annotation_match(max_idx[0], max_idx[1], max));
+    } while (max > 0);
+}
+

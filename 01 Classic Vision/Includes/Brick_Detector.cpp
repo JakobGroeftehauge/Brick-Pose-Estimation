@@ -83,8 +83,8 @@ void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
     cv::medianBlur(gray_img, filter_img, 5);
     //cv::GaussianBlur(gray_img, filter_img, cv::Size(3, 3), 0, 0);
     cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
-    //cv::imshow("edge image", dst);
-;
+    cv::imshow("edge image", dst);
+    cv::waitKey(0);
 }
 
 void Brick_Detector::find_BB(std::vector<std::vector<std::vector<double>>> clustered_lines)
@@ -223,12 +223,10 @@ void Brick_Detector::convert_intections_to_BB(std::vector<std::vector<cv::Point2
             //Evaluate if the current contour could orignate from a brick.
             if(accept_detection(BB_rotated) == true) //should be used to filter out BB which does not origin form bricks
             {
-                prediction pred;
-                cv::Rect bounding_box =  cv::boundingRect(contour);
-                pred.rect = bounding_box;
-                pred.rotated_rect = BB_rotated;
-
-                //TO DO: Calculate angle and update value on the struct pred.
+                bounding_box pred(BB_rotated);
+                //cv::Rect bounding_box =  cv::boundingRect(contour);
+                //pred.rect = bounding_box;
+                //pred.rotated_rect = BB_rotated;
 
                 this->predictions.push_back(pred);
             }

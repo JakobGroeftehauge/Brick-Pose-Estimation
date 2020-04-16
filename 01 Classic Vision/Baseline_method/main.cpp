@@ -14,8 +14,8 @@ void print_results(int spacing, std::vector<double> thresholds, std::vector<doub
         double precision = total_true_positives[i] / (total_true_positives[i] + total_false_positives[i]);
         double recall = total_true_positives[i] / (total_true_positives[i] + total_false_negatives[i]);
         double f1 = (2 * recall * precision) / (recall + precision);
-        //std::cout << setw(5) << thresholds[i] << setw(spacing) << precision << setw(spacing) << recall << setw(spacing) << f1 << setw(spacing)
-          //  << total_false_negatives[i] << setw(spacing) << total_false_positives[i] << setw(spacing) << total_true_positives[i] << std::endl;
+        std::cout << setw(5) << thresholds[i] << setw(spacing) << precision << setw(spacing) << recall << setw(spacing) << f1 << setw(spacing)
+            << total_false_negatives[i] << setw(spacing) << total_false_positives[i] << setw(spacing) << total_true_positives[i] << std::endl;
         avg_precision += precision / thresholds.size();
         avg_recall += recall / thresholds.size();
         avg_f1 += f1 / thresholds.size();
@@ -73,6 +73,7 @@ void grid_search_hough_canny_thresh(int low_thresh, int high_thresh)
             total_false_negatives[i] += test_evaluator.false_negative_range[i];
             total_false_positives[i] += test_evaluator.false_positive_range[i];
             total_true_positives[i] += test_evaluator.true_positive_range[i];
+                   
         }
     }
     std::cout << "Threshold low: " << low_thresh << " Threshold high" << high_thresh << std::endl;
@@ -98,8 +99,8 @@ int main()
     //    eval_NMS_thresh_chamfer_detector(min + i * step_size);
     //    std::cout << "--------------------------------------------------------------------------------- \n" << std::endl;
     //}
-    std::vector<int> canny_lows = { 38, 51, 63, 76, 89 };
-    std::vector<int> canny_hysts = { 66, 78, 90, 103, 115, 127, 139, 152 };
+    std::vector<int> canny_lows = { 63 };//{ 38, 51, 63, 76, 89 };
+    std::vector<int> canny_hysts = { 115 };//{ 66, 78, 90, 103, 115, 127, 139, 152 };
     for (int i = 0; i < canny_lows.size(); i++)
     {
         for (int j = 0; j < canny_hysts.size(); j++)

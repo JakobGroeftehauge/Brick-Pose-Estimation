@@ -14,7 +14,7 @@ public:
 	virtual void set_NMS_thresh(double thresh); //remove after use
 	void set_canny_thresh(int low, int high);
 	void set_img(cv::Mat img);
-	std::vector<prediction> predictions;
+	std::vector<bounding_box> predictions;
 	double time = 0;
 
 protected:
