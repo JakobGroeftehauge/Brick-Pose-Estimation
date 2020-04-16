@@ -4,25 +4,27 @@
 using namespace std;
 
 void print_results(int spacing, std::vector<double> thresholds, std::vector<double> total_false_negatives, std::vector<double> total_false_positives, 
-    std::vector<double> total_true_positives, double time)
+    std::vector<double> total_true_positives, std::vector<double> total_angle_err, std::vector<double> total_angle_err_sqr, double time)
 {
-    std::cout << setw(5) << "IoU" << setw(spacing) << "Precision" << setw(spacing) << "Recall" << setw(spacing) << "F1" << setw(spacing)
-        << "False Negatives" << setw(spacing) << "False Positives" << setw(spacing) << "True Posiives" << std::endl;
+    std::cout << setw(5) << "IoU" << setw(spacing) << "Prec." << setw(spacing) << "Rec." << setw(spacing) << "F1" << setw(spacing)
+        << "ang. err." << setw(spacing) << "a. e. std." << setw(spacing) << "F. Neg" << setw(spacing) << "F. Pos" << setw(spacing) << "T. Pos" << std::endl;
     double avg_precision = 0, avg_recall = 0, avg_f1 = 0;
     for (int i = 0; i < thresholds.size(); i++)
     {
         double precision = total_true_positives[i] / (total_true_positives[i] + total_false_positives[i]);
         double recall = total_true_positives[i] / (total_true_positives[i] + total_false_negatives[i]);
         double f1 = (2 * recall * precision) / (recall + precision);
+        double angle_err_mean = total_angle_err[i] / double(total_true_positives[i]);
+        double angle_err_std = sqrt((total_angle_err_sqr[i] / double(total_true_positives[i])) - pow(angle_err_mean, 2));
         std::cout << setw(5) << thresholds[i] << setw(spacing) << precision << setw(spacing) << recall << setw(spacing) << f1 << setw(spacing)
-            << total_false_negatives[i] << setw(spacing) << total_false_positives[i] << setw(spacing) << total_true_positives[i] << std::endl;
+           << angle_err_mean << setw(spacing) << angle_err_std << setw(spacing) << total_false_negatives[i] << setw(spacing) << total_false_positives[i] << setw(spacing) << total_true_positives[i] << std::endl;
         avg_precision += precision / thresholds.size();
         avg_recall += recall / thresholds.size();
         avg_f1 += f1 / thresholds.size();
     }
     std::cout << setw(5) << "Avg" << setw(spacing) << avg_precision << setw(spacing) << avg_recall << setw(spacing) << avg_f1 << setw(spacing)
-        << "--" << setw(spacing) << "--" << setw(spacing) << "--" << std::endl;
-    std::cout << "Detection time: " << time << std::endl;
+        << "--" << setw(spacing) << "--" << setw(spacing) << "--" << setw(spacing) << "--" << setw(spacing) << "--" << std::endl;
+    std::cout << "Time: " << time << std::endl;
 }
 
 void eval_NMS_thresh_chamfer_detector(double NMS_thresh) {
@@ -31,6 +33,8 @@ void eval_NMS_thresh_chamfer_detector(double NMS_thresh) {
     std::vector<double> total_false_negatives(thresholds.size(), 0);
     std::vector<double> total_false_positives(thresholds.size(), 0);
     std::vector<double> total_true_positives(thresholds.size(), 0);
+    std::vector<double> total_angle_err(thresholds.size(), 0);
+    std::vector<double> total_angle_err_sqr(thresholds.size(), 0);
     Chamfer_brick_detector detector;
     Evaluator test_evaluator("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
     test_evaluator.set_detector(&detector);
@@ -44,22 +48,26 @@ void eval_NMS_thresh_chamfer_detector(double NMS_thresh) {
             total_false_negatives[i] += test_evaluator.false_negative_range[i];
             total_false_positives[i] += test_evaluator.false_positive_range[i];
             total_true_positives[i] += test_evaluator.true_positive_range[i];
+            total_angle_err[i] += test_evaluator.angle_err_range[i];
+            total_angle_err_sqr[i] += test_evaluator.angle_err_sqr_range[i];
             //std::cout << "False negative: " << test_evaluator.false_negative_range[i] << " False Positive: "
               //  << test_evaluator.false_positive_range[i] << " True Positive: " << test_evaluator.true_positive_range[i] << std::endl;
         }
     }
     std::cout << "Evaluation at NMS threshold: " << NMS_thresh << std::endl;
-    print_results(spacing, thresholds, total_false_negatives, total_false_positives, total_true_positives, test_evaluator.detector->time);
+    print_results(spacing, thresholds, total_false_negatives, total_false_positives, total_true_positives, total_angle_err,total_angle_err_sqr,test_evaluator.detector->time);
 
 }
 
 void grid_search_hough_canny_thresh(int low_thresh, int high_thresh)
 {
-    int spacing = 17; // spacing for table print at the end
+    int spacing = 12; // spacing for table print at the end
     std::vector<double> thresholds({ 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95 });
     std::vector<double> total_false_negatives(thresholds.size(), 0);
     std::vector<double> total_false_positives(thresholds.size(), 0);
     std::vector<double> total_true_positives(thresholds.size(), 0);
+    std::vector<double> total_angle_err(thresholds.size(), 0);
+    std::vector<double> total_angle_err_sqr(thresholds.size(), 0);
     Brick_Detector detector; // hough based brick detector
     Evaluator test_evaluator("../../03 Data/Simple Dataset Copied", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
     test_evaluator.set_detector(&detector);
@@ -73,11 +81,12 @@ void grid_search_hough_canny_thresh(int low_thresh, int high_thresh)
             total_false_negatives[i] += test_evaluator.false_negative_range[i];
             total_false_positives[i] += test_evaluator.false_positive_range[i];
             total_true_positives[i] += test_evaluator.true_positive_range[i];
-                   
+            total_angle_err[i] += test_evaluator.angle_err_range[i];
+            total_angle_err_sqr[i] += test_evaluator.angle_err_sqr_range[i];
         }
     }
     std::cout << "Threshold low: " << low_thresh << " Threshold high" << high_thresh << std::endl;
-    print_results(spacing, thresholds, total_false_negatives, total_false_positives, total_true_positives, test_evaluator.detector->time);
+    print_results(spacing, thresholds, total_false_negatives, total_false_positives, total_true_positives, total_angle_err, total_angle_err_sqr, test_evaluator.detector->time);
 }
 
 int main()

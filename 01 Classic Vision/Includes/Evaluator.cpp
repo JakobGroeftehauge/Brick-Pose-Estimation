@@ -189,21 +189,52 @@ void Evaluator::evaluate_bb(double threshold, int list[3])
     list[2] = false_neg;
 }
 
+void Evaluator::evaluate_angle(double threshold, double list[2])
+{
+    int i = 0;
+    double diff = 0;
+    double angle_err = 0;
+    double angle_err_sqr = 0;
+    std::ofstream ang_err_file;
+    ang_err_file.open(this->loader.path_folder + "/evaluations/" + std::to_string(threshold) + ".csv", std::ofstream::app);
+    while (!(annotation_matches.empty()) && annotation_matches[i].IoU > threshold)
+    {
+        int anno_idx = annotation_matches[i].annotation_idx;
+        int pred_idx = annotation_matches[i].prediction_idx;
+        diff = this->loader.annotations[anno_idx].angle - this->detector->predictions[pred_idx].angle;
+        diff = std::min(abs(diff), std::min(abs(diff + 180), abs(diff - 180)));
+        ang_err_file << loader.annotations[anno_idx].angle << ", " << this->detector->predictions[pred_idx].angle << ", " << diff << "\n";
+        angle_err += diff;
+        angle_err_sqr += diff * diff;
+        i++;
+    }
+    ang_err_file.close();
+    list[0] = angle_err;
+    list[1] = angle_err_sqr;
+}
+
 void Evaluator::evaluate_range(std::vector<double> thresholds)
+// evaluates one image over a range of IoU thresholds
 {
     this->false_negative_range.clear();
     this->false_positive_range.clear();
     this->true_positive_range.clear();
+    this->angle_err_range.clear();
+    this->angle_err_sqr_range.clear();
     match_annotations(0); // 0 - use axis aligned
     std::cout << "annotation matches length: " << this->annotation_matches.size() << std::endl;
     for (int i = 0; i < thresholds.size(); i++)
     {
-        int res[3];
-        evaluate_bb(thresholds[i], res);
+        int bbox_res[3];
+        double angle_res[2];
+        evaluate_bb(thresholds[i], bbox_res);
+        evaluate_angle(thresholds[i], angle_res);
         //std::cout << i << " external true pos: " << true_pos << std::endl;
-        this->false_negative_range.push_back(res[2]);
-        this->false_positive_range.push_back(res[1]);
-        this->true_positive_range.push_back(res[0]);
+        this->false_negative_range.push_back(bbox_res[2]);
+        this->false_positive_range.push_back(bbox_res[1]);
+        this->true_positive_range.push_back(bbox_res[0]);
+        this->angle_err_range.push_back(angle_res[0]);
+        this->angle_err_sqr_range.push_back(angle_res[1]);
     }
 }
 

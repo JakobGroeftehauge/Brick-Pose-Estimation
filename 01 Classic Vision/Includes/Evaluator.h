@@ -38,6 +38,8 @@ public:
 	std::vector<double> true_positive_range;
 	std::vector<double> false_positive_range;
 	std::vector<double> false_negative_range;
+	std::vector<double> angle_err_range;
+	std::vector<double> angle_err_sqr_range;
 
 
 private:
@@ -46,6 +48,7 @@ private:
 	std::vector<double> evaluate_thresholds;
 	//void print_results_to_csv();
 	void evaluate_bb(double threshold, int list[3]);
+	void evaluate_angle(double threshold, double list[2]);
 	void evaluate_range(std::vector<double> thresholds);
 	void save_evaluation(int true_pos, int false_pos, int false_neg);
 	//std::string folder_path;
