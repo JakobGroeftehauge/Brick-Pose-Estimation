@@ -1,0 +1,47 @@
+{
+  "version": "3.21.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "Brick",
+      "line_color": null,
+      "fill_color": null,
+      "points": [
+        [
+          849.0683229813665,
+          336.0248447204969
+        ],
+        [
+          873.9130434782608,
+          314.2857142857143
+        ],
+        [
+          977.0186335403727,
+          413.04347826086956
+        ],
+        [
+          956.5217391304348,
+          440.99378881987576
+        ]
+      ],
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "lineColor": [
+    0,
+    255,
+    0,
+    128
+  ],
+  "fillColor": [
+    255,
+    0,
+    0,
+    128
+  ],
+  "imagePath": "OP_colorIMG_417.png",
+  "imageData": null,
+  "imageHeight": 720,
+  "imageWidth": 1280
+}
