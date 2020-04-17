@@ -19,6 +19,24 @@ struct annotation_match {
 	double IoU;
 };
 
+struct evaluation_results {
+	evaluation_results(double thresh)
+	{
+		this->threshold = thresh;
+	}
+	double threshold;
+	int total_TP = 0;
+	int total_FP = 0;
+	int total_FN = 0;
+	double recall;
+	double precision;
+	double f1;
+	double angle_err_sum = 0;
+	double angle_err_sqr_sum = 0;
+	double avg_angle_err;
+	double std_angle_err;
+};
+
 class Evaluator
 {
 public:
@@ -28,6 +46,7 @@ public:
 	void set_detector(Detector * detector_addr);
 	void set_path(std::string path);
 	bool evaluate_next_img();
+	void evaluate_dataset(std::vector<double> thresholds = std::vector<double>({ 0.5 }));
 	void set_thresholds(std::vector<double> thresholds = std::vector<double>({ 0.5 }));
 	void open_file();
 	void close_file();
@@ -35,6 +54,7 @@ public:
 	void print_metrics();
 	Detector* detector;
 	cv::Mat img_to_print;
+	std::vector<evaluation_results> results;
 	std::vector<double> true_positive_range;
 	std::vector<double> false_positive_range;
 	std::vector<double> false_negative_range;

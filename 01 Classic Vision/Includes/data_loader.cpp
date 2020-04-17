@@ -99,7 +99,9 @@ void Data_loader::convert_to_bb(std::vector<std::vector<cv::Point2f>> point_list
     for (int i = 0; i < point_list.size(); i++)
     {
         cv::RotatedRect rot_rect = cv::minAreaRect(point_list[i]);
-        this->annotations.push_back(bounding_box(rot_rect));
+        this->annotations.push_back(bounding_box(rot_rect)); // on 2020-04-17 it was decided to use the same method as for deep learning
+            // meaning that first a rotated rectangle is created, then an axis aligned bbox is made based on that. 
+        //this->annotations.push_back(bounding_box(point_list[i])); // not used
     }
 }
 

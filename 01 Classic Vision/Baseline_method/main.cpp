@@ -110,10 +110,10 @@ int main()
     //    eval_NMS_thresh_chamfer_detector(min + i * step_size);
     //    std::cout << "--------------------------------------------------------------------------------- \n" << std::endl;
     //}
-    std::string test_name = "canny_grid_med_not_masked";
+    std::string test_name = "canny_grid_med_masked";
     std::ofstream grid_search_file, dump_file;
-    std::vector<int> canny_lows ={ 38, 51, 63, 76, 89 }; // { 0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180};//
-    std::vector<int> canny_hysts = { 66, 78, 90, 103, 115, 127, 139, 152 }; //{ 15, 30, 45,  60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225};
+    std::vector<int> canny_lows ={ 51, 63, 76, 89 }; // { 0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180};//
+    std::vector<int> canny_hysts = { 90, 103, 115, 127,}; //{ 15, 30, 45,  60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225};
     grid_search_file.open("../../03 Data/Simple Dataset Copied/"+test_name+"res.csv");
     dump_file.open("../../03 Data/Simple Dataset Copied/"+ test_name +"dump.txt");
     for (int i = 0; i < canny_hysts.size(); i++)

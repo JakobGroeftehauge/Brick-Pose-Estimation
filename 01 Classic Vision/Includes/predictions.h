@@ -35,6 +35,12 @@ struct bounding_box {
         this->rect = this->rotated_rect.boundingRect();
         this->angle = this->rotated_rect.angle;
     }
+    bounding_box(std::vector<cv::Point2f> cont)
+    {
+        this->rotated_rect = ensure_bb_orientation(cv::minAreaRect(cont));
+        this->rect = cv::boundingRect(cont);
+        this->angle = this->rotated_rect.angle;
+    }
     cv::Rect rect;
     cv::RotatedRect rotated_rect;
     //cv::Point2d angle_vector;

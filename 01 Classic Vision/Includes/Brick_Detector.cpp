@@ -223,7 +223,7 @@ void Brick_Detector::convert_intections_to_BB(std::vector<std::vector<cv::Point2
             //Evaluate if the current contour could orignate from a brick.
             if(accept_detection(BB_rotated) == true) //should be used to filter out BB which does not origin form bricks
             {
-                bounding_box pred(BB_rotated);
+                bounding_box pred(contour);
                 //cv::Rect bounding_box =  cv::boundingRect(contour);
                 //pred.rect = bounding_box;
                 //pred.rotated_rect = BB_rotated;

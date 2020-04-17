@@ -109,7 +109,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
     //cv::imshow("hough space bin", hough_space_bin);
     cv::Mat kernel = cv::Mat::ones(3, 3, CV_8U);
     //cv::waitKey(0);
-    for (int i = 0; i < 4; i++) // The number of dialations (i) needs to tuned.
+    for (int i = 0; i < 3; i++) // The number of dialations (i) needs to tuned.
     {
         dilate(hough_space_bin, hough_space_bin, kernel);
     }
