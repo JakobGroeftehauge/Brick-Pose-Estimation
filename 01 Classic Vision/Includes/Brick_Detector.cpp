@@ -83,8 +83,8 @@ void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
     cv::medianBlur(gray_img, filter_img, 5);
     //cv::GaussianBlur(gray_img, filter_img, cv::Size(3, 3), 0, 0);
     cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
-    cv::imshow("edge image", dst);
-    cv::waitKey(1);
+    //cv::imshow("edge image", dst);
+    //cv::waitKey(0);
 }
 
 void Brick_Detector::find_BB(std::vector<std::vector<std::vector<double>>> clustered_lines)

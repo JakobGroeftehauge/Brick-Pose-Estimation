@@ -4,9 +4,10 @@
 using namespace std;
 
 void print_results(int spacing, std::vector<double> thresholds, std::vector<double> total_false_negatives, std::vector<double> total_false_positives, 
-    std::vector<double> total_true_positives, std::vector<double> total_angle_err, std::vector<double> total_angle_err_sqr, double time)
+    std::vector<double> total_true_positives, std::vector<double> total_angle_err, std::vector<double> total_angle_err_sqr, 
+    double time, std::ofstream& file, std::ofstream& file2)
 {
-    std::cout << setw(5) << "IoU" << setw(spacing) << "Prec." << setw(spacing) << "Rec." << setw(spacing) << "F1" << setw(spacing)
+    file2 << setw(5) << "IoU" << setw(spacing) << "Prec." << setw(spacing) << "Rec." << setw(spacing) << "F1" << setw(spacing)
         << "ang. err." << setw(spacing) << "a. e. std." << setw(spacing) << "F. Neg" << setw(spacing) << "F. Pos" << setw(spacing) << "T. Pos" << std::endl;
     double avg_precision = 0, avg_recall = 0, avg_f1 = 0;
     for (int i = 0; i < thresholds.size(); i++)
@@ -16,18 +17,19 @@ void print_results(int spacing, std::vector<double> thresholds, std::vector<doub
         double f1 = (2 * recall * precision) / (recall + precision);
         double angle_err_mean = total_angle_err[i] / double(total_true_positives[i]);
         double angle_err_std = sqrt((total_angle_err_sqr[i] / double(total_true_positives[i])) - pow(angle_err_mean, 2));
-        std::cout << setw(5) << thresholds[i] << setw(spacing) << precision << setw(spacing) << recall << setw(spacing) << f1 << setw(spacing)
+        file2 << setw(5) << thresholds[i] << setw(spacing) << precision << setw(spacing) << recall << setw(spacing) << f1 << setw(spacing)
            << angle_err_mean << setw(spacing) << angle_err_std << setw(spacing) << total_false_negatives[i] << setw(spacing) << total_false_positives[i] << setw(spacing) << total_true_positives[i] << std::endl;
         avg_precision += precision / thresholds.size();
         avg_recall += recall / thresholds.size();
         avg_f1 += f1 / thresholds.size();
     }
-    std::cout << setw(5) << "Avg" << setw(spacing) << avg_precision << setw(spacing) << avg_recall << setw(spacing) << avg_f1 << setw(spacing)
+    file2 << setw(5) << "Avg" << setw(spacing) << avg_precision << setw(spacing) << avg_recall << setw(spacing) << avg_f1 << setw(spacing)
         << "--" << setw(spacing) << "--" << setw(spacing) << "--" << setw(spacing) << "--" << setw(spacing) << "--" << std::endl;
-    std::cout << "Time: " << time << std::endl;
+    file2 << "Time: " << time << std::endl;
+    file << ", " << avg_f1;
 }
 
-void eval_NMS_thresh_chamfer_detector(double NMS_thresh) {
+void eval_NMS_thresh_chamfer_detector(double NMS_thresh, std::ofstream& file1, std::ofstream& file2) {
     int spacing = 17; // spacing for table print at the end
     std::vector<double> thresholds({ 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95 });
     std::vector<double> total_false_negatives(thresholds.size(), 0);
@@ -55,11 +57,11 @@ void eval_NMS_thresh_chamfer_detector(double NMS_thresh) {
         }
     }
     std::cout << "Evaluation at NMS threshold: " << NMS_thresh << std::endl;
-    print_results(spacing, thresholds, total_false_negatives, total_false_positives, total_true_positives, total_angle_err,total_angle_err_sqr,test_evaluator.detector->time);
+    print_results(spacing, thresholds, total_false_negatives, total_false_positives, total_true_positives, total_angle_err,total_angle_err_sqr,test_evaluator.detector->time, file1, file2);
 
 }
 
-void grid_search_hough_canny_thresh(int low_thresh, int high_thresh)
+void grid_search_hough_canny_thresh(int low_thresh, int high_thresh, std::ofstream& file, std::ofstream& file2)
 {
     int spacing = 12; // spacing for table print at the end
     std::vector<double> thresholds({ 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95 });
@@ -85,8 +87,8 @@ void grid_search_hough_canny_thresh(int low_thresh, int high_thresh)
             total_angle_err_sqr[i] += test_evaluator.angle_err_sqr_range[i];
         }
     }
-    std::cout << "Threshold low: " << low_thresh << " Threshold high" << high_thresh << std::endl;
-    print_results(spacing, thresholds, total_false_negatives, total_false_positives, total_true_positives, total_angle_err, total_angle_err_sqr, test_evaluator.detector->time);
+    file2 << "Threshold low: " << low_thresh << " Threshold high" << high_thresh << std::endl;
+    print_results(spacing, thresholds, total_false_negatives, total_false_positives, total_true_positives, total_angle_err, total_angle_err_sqr, test_evaluator.detector->time, file, file2);
 }
 
 int main()
@@ -108,18 +110,30 @@ int main()
     //    eval_NMS_thresh_chamfer_detector(min + i * step_size);
     //    std::cout << "--------------------------------------------------------------------------------- \n" << std::endl;
     //}
-    std::vector<int> canny_lows = { 63 };//{ 38, 51, 63, 76, 89 };
-    std::vector<int> canny_hysts = { 115 };//{ 66, 78, 90, 103, 115, 127, 139, 152 };
+    std::string test_name = "canny_grid_med_not_masked";
+    std::ofstream grid_search_file, dump_file;
+    std::vector<int> canny_lows ={ 38, 51, 63, 76, 89 }; // { 0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180};//
+    std::vector<int> canny_hysts = { 66, 78, 90, 103, 115, 127, 139, 152 }; //{ 15, 30, 45,  60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225};
+    grid_search_file.open("../../03 Data/Simple Dataset Copied/"+test_name+"res.csv");
+    dump_file.open("../../03 Data/Simple Dataset Copied/"+ test_name +"dump.txt");
+    for (int i = 0; i < canny_hysts.size(); i++)
+    {
+        grid_search_file << ", " << canny_hysts[i] ;
+    }
+
     for (int i = 0; i < canny_lows.size(); i++)
     {
+        grid_search_file << "\n";
         for (int j = 0; j < canny_hysts.size(); j++)
         {
             int canny_low = canny_lows[i];
             int canny_high = canny_lows[i] + canny_hysts[j];
-            grid_search_hough_canny_thresh(canny_low, canny_high);
+            grid_search_file << canny_low;
+            grid_search_hough_canny_thresh(canny_low, canny_high, grid_search_file, dump_file);
         }
     }
-
+    grid_search_file.close();
+    dump_file.close();
     return 0;
 }
 

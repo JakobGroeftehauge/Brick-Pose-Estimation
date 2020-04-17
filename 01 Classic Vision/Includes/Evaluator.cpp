@@ -183,7 +183,7 @@ void Evaluator::evaluate_bb(double threshold, int list[3])
     }
     int false_pos = this->detector->predictions.size() - true_pos;
     int false_neg = this->loader.annotations.size() - true_pos;
-    std::cout << "tru_pos: " << true_pos << " false pos: " << false_pos << " false neg: " << false_neg << std::endl;
+    //std::cout << "tru_pos: " << true_pos << " false pos: " << false_pos << " false neg: " << false_neg << std::endl;
     list[0] = true_pos;
     list[1] = false_pos;
     list[2] = false_neg;
@@ -222,7 +222,7 @@ void Evaluator::evaluate_range(std::vector<double> thresholds)
     this->angle_err_range.clear();
     this->angle_err_sqr_range.clear();
     match_annotations(0); // 0 - use axis aligned
-    std::cout << "annotation matches length: " << this->annotation_matches.size() << std::endl;
+    //std::cout << "annotation matches length: " << this->annotation_matches.size() << std::endl;
     for (int i = 0; i < thresholds.size(); i++)
     {
         int bbox_res[3];
@@ -266,7 +266,7 @@ void Evaluator::match_annotations(int rect_type)
     {
         return;
     }
-    std::cout << "prediction length: " << detector->predictions.size() << "annotations length: " << loader.annotations.size() << std::endl;
+    //std::cout << "prediction length: " << detector->predictions.size() << "annotations length: " << loader.annotations.size() << std::endl;
     cv::Mat IoU_mat = cv::Mat::zeros(detector->predictions.size(), loader.annotations.size(), CV_64F);
     for (int i = 0; i < detector->predictions.size(); i++)
     {
@@ -288,7 +288,7 @@ void Evaluator::match_annotations(int rect_type)
     {
 
         cv::minMaxIdx(IoU_mat, NULL, &max, NULL, max_idx);
-        std::cout << "max: " << max << " max idx 1:" << max_idx[0] << " idx 2: " << max_idx[1] << std::endl;
+        //std::cout << "max: " << max << " max idx 1:" << max_idx[0] << " idx 2: " << max_idx[1] << std::endl;
         IoU_mat.row(max_idx[0]) = 0;
         IoU_mat.col(max_idx[1]) = 0;
         this->annotation_matches.push_back(annotation_match(max_idx[0], max_idx[1], max));
