@@ -29,7 +29,7 @@ private:
 	void generate_candidates(std::vector<cv::Point> &best_match_locations, cv::Mat &matching_space, cv::RotatedRect template_rect, std::vector<prediction_candidate>& candidates_dst);
 	void apply_IOU_NMS(const std::vector<prediction_candidate>& candidates_src, float thresh, std::vector<prediction_candidate>& candidates_dst);
 	float rotated_rect_IOU(cv::RotatedRect rect1, cv::RotatedRect rect2);
-	void predictions_from_candidates(std::vector<prediction_candidate> &candidates, std::vector<prediction> &predictions);
+	void predictions_from_candidates(std::vector<prediction_candidate> &candidates, std::vector<bounding_box> &predictions);
 
     double NMS_thresh;
 

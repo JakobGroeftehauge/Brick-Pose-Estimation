@@ -60,8 +60,7 @@ bool Data_loader::loadNext()
         this->annotation_loader.loadAnnotation(file_paths[file_paths_iterator]);
         this->file_name = this->annotation_loader.image_file_name;
         this->img = cv::imread(this->path_folder + "/" + annotation_loader.image_file_name, cv::IMREAD_COLOR);
-        this->Bounding_boxes = convert_points_to_rects(annotation_loader.Rect_list);
-        this->angle_vector = convert_points_to_angles(annotation_loader.Rect_list);
+        convert_to_bb(annotation_loader.Rect_list);
         file_paths_iterator++;
         return true;
     }
@@ -93,26 +92,17 @@ std::vector<std::vector<double>> Data_loader::get_BB_characteristics()
     return output_list;
 }
 
-std::vector<cv::Rect> Data_loader::convert_points_to_rects(std::vector<std::vector<cv::Point2f> > annotation_points)
+
+void Data_loader::convert_to_bb(std::vector<std::vector<cv::Point2f>> point_list)
 {
-    std::vector<cv::Rect> BB_list;
-    for(unsigned int i = 0; i < annotation_points.size(); i++)
+    this->annotations.clear();
+    for (int i = 0; i < point_list.size(); i++)
     {
-        BB_list.push_back(cv::boundingRect(annotation_points[i]));
+        cv::RotatedRect rot_rect = cv::minAreaRect(point_list[i]);
+        this->annotations.push_back(bounding_box(rot_rect)); // on 2020-04-17 it was decided to use the same method as for deep learning
+            // meaning that first a rotated rectangle is created, then an axis aligned bbox is made based on that. 
+        //this->annotations.push_back(bounding_box(point_list[i])); // not used
     }
-
-    return BB_list;
-}
-
-std::vector<double> Data_loader::convert_points_to_angles(std::vector<std::vector<cv::Point2f> > annotation_points)
-{
-    std::vector<double> angle_vec;
-    //Needs to be done
-    for(unsigned int i = 0; i < annotation_points.size(); i++)
-    {
-
-    }
-    return angle_vec;
 }
 
 bool Data_loader::ends_with(const std::string &mainStr, const std::string &toMatch)

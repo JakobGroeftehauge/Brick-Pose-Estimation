@@ -44,7 +44,7 @@ inline void draw_points(cv::Mat& img, std::vector<cv::Point2f> pt_list, int radi
     }
 }
 
-inline void print_bounding_boxes(cv::Mat& img, std::vector<prediction> preds, cv::Scalar color = cv::Scalar(255,0,0))
+inline void print_bounding_boxes(cv::Mat& img, std::vector<bounding_box> preds, cv::Scalar color = cv::Scalar(255,0,0))
 {
     for(unsigned int i = 0; i < preds.size(); i++)
     {
@@ -76,7 +76,7 @@ inline void print_lines(cv::Mat &img, std::vector<std::vector<double>> lines, cv
     }
 }
 
-inline void print_rotated_bounding_boxes(cv::Mat &img, std::vector<prediction> preds, cv::Scalar color = cv::Scalar(0, 0, 255))
+inline void print_rotated_bounding_boxes(cv::Mat &img, std::vector<bounding_box> preds, cv::Scalar color = cv::Scalar(0, 0, 255))
 {
     for(unsigned int  i = 0; i < preds.size(); i++)
     {
@@ -124,7 +124,7 @@ inline void print_rotated_bounding_boxes(cv::Mat& img, std::vector<prediction_ca
     }
 }
 
-inline void print_filled_rotated_bounding_boxes(cv::Mat &img, std::vector<prediction> preds, float alpha = 0.5, cv::Scalar color = cv::Scalar(0, 0, 255))
+inline void print_filled_rotated_bounding_boxes(cv::Mat &img, std::vector<bounding_box> preds, float alpha = 0.5, cv::Scalar color = cv::Scalar(0, 0, 255))
 {
     cv::Mat img_copy = img.clone();
     for(unsigned int  i = 0; i < preds.size(); i++)
