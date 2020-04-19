@@ -4,8 +4,8 @@
 
 using namespace std;
 
-void print_results(int spacing, std::vector<double> thresholds, std::vector<double> total_false_negatives, std::vector<double> total_false_positives, 
-    std::vector<double> total_true_positives, std::vector<double> total_angle_err, std::vector<double> total_angle_err_sqr, 
+void print_results(int spacing, std::vector<double> thresholds, std::vector<double> total_false_negatives, std::vector<double> total_false_positives,
+    std::vector<double> total_true_positives, std::vector<double> total_angle_err, std::vector<double> total_angle_err_sqr,
     double time, std::ofstream& file, std::ofstream& file2)
 {
     file2 << setw(5) << "IoU" << setw(spacing) << "Prec." << setw(spacing) << "Rec." << setw(spacing) << "F1" << setw(spacing)
@@ -42,7 +42,7 @@ void eval_NMS_thresh_chamfer_detector(double NMS_thresh, std::ofstream& file1, s
     Evaluator test_evaluator("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_12-03.csv");
     test_evaluator.set_detector(&detector);
     test_evaluator.set_thresholds(thresholds);
-    test_evaluator.reset_counters();
+    //test_evaluator.reset_counters();
     test_evaluator.detector->set_NMS_thresh(NMS_thresh);
     while (test_evaluator.evaluate_next_img())
     {
@@ -75,7 +75,7 @@ void grid_search_hough_canny_thresh(int low_thresh, int high_thresh, std::ofstre
     Evaluator test_evaluator("../../03 Data/Simple Dataset Copied", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_03-03.csv");
     test_evaluator.set_detector(&detector);
     test_evaluator.set_thresholds(thresholds);
-    test_evaluator.reset_counters();
+    //test_evaluator.reset_counters();
     test_evaluator.detector->set_canny_thresh(low_thresh, high_thresh);
     while (test_evaluator.evaluate_next_img())
     {
@@ -111,10 +111,6 @@ int main()
     //    eval_NMS_thresh_chamfer_detector(min + i * step_size);
     //    std::cout << "--------------------------------------------------------------------------------- \n" << std::endl;
     //}
-<<<<<<< HEAD
-    std::vector<int> canny_lows = { 38, 51, 63 };
-    std::vector<int> canny_hysts = { 90, 103, 115, 127 };
-=======
     std::string test_name = "canny_grid_med_masked";
     std::ofstream grid_search_file, dump_file;
     std::vector<int> canny_lows ={ 51, 63, 76, 89 }; // { 0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180};//
@@ -126,7 +122,6 @@ int main()
         grid_search_file << ", " << canny_hysts[i] ;
     }
 
->>>>>>> 3e6b58a0d35d87f1e05ca67f87a212c4f1b0ed7e
     for (int i = 0; i < canny_lows.size(); i++)
     {
         grid_search_file << "\n";
