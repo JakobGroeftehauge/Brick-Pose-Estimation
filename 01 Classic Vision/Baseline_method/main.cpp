@@ -1,5 +1,6 @@
 #include <iostream>
 #include "../Includes/Evaluator.h"
+#include "../Includes/Chamfer_brick_detector.h"
 
 using namespace std;
 
@@ -32,7 +33,7 @@ void eval_NMS_thresh_chamfer_detector(double NMS_thresh) {
     std::vector<double> total_false_positives(thresholds.size(), 0);
     std::vector<double> total_true_positives(thresholds.size(), 0);
     Chamfer_brick_detector detector;
-    Evaluator test_evaluator("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
+    Evaluator test_evaluator("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_12-03.csv");
     test_evaluator.set_detector(&detector);
     test_evaluator.set_thresholds(thresholds);
     test_evaluator.reset_counters();
@@ -61,7 +62,7 @@ void grid_search_hough_canny_thresh(int low_thresh, int high_thresh)
     std::vector<double> total_false_positives(thresholds.size(), 0);
     std::vector<double> total_true_positives(thresholds.size(), 0);
     Brick_Detector detector; // hough based brick detector
-    Evaluator test_evaluator("../../03 Data/Simple Dataset Copied", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
+    Evaluator test_evaluator("../../03 Data/Simple Dataset Copied", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_03-03.csv");
     test_evaluator.set_detector(&detector);
     test_evaluator.set_thresholds(thresholds);
     test_evaluator.reset_counters();
@@ -98,8 +99,8 @@ int main()
     //    eval_NMS_thresh_chamfer_detector(min + i * step_size);
     //    std::cout << "--------------------------------------------------------------------------------- \n" << std::endl;
     //}
-    std::vector<int> canny_lows = { 38, 51, 63, 76, 89 };
-    std::vector<int> canny_hysts = { 66, 78, 90, 103, 115, 127, 139, 152 };
+    std::vector<int> canny_lows = { 38, 51, 63 };
+    std::vector<int> canny_hysts = { 90, 103, 115, 127 };
     for (int i = 0; i < canny_lows.size(); i++)
     {
         for (int j = 0; j < canny_hysts.size(); j++)
