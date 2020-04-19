@@ -1,5 +1,8 @@
 #include "annotation_loader.h"
+#include "json.hpp"
 #include <iostream>
+
+using json = nlohmann::json;
 
 Annotation_loader::Annotation_loader()
 {
@@ -8,39 +11,25 @@ Annotation_loader::Annotation_loader()
 
 void Annotation_loader::loadAnnotation(std::string path)
 {
-    //std::cout << path << std::endl;
-    //replace_null(path);
-    //std::cout << path << std::endl;
-    cv::FileStorage file(path, cv::FileStorage::READ);
-    //std::cout << path << std::endl;
-    cv::FileNode root = file["shapes"];
-    std::vector<std::vector<cv::Point2f>> annotation_point_list;
+    this->Rect_list.clear();
 
-    for(unsigned int i = 0; i < root.size(); i++)
+    std::ifstream file(path);
+    json file_obj = json::parse(file);
+    this->image_file_name = file_obj["imagePath"];
+
+    // Load points into Rect_list
+    json shapes = file_obj["shapes"];
+    std::vector<cv::Point2f> polygon;
+
+    for(auto it = shapes.begin(); it != shapes.end(); ++it)
     {
-        std::vector<cv::Point2f> annotation_points;
-
-        cv::FileNode Annotation = root[i]["points"];
-        for(unsigned int j = 0; j < Annotation.size();  j++)
+        polygon.clear();
+        json &val = it.value();
+        std::vector<std::vector<double>> point_list = val["points"];
+        for(unsigned int i = 0; i < point_list.size(); i++)
         {
-            annotation_points.push_back(cv::Point2f(Annotation[j][0].real(), Annotation[j][1].real()));
+            polygon.push_back(cv::Point2f(point_list[i][0], point_list[i][1]));
         }
-        annotation_point_list.push_back(annotation_points);
-        annotation_points.clear();
+        this->Rect_list.push_back(polygon);
     }
-    Rect_list = annotation_point_list;
-
-    cv::FileNode img_path   = file["imagePath"];
-    image_file_name = img_path.string();
-    //std::cout << image_file_name << std::endl;
-}
-
-void Annotation_loader::replace_null(std::string path)
-{
-    std::ifstream t(path);
-    std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-    str = std::regex_replace(str, std::regex("null"), "1");
-    std::ofstream out(path);
-    out << str;
-    out.close();
 }

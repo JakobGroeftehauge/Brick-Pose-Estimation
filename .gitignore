@@ -33,6 +33,7 @@ Baseline_method/Baseline_method
 01 Classic Vision/real_sense/real_sense
 01 Classic Vision/chamfer_unit_test/chamfer_unit_test
 03 Data/Create-Dataset/Create-json-annotations/Create-json-annotations
+01 Classic Vision/Eval_Hough/Eval_Hough
 
 ## Paperspace server
 cuda-repo-ubuntu1804_10.1.243-1_amd64.deb

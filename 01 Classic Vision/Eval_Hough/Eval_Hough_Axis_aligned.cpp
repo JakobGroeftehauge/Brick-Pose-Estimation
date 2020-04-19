@@ -8,7 +8,7 @@ int main()
 	int sp = 12;
 	std::vector<double> thresholds({ 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95 });
 	Brick_Detector detector; // hough based brick detector
-	Evaluator test_evaluator("../../03 Data/Simple Dataset Copied", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
+    Evaluator test_evaluator("../../03 Data/Simple Dataset Copied", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
 	test_evaluator.set_detector(&detector);
 	test_evaluator.detector->set_canny_thresh(51, 166);
 	test_evaluator.evaluate_dataset(thresholds);
