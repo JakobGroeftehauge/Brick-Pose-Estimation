@@ -119,6 +119,33 @@ void Evaluator::print_metrics()
     std::cout << "------------------------------------------------------------------------" << std::endl;
 }
 
+evaluation_results Evaluator::get_avg_result()
+{
+    evaluation_results output_res(-1);
+
+    for(int i = 0; i < this->results.size(); i++)
+    {
+        output_res.total_FN += this->results[i].total_FN;
+        output_res.total_FP += this->results[i].total_FP;
+        output_res.total_TP += this->results[i].total_TP;
+        output_res.angle_err_sqr_sum += this->results[i].angle_err_sqr_sum;
+        output_res.angle_err_sum += this->results[i].angle_err_sum;
+    }
+    output_res.precision = double(output_res.total_TP) / double(output_res.total_TP + output_res.total_FP);
+    output_res.recall = double(output_res.total_TP) / double(output_res.total_TP + output_res.total_FN);
+    output_res.f1 = 2 * output_res.recall * output_res.precision / (output_res.recall + output_res.precision);
+    output_res.avg_angle_err = output_res.angle_err_sum / double(output_res.total_TP);
+    output_res.std_angle_err = sqrt(output_res.angle_err_sqr_sum / double(output_res.total_TP) - pow(output_res.avg_angle_err, 2.0));
+
+
+    output_res.total_TP = -1;
+    output_res.total_FP = -1;
+    output_res.total_FN = -1;
+    output_res.angle_err_sum = -1;
+    output_res.angle_err_sqr_sum = -1;
+    return output_res;
+}
+
 double Evaluator::calculate_IoU(cv::Rect rect1, cv::Rect rect2)
 {
 	return (double)(rect1 & rect2).area() / (double)(rect1 | rect2).area();

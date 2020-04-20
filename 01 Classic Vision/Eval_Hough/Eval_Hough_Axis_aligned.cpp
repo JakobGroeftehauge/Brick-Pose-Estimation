@@ -20,5 +20,9 @@ int main()
 			<< tmp_res.total_FP << setw(sp) << tmp_res.total_TP << endl;
 	}
 
+    evaluation_results avg_res = test_evaluator.get_avg_result();
+    std::cout << setw(sp) << avg_res.threshold << setw(sp) << avg_res.precision << setw(sp) << avg_res.recall << setw(sp) << avg_res.f1 << setw(sp)
+        << avg_res.avg_angle_err << setw(sp) << avg_res.std_angle_err << setw(sp) << avg_res.total_FN << setw(sp)
+        << avg_res.total_FP << setw(sp) << avg_res.total_TP << endl;
 	return 0;
 }

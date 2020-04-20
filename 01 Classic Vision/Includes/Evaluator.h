@@ -52,6 +52,7 @@ public:
 	void close_file();
 	void reset_counters();
 	void print_metrics();
+    evaluation_results get_avg_result();
 	Detector* detector;
 	cv::Mat img_to_print;
 	std::vector<evaluation_results> results;
