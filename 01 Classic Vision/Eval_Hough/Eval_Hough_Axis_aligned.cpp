@@ -5,20 +5,21 @@ using namespace std;
 
 int main()
 {
-	std::string test_name = "canny_med_no_mask_";
+	std::string test_name = "canny_med_mask_";
 	std::ofstream res, dump;
 
 	int sp = 12;
 	std::vector<double> thresholds({ 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95 });
 	Brick_Detector detector; // hough based brick detector
-    Evaluator test_evaluator("../../03 Data/Simple Dataset Copied", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
+    Evaluator test_evaluator("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
 	test_evaluator.set_detector(&detector);
 
-	std::vector<int> canny_lows = { 51, 63, 76, 89 }; // { 0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180};//
-	std::vector<int> canny_hysts = { 90, 103, 115, 127, }; //{ 15, 30, 45,  60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225};
+	std::vector<int> canny_lows =  { 0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180};//
+	std::vector<int> canny_hysts = { 15, 30, 45,  60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225};
 
-	res.open("../../03 Data/Simple Dataset Copied" + test_name + "results.csv");
-	dump.open("../../03 Data/Simple Dataset Copied" + test_name + "dump.txt");
+	res.open("../../03 Data/Simple Dataset/" + test_name + "results.csv");
+	dump.open("../../03 Data/Simple Dataset/" + test_name + "dump.txt");
+	res << "low/hyst";
 	for (int i = 0; i < canny_hysts.size(); i++) // create the header of the table in result file
 	{
 		res << ", " << canny_hysts[i];
@@ -33,7 +34,7 @@ int main()
 			test_evaluator.detector->set_canny_thresh(canny_low, canny_high);
 			test_evaluator.reset_test();
 			test_evaluator.evaluate_dataset(thresholds);
-
+			dump << "Threshold low: " << canny_low << " Threshold high: " << canny_high << " Hyst: " << canny_hysts[j] << std::endl;
 			for (int k = 0; k < test_evaluator.results.size(); k++)
 			{
 				evaluation_results tmp_res = test_evaluator.results[k];
@@ -41,7 +42,7 @@ int main()
 					<< tmp_res.avg_angle_err << setw(sp) << tmp_res.std_angle_err << setw(sp) << tmp_res.total_FN << setw(sp)
 					<< tmp_res.total_FP << setw(sp) << tmp_res.total_TP << endl;
 			}
-			evaluation_results avgs = test_evaluator.get_result_avg();
+			evaluation_results avgs = test_evaluator.get_avg_result();
 			dump << setw(sp) << "Avg." << setw(sp) << avgs.precision << setw(sp) << avgs.recall << setw(sp) << avgs.f1 << setw(sp)
 				<< avgs.avg_angle_err << setw(sp) << avgs.std_angle_err << setw(sp) << avgs.total_FN << setw(sp)
 				<< avgs.total_FP << setw(sp) << avgs.total_TP << endl;
