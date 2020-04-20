@@ -81,7 +81,7 @@ void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
 
     cv::Mat filter_img;
     //cv::medianBlur(gray_img, filter_img, 5);
-    cv::GaussianBlur(gray_img, filter_img, cv::Size(3, 3), 0, 0);
+    cv::GaussianBlur(gray_img, filter_img, cv::Size(5, 5), 0, 0);
     cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
     //cv::imshow("edge image", dst);
     //cv::waitKey(0);
