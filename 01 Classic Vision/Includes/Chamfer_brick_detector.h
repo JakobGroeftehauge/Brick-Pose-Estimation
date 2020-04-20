@@ -11,7 +11,8 @@ public:
 	void detect(cv::Mat img);
 	void compute_chamfer_img();
 	void set_NMS_thresh(double thresh);
-    void set_resolution(int angle_step, float scale_min, float scale_max, float scale_step);
+    void set_resolution(int angle_step, float scale_step);
+	void set_brick_specs(double min_w, double min_h, double max_w, double max_h);
 	cv::Mat chamfer_img;
 	cv::Mat model_template;
 	cv::Mat matching_space;
@@ -34,8 +35,8 @@ private:
     double NMS_thresh;
 
     int angle_step = 90;
-    float scale_min = 100.0;
-	float scale_max = 135.0;
+	float scale_min;// = 100.0;
+	float scale_max;// = 135.0;
     float scale_step = 10;
 
     int template_padding = 2;

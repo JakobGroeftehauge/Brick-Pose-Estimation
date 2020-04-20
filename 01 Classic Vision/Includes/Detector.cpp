@@ -21,6 +21,14 @@ void Detector::set_NMS_thresh(double thresh)
 {
 }
 
+void Detector::set_brick_specs(double min_w, double min_h, double max_w, double max_h)
+{
+	this->min_width = min_w;
+	this->min_height = min_h;
+	this->max_width = max_w;
+	this->max_height = max_h;
+}
+
 void Detector::set_canny_thresh(int low, int high)
 {
 	this->canny_thres_low = low;

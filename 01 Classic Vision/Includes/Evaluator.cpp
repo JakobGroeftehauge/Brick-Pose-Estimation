@@ -49,6 +49,7 @@ void Evaluator::set_path(std::string path)
 
 bool Evaluator::evaluate_next_img()
 {
+    //std::cout << "next" << std::endl;
     if (file.is_open() == false)
     {
         open_file();

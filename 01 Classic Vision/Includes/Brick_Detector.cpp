@@ -80,8 +80,8 @@ void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
     cv::cvtColor(src, gray_img, CV_BGR2GRAY);
 
     cv::Mat filter_img;
-    cv::medianBlur(gray_img, filter_img, 5);
-    //cv::GaussianBlur(gray_img, filter_img, cv::Size(5, 5), 0, 0);
+    //cv::medianBlur(gray_img, filter_img, 5);
+    cv::GaussianBlur(gray_img, filter_img, cv::Size(5, 5), 0, 0);
     cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
     //cv::imshow("edge image", dst);
     //cv::waitKey(0);
@@ -238,22 +238,26 @@ bool Brick_Detector::accept_detection(cv::RotatedRect rotated_BB)
 {
     double min_side = std::min(rotated_BB.size.width, rotated_BB.size.height);
     double max_side = std::max(rotated_BB.size.width, rotated_BB.size.height);
-    double proportion = min_side/max_side;
+    double ratio = min_side/max_side;
     double area = rotated_BB.size.width * rotated_BB.size.height;
-    double margin = 0.1;
+    double margin = 0.15;
 
-    if(min_side < 20.5 * (1 - margin) || max_side > 108.0 * (1 + margin))
+    if(min_side < this->min_height*(1-margin) || max_side > this->max_width*(1+margin) )
     {
         return false;
     }
-    else if(proportion < 0.203 * (1 - margin)|| proportion > 0.296 * (1 + margin))
+    else if (min_side > this->max_height * (1 + margin) || max_side < this->min_width * (1 - margin))
     {
         return false;
     }
-    else if(area < 1906.0 * (1 - margin) || area > 3260.0 * (1 + margin))
-    {
-        return false;
-    }
+    //else if(ratio < 0.207921 * (1 - margin)|| ratio > 0.28 * (1 + margin))
+    //{
+    //    return false;
+    //}
+    //else if(area < 1906.0 * (1 - margin) || area > 3260.0 * (1 + margin))
+    //{
+    //    return false;
+    //}
     else
     {
         return true;

@@ -80,12 +80,21 @@ void Chamfer_brick_detector::set_NMS_thresh(double thresh)
     this->NMS_thresh = thresh;
 }
 
-void Chamfer_brick_detector::set_resolution(int angle_step, float scale_min, float scale_max, float scale_step)
+void Chamfer_brick_detector::set_resolution(int angle_step, float scale_step)
 {
     this->angle_step = angle_step;
-    this->scale_min = scale_min;
-    this->scale_max = scale_max;
     this->scale_step = scale_step;
+}
+
+void Chamfer_brick_detector::set_brick_specs(double min_w, double min_h, double max_w, double max_h)
+{
+	double min_diag = sqrt((min_w * min_w) + (min_h * min_h));
+	double max_diag = sqrt((max_w * max_w) + (max_h * max_h));
+	this->scale_min = min_diag;
+	this->scale_max = max_diag;
+	double template_w = (min_w + max_w) / (min_diag + max_diag);
+	double template_h = (min_h + max_h) / (min_diag + max_diag);
+	this->brick_template = cv::RotatedRect(cv::Point2f(0.5, 0.5), cv::Size2f(template_w, template_h), 0);
 }
 
 void Chamfer_brick_detector::create_template(float scale, float angle, cv::Mat &template_img_dst, cv::RotatedRect &rect_dst)

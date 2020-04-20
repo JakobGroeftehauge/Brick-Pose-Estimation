@@ -36,7 +36,7 @@ int main()
         image = image(ROI);
         Chamfer_brick_detector chamfer_detector(image);
         chamfer_detector.set_NMS_thresh(120);
-        chamfer_detector.set_resolution(90,95,145,15);
+        chamfer_detector.set_resolution(90,15);
         chamfer_detector.detect(image);
         for (int j = 0; j < chamfer_detector.pred_candidates.size(); j++)
         {
