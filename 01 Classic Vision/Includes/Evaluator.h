@@ -43,6 +43,7 @@ public:
 	Evaluator();
 	Evaluator(std::string path);
 	Evaluator(std::string path_to_folder, std::string img_list_csv);
+	void reset_test();
 	void set_detector(Detector * detector_addr);
 	void set_path(std::string path);
 	bool evaluate_next_img();

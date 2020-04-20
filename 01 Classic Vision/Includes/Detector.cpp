@@ -32,6 +32,11 @@ void Detector::set_img(cv::Mat img)
 	this->img = img;
 }
 
+void Detector::reset_time()
+{
+	this->time = 0;
+}
+
 void Detector::clear_predictions()
 {
 	this->predictions.clear();

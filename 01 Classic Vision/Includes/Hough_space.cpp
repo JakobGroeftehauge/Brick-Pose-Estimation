@@ -152,22 +152,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
     for (unsigned int i = 0; i < complete_contours.size(); i++)
     {
         lines.push_back(convert_to_line(get_maximum(complete_contours[i])));
-        //lines.push_back(convert_to_line(get_weighted_average(complete_contours[i])));
-        //weighted average does not work due to the current structure. See explanation at definition.
     }
-    // -------------------------------- using weighted average ------------------------------
-    //show_contours(complete_contours);
-
-    //std::vector<std::vector<double>> lines;
-    //std::cout << "Number of contours detected: " << complete_contours.size() << std::endl; //For debugging.
-
-    ////Find maximum point for every contour.
-    //for (unsigned int i = 0; i < complete_contours.size(); i++)
-    //{
-    //    //lines.push_back(convert_to_line(get_maximum(complete_contours[i])));
-    //    lines.push_back(convert_to_line(inverse_shift_single_point(get_weighted_average(complete_contours[i],split_value),split_value)));
-    //    //weighted average does not work due to the current structure. See explanation at definition.
-    //}
     return lines;
 }
 

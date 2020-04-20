@@ -15,6 +15,7 @@ public:
 	void set_canny_thresh(int low, int high);
 	void set_img(cv::Mat img);
 	std::vector<bounding_box> predictions;
+	void reset_time();
 	double time = 0;
 
 protected:

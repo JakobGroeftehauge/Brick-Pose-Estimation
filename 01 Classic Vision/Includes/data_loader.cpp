@@ -70,6 +70,11 @@ bool Data_loader::loadNext()
     }
 }
 
+void Data_loader::reset_file_iterator()
+{
+    this->file_paths_iterator = 0;
+}
+
 std::vector<std::vector<double>> Data_loader::get_BB_characteristics()
 {
     std::vector<std::vector<double>> output_list;

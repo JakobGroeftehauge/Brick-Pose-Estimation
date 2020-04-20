@@ -29,6 +29,13 @@ Evaluator::Evaluator(std::string path_to_folder, std::string img_list_csv)
     this->loader = Data_loader(path_to_folder, img_list_csv);
 }
 
+void Evaluator::reset_test()
+{
+    this->detector->reset_time();
+    this->results.clear();
+    this->loader.reset_file_iterator();
+}
+
 void Evaluator::set_detector(Detector* detector_addr)
 {
     this->detector = detector_addr;
@@ -98,13 +105,6 @@ void Evaluator::close_file()
     file.close();
 }
 
-//void Evaluator::reset_counters()
-//{
-//    this->total_false_negative = 0.0;
-//    this->total_false_positive = 0.0;
-//    this->total_true_positive = 0.0;
-//}
-
 void Evaluator::print_metrics()
 {
     //this function ahs to be changed or deleted
@@ -141,57 +141,6 @@ double Evaluator::calculate_IoU(cv::RotatedRect rect1, cv::RotatedRect rect2)
     double union_area = rect1.size.area() + rect2.size.area() - intersection_area;
     return intersection_area / union_area;
 }
-
-//Evaluates detections in one image at one threshold
-//void Evaluator::evaluate(double threshold, int* false_neg_out, int* false_pos_out, int* true_pos_out)
-//{
-//    this->false_positive = {};
-//    this->true_positive = {};
-//    //std::cout << "Threshold: " << threshold << std::endl;
-//	std::vector<cv::Rect> annotations(this->loader.Bounding_boxes);
-//	std::vector<cv::Rect> predictions;
-//    for (unsigned int i = 0; i < detector->predictions.size(); i++)
-//	{
-//		predictions.push_back(detector->predictions[i].rect);
-//	}
-//    unsigned int i = 0;
-//    while (i < predictions.size())
-//    {
-//        //Find the BB with the greatest intersection over union.
-//        double max_IOU = 0;
-//        int index_max_IOU = 0;
-//        for (unsigned int j = 0; j < annotations.size(); j++)
-//        {
-//            double IOU = calculate_IoU(predictions[i], annotations[j]);
-//            //std::cout << IOU << std::endl;
-//            if (IOU > max_IOU)
-//            {
-//                max_IOU = IOU;
-//                index_max_IOU = j;
-//            }
-//        }
-//        if (max_IOU > threshold)
-//        {
-//            //Remove elements form annotation list and prediction list.
-//            this->true_positive.push_back(predictions[i]);
-//            predictions.erase(predictions.begin() + i);
-//            annotations.erase(annotations.begin() + index_max_IOU);
-//        }
-//        else
-//        {
-//            i++;
-//        }
-//    }
-//    this->false_positive = predictions;
-//    *true_pos_out = this->detector->predictions.size() - predictions.size();
-//    *false_pos_out = predictions.size();
-//    //std::cout << "internal true pos:" << this->detector->predictions.size() - predictions.size() << std::endl;
-//    *false_neg_out = annotations.size();
-//    //save_evaluation(*true_pos_out, *false_pos_out, *false_neg_out);
-//    //this->total_false_negative += false_neg;
-//    //this->total_false_positive += false_pos;
-//    //this->total_true_positive += true_pos;
-//}
 
 void Evaluator::evaluate_bb(double threshold, int list[3])
 {
@@ -252,8 +201,6 @@ void Evaluator::evaluate_range(std::vector<double> thresholds)
     }
 }
 
-
-
 void Evaluator::save_evaluation(int true_pos, int false_pos, int false_neg)
 {
     file << loader.file_name << ", ";
@@ -298,16 +245,6 @@ void Evaluator::match_annotations(int rect_type)
     }
     double max;
     int max_idx[2];
-    //do
-    //{
-
-    //    cv::minMaxIdx(IoU_mat, NULL, &max, NULL, max_idx);
-    //    //std::cout << "max: " << max << " max idx 1:" << max_idx[0] << " idx 2: " << max_idx[1] << std::endl;
-    //    IoU_mat.row(max_idx[0]) = 0;
-    //    IoU_mat.col(max_idx[1]) = 0;
-    //    this->annotation_matches.push_back(annotation_match(max_idx[0], max_idx[1], max));
-    //} while (max > 0);
-
     cv::minMaxIdx(IoU_mat, NULL, &max, NULL, max_idx);
     //std::cout << "max: " << max << " max idx 1:" << max_idx[0] << " idx 2: " << max_idx[1] << std::endl;
     while (max > 0)
@@ -319,4 +256,3 @@ void Evaluator::match_annotations(int rect_type)
         //std::cout << "max: " << max << " max idx 1:" << max_idx[0] << " idx 2: " << max_idx[1] << std::endl;
     }
 }
-
