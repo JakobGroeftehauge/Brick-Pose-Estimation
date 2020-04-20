@@ -65,7 +65,7 @@ void Brick_Detector::find_lines()
     cv::Mat edge_img;
     //cv::imshow("src image", this->img);
     find_edges(this->img, edge_img);
-    cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(50, edge_img.size().height - 1), 0, -1); //mask out pallet
+    //cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(50, edge_img.size().height - 1), 0, -1); //mask out pallet
     //cv::imshow("edge_img", edge_img);
     //cv::waitKey(0);
     this->hough = Hough_space(edge_img);
