@@ -57,6 +57,7 @@ bool Data_loader::loadNext()
 {
     if(file_paths_iterator < file_paths.size())
     {
+        //std::cout << file_paths[file_paths_iterator] << std::endl;
         this->annotation_loader.loadAnnotation(file_paths[file_paths_iterator]);
         this->file_name = this->annotation_loader.image_file_name;
         this->img = cv::imread(this->path_folder + "/" + annotation_loader.image_file_name, cv::IMREAD_COLOR);

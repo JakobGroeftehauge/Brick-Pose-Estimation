@@ -6,7 +6,8 @@
 int main()
 {
 	std::vector<double> areas, width, height, ratio;
-	Data_loader loader("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
+	//Data_loader loader("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
+	Data_loader loader("../../03 Data/Dataset2_onPallet", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_OP_val_set_14-04.csv");
 	while (loader.loadNext())
 	{
 		for (int i = 0; i < loader.annotations.size(); i++)
