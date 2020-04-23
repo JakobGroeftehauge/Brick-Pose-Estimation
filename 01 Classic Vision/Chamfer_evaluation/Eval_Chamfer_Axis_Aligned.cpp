@@ -10,16 +10,16 @@ int main()
 
 	int sp = 12;
 	std::vector<double> thresholds({ 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95 });
-	std::vector<double> nms_thresh = { 100,110};// , 0.2, 0.25, 0.3, 0.35, 0.4};
+	std::vector<double> nms_thresh = {0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95};// , 0.2, 0.25, 0.3, 0.35, 0.4};
 	Chamfer_brick_detector detector; // hough based brick detector
 	Evaluator test_evaluator("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv");
 	test_evaluator.set_detector(&detector);
 	test_evaluator.detector->set_brick_specs(96, 21, 108, 28);
+	test_evaluator.detector->set_resolution(60, 5);
 
 	res.open("../../03 Data/Simple Dataset/" + test_name + "results.csv");
 	dump.open("../../03 Data/Simple Dataset/" + test_name + "dump.txt");
-	res << setw(sp) << "Thresh" << setw(sp) << "Prec." << setw(sp) << "Rec." << setw(sp) << "F1" << setw(sp)
-		<< "ang. err." << setw(sp) << "a. e. std." << setw(sp) << "Time" << std::endl;
+	res << setw(sp) << "Thresh, Prec., Rec., F1, ang. err., a. e. std., Time" << std::endl;
 
 	for (int i = 0; i < nms_thresh.size(); i++)
 	{

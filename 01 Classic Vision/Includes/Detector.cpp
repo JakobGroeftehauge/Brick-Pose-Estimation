@@ -29,6 +29,10 @@ void Detector::set_brick_specs(double min_w, double min_h, double max_w, double 
 	this->max_height = max_h;
 }
 
+void Detector::set_resolution(int angle_step, float scale_step)
+{
+}
+
 void Detector::set_canny_thresh(int low, int high)
 {
 	this->canny_thres_low = low;
