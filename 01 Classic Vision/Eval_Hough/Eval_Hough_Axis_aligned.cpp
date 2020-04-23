@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-	std::string test_name = "canny_val_med_mask_OP";
+	std::string test_name = "canny_val_med5_mask_OP";
 	std::ofstream res, dump;
 
 	int sp = 12;
@@ -20,9 +20,12 @@ int main()
 
 	std::vector<int> canny_lows = { 0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180 };//{ 36,39,42,45,48,51,54,57,60,63,66,69,72,75 };//
 	std::vector<int> canny_hysts = { 15, 30, 45,  60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225 };//{ 60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,108,111,114,117,120,123,126,129,132,135 };//
+	//std::vector<int> canny_lows = { 36,39,42,45,48,51,54,57,60,63,66,69,72,75 };//
+	//std::vector<int> canny_hysts = { 60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,108,111,114,117,120,123,126,129,132,135 };//
 
-	res.open("../../03 Data/Simple Dataset/" + test_name + "results.csv");
-	dump.open("../../03 Data/Simple Dataset/" + test_name + "dump.txt");
+
+	res.open("../../03 Data/Dataset2_onPallet/" + test_name + "results.csv");
+	dump.open("../../03 Data/Dataset2_onPallet/" + test_name + "dump.txt");
 	res << "low/hyst";
 	for (int i = 0; i < canny_hysts.size(); i++) // create the header of the table in result file
 	{
