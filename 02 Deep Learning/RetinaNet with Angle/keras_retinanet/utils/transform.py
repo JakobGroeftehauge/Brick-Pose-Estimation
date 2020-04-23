@@ -63,13 +63,14 @@ def transform_angle(transform, angle):
     #return[(points[0][1] - points[0][0]), (points[1][1] - points[1][0])]
     return [angleX,angleY]
 
+
+
+
 def transform_aabb(transform, aabb):
     """ Apply a transformation to an axis aligned bounding box.
     NOTE: Description is outdated
-
     The result is a new AABB in the same coordinate system as the original AABB.
     The new AABB contains all corner points of the original AABB after applying the given transformation.
-
     Args
         transform: The transformation to apply.
         x1:        The minimum x value of the AABB.
@@ -91,7 +92,6 @@ def transform_aabb(transform, aabb):
     max_corner = points.max(axis=1)
 
     return [min_corner[0], min_corner[1], max_corner[0], max_corner[1]]
-
 
 def _random_vector(min, max, prng=DEFAULT_PRNG):
     """ Construct a random vector between min and max.

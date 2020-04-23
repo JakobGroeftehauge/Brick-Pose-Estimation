@@ -57,6 +57,7 @@ image_group, annotations_group = generator.filter_annotations(image_group, annot
 image_group, annotations_group = generator.random_transform_group(image_group, annotations_group)
 
 
+
 #print(annotations_group)
 #print("bboxes: ", annotations_group[0]["bboxes"])
 #print("labels: ", annotations_group[0]["labels"])
