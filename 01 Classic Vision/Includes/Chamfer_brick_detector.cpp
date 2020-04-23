@@ -116,7 +116,7 @@ void Chamfer_brick_detector::create_template(float scale, float angle, cv::Mat &
 
 	//Calculate norm kind of
 	int white_pixels = cv::countNonZero(template_);
-	template_ = template_; // / float(white_pixels) * 100;
+	template_ = template_ / float(white_pixels) * 100;
 
 	// set destination variables
 	template_img_dst = template_;
