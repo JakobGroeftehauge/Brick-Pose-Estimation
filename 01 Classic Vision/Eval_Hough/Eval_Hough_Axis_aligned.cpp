@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-	std::string test_name = "canny_val_med5_mask_OP";
+	std::string test_name = "canny_val_med7_mask_OP";
 	std::ofstream res, dump;
 
 	int sp = 12;
