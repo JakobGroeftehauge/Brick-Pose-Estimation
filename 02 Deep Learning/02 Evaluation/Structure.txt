@@ -1,10 +1,18 @@
 02 Evaluation
+	List_of_img_val_set_Simple
+	List_of_img_val_set_On_Pallet
 	01 RetinaNet with Angle
 		Evaluation - jupyter-file
 		01 Simple Dataset
+			01 Reg angle
+			02 RHP
+			03 Full
 		02 On Pallet
+			01 Full
 	02 RetinaNet Rotated BBox
 		Evaluation - jupyter-file
 		01 Simple Dataset
+			01 Full
 		02 On Pallet
+			01 Full
 	
