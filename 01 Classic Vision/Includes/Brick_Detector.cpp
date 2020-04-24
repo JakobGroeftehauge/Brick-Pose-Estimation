@@ -1,22 +1,24 @@
 #include "Brick_Detector.h"
 
-
-
 Brick_Detector::Brick_Detector()
 {
-    this->canny_thres_high = 140;
-    this->canny_thres_low = 60;
+    set_canny_thresh(60, 140);
 }
 
 Brick_Detector::Brick_Detector(cv::Mat img)
 {
     this->img = img;
-    this->canny_thres_high = 140;
-    this->canny_thres_low = 60;
+    set_canny_thresh(60, 140);
 }
 
 void Brick_Detector::detect()
 {
+    // ---------------- for timing -------------------
+    std::chrono::high_resolution_clock::time_point end;
+    std::chrono::high_resolution_clock::time_point start;
+    std::chrono::duration<float> duration;
+    start = std::chrono::high_resolution_clock::now();
+    // ------------------------------------------------
     clear_predictions();
     find_lines();
 
@@ -37,7 +39,12 @@ void Brick_Detector::detect()
     {
        return;  //TO DO: determine what to do when no lines has been located.
     }
-
+    // ---------------- for timing -------------------
+    end = std::chrono::high_resolution_clock::now();
+    duration = end - start;
+    float ms = duration.count() * 1000.0f;
+    this->time += ms;
+    // ------------------------------------------------
 }
 
 void Brick_Detector::detect(cv::Mat img)
@@ -46,11 +53,6 @@ void Brick_Detector::detect(cv::Mat img)
     detect();
 }
 
-void Brick_Detector::set_img(cv::Mat img)
-{
-    this->img = img;
-    std::cout << this->img.size().width << std::endl;
-}
 
 void Brick_Detector::clear_all()
 {
@@ -58,21 +60,19 @@ void Brick_Detector::clear_all()
     clear_predictions();
 }
 
-void Brick_Detector::clear_predictions()
-{
-    this->predictions = {};
-}
-
 void Brick_Detector::find_lines()
 {
     cv::Mat edge_img;
+    //cv::imshow("src image", this->img);
     find_edges(this->img, edge_img);
-    cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(50, edge_img.size().height - 1), 0, -1); //mask out pallet
-    cv::imshow("edge_img", edge_img);
+    //cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(50, edge_img.size().height - 1), 0, -1); //mask out pallet
+    cv::rectangle(edge_img, cv::Point(0, 0), cv::Point(235, edge_img.size().height - 1), 0, -1); //mask out pallet 1280x720
+    //cv::imshow("edge_img", edge_img);
+    //cv::waitKey(0);
     this->hough = Hough_space(edge_img);
 
     this->lines =  hough.find_lines();
-    std::cout << this->lines.size() << std::endl;
+    //std::cout << this->lines.size() << std::endl;
 }
 
 void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
@@ -82,8 +82,10 @@ void Brick_Detector::find_edges(cv::Mat &src, cv::Mat &dst)
 
     cv::Mat filter_img;
     cv::medianBlur(gray_img, filter_img, 5);
-
+    //cv::GaussianBlur(gray_img, filter_img, cv::Size(3, 3), 0, 0);
     cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
+    //cv::imshow("edge image", dst);
+    //cv::waitKey(0);
 }
 
 void Brick_Detector::find_BB(std::vector<std::vector<std::vector<double>>> clustered_lines)
@@ -167,7 +169,7 @@ std::vector<std::vector<cv::Point2f> > Brick_Detector::find_intersection_matrix(
             intersection_matrix[i].push_back(intersection);
         }
     }
-
+    this->intersection_mat = intersection_matrix;
     return intersection_matrix;
 }
 
@@ -212,9 +214,9 @@ std::vector<cv::Point2f> Brick_Detector::get_points_on_line(std::vector<double> 
 
 void Brick_Detector::convert_intections_to_BB(std::vector<std::vector<cv::Point2f> > intersection_matrix)
 {
-    for(unsigned int i = 0; i < intersection_matrix.size() - 1; i++)
+    for(int i = 0; i < intersection_matrix.size() - 1; i++)
     {
-        for(unsigned int j = 0; j < intersection_matrix[i].size() - 1; j++)
+        for(int j = 0; j < intersection_matrix[i].size() - 1; j++)
         {
             std::vector<cv::Point2f> contour = {intersection_matrix[i][j], intersection_matrix[i][j + 1], intersection_matrix[i + 1][j], intersection_matrix[i + 1][j + 1]};
             cv::RotatedRect BB_rotated = cv::minAreaRect(contour);
@@ -222,12 +224,10 @@ void Brick_Detector::convert_intections_to_BB(std::vector<std::vector<cv::Point2
             //Evaluate if the current contour could orignate from a brick.
             if(accept_detection(BB_rotated) == true) //should be used to filter out BB which does not origin form bricks
             {
-                prediction pred;
-                cv::Rect bounding_box =  cv::boundingRect(contour);
-                pred.rect = bounding_box;
-                pred.rotated_rect = BB_rotated;
-
-                //TO DO: Calculate angle and update value on the struct pred.
+                bounding_box pred(contour);
+                //cv::Rect bounding_box =  cv::boundingRect(contour);
+                //pred.rect = bounding_box;
+                //pred.rotated_rect = BB_rotated;
 
                 this->predictions.push_back(pred);
             }
@@ -239,25 +239,28 @@ bool Brick_Detector::accept_detection(cv::RotatedRect rotated_BB)
 {
     double min_side = std::min(rotated_BB.size.width, rotated_BB.size.height);
     double max_side = std::max(rotated_BB.size.width, rotated_BB.size.height);
-    double proportion = min_side/max_side;
+    double ratio = min_side/max_side;
     double area = rotated_BB.size.width * rotated_BB.size.height;
-    double margin = 0.1;
+    double margin = 0.15;
 
-    if(min_side < 20.5 * (1 - margin) || max_side > 108.0 * (1 + margin))
+    if(min_side < this->min_height*(1-margin) || max_side > this->max_width*(1+margin) )
     {
         return false;
     }
-    else if(proportion < 0.203 * (1 - margin)|| proportion > 0.296 * (1 + margin))
+    else if (min_side > this->max_height * (1 + margin) || max_side < this->min_width * (1 - margin))
     {
         return false;
     }
-    else if(area < 1906.0 * (1 - margin) || area > 3260.0 * (1 + margin))
-    {
-        return false;
-    }
+    //else if(ratio < 0.207921 * (1 - margin)|| ratio > 0.28 * (1 + margin))
+    //{
+    //    return false;
+    //}
+    //else if(area < 1906.0 * (1 - margin) || area > 3260.0 * (1 + margin))
+    //{
+    //    return false;
+    //}
     else
     {
         return true;
     }
 }
-

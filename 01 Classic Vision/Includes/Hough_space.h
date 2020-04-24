@@ -17,9 +17,11 @@ public:
 	std::vector<std::vector<double>> find_lines();
 	double split_angle;
 
-private:
+
 	cv::Mat edge_img;
 	cv::Mat hough_matrix;
+    cv::Mat hough_rotated;
+private:
 	int img_height;
 	int img_width;
 	int hough_height;

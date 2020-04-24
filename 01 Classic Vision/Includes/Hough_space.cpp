@@ -94,11 +94,16 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
         if (split_value > 0)
         {
             shift_hough(hough_space_bin, hough_space_bin, split_value);
+            this->hough_rotated = hough_space_bin;
         }
         else
         {
             std::cout << "Could not find appropriate splitting line" << std::endl;
         }
+    }
+    else
+    {
+        this->hough_rotated = hough_space_bin;
     }
     //Dilate the clusters to "grow" them together
     //cv::imshow("hough space bin", hough_space_bin);
@@ -131,7 +136,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
             }
         }
         complete_contours.push_back(contour);
-        contour.empty();
+        contour.clear();
 
     }
     
@@ -147,22 +152,7 @@ std::vector<std::vector<double>>  Hough_space::find_lines()
     for (unsigned int i = 0; i < complete_contours.size(); i++)
     {
         lines.push_back(convert_to_line(get_maximum(complete_contours[i])));
-        //lines.push_back(convert_to_line(get_weighted_average(complete_contours[i])));
-        //weighted average does not work due to the current structure. See explanation at definition.
     }
-    // -------------------------------- using weighted average ------------------------------
-    //show_contours(complete_contours);
-
-    //std::vector<std::vector<double>> lines;
-    //std::cout << "Number of contours detected: " << complete_contours.size() << std::endl; //For debugging.
-
-    ////Find maximum point for every contour.
-    //for (unsigned int i = 0; i < complete_contours.size(); i++)
-    //{
-    //    //lines.push_back(convert_to_line(get_maximum(complete_contours[i])));
-    //    lines.push_back(convert_to_line(inverse_shift_single_point(get_weighted_average(complete_contours[i],split_value),split_value)));
-    //    //weighted average does not work due to the current structure. See explanation at definition.
-    //}
     return lines;
 }
 
@@ -357,14 +347,14 @@ cv::Point2f Hough_space::get_weighted_average(std::vector<cv::Point> contour, in
     int accumulator_sum = 0;
     for (unsigned int i = 0; i < contour.size(); i++)
     {
-        std::cout << "contour x: " << contour[i].x << " contour y: " << contour[i].y << " weight: " << hough_matrix_copy.at<ushort>(contour[i]) << std::endl;
+        //std::cout << "contour x: " << contour[i].x << " contour y: " << contour[i].y << " weight: " << hough_matrix_copy.at<ushort>(contour[i]) << std::endl;
         accumulator_sum += hough_matrix_copy.at<ushort>(contour[i]);
         point_sum.x += contour[i].x* hough_matrix_copy.at<ushort>(contour[i]);
         point_sum.y += contour[i].y * hough_matrix_copy.at<ushort>(contour[i]);
     }
     point_sum.x /= accumulator_sum;
     point_sum.y /= accumulator_sum;
-    std::cout << "weighted x: " << point_sum.x << " weighted y: " << point_sum.y << std::endl;
+    //std::cout << "weighted x: " << point_sum.x << " weighted y: " << point_sum.y << std::endl;
     return point_sum;
 }
 
