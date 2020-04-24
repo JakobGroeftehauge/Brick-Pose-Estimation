@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-	std::string test_name = "chamfer_OUR-CCORR_Gauss3";
+	std::string test_name = "chamfer_OUR-CCORR";
 	std::ofstream res, dump;
 
 	int sp = 12;
