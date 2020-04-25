@@ -544,7 +544,7 @@ def main(args=None):
     )
     print(HPM_train_model)
     print(HPM_train_model.history)
-    print_history_to_csv(HPM_train_model.history, '', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
+    print_history_to_csv(HPM_train_model.history, '02 On Pallet Dataset/', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
 
     return HPM_train_model
 
