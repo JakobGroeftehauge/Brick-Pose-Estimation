@@ -108,6 +108,9 @@ def convert_model(model, nms=True, class_specific_filter=True, anchor_params=Non
     from .retinanet import retinanet_bbox
     return retinanet_bbox(model=model, nms=nms, class_specific_filter=class_specific_filter, anchor_params=anchor_params)
 
+def model_print():
+    print("im in models")
+    return
 
 def assert_training_model(model):
     """ Assert that the model is a training model.
