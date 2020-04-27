@@ -64,13 +64,13 @@ def transform_angle(transform, angle):
     return [angleX,angleY]
 
 
-
-
 def transform_aabb(transform, aabb):
     """ Apply a transformation to an axis aligned bounding box.
     NOTE: Description is outdated
+
     The result is a new AABB in the same coordinate system as the original AABB.
     The new AABB contains all corner points of the original AABB after applying the given transformation.
+
     Args
         transform: The transformation to apply.
         x1:        The minimum x value of the AABB.
@@ -91,7 +91,18 @@ def transform_aabb(transform, aabb):
     min_corner = points.min(axis=1)
     max_corner = points.max(axis=1)
 
-    return [min_corner[0], min_corner[1], max_corner[0], max_corner[1]]
+
+    l1 = np.sqrt(np.power(points[0][0] - points[0][1], 2.0) + np.power(points[1][0] - points[1][1], 2.0)) # sqrt((x1 - x2)² + (y1 - y2)²)
+    l2 = np.sqrt(np.power(points[0][0] - points[0][2], 2.0) + np.power(points[1][0] - points[1][2], 2.0)) # sqrt((x1 - x3)² + (y1 - y3)²)
+    l3 = np.sqrt(np.power(points[0][2] - points[0][1], 2.0) + np.power(points[1][2] - points[1][1], 2.0)) # sqrt((x3 - x2)² + (y3 - y2)²)
+
+    height = min([l1, l2, l3]);
+    width = min([max(l1, l2), max(l1, l3), max(l3, l2)])
+
+    center_x = (max_corner[0] + min_corner[0])/2.0;
+    center_y = (max_corner[1] + min_corner[1])/2.0;
+
+    return [center_x - width/2.0, center_y - height/2.0, center_x + width/2.0, center_y + height/2.0] # x_min, y_min, x_max, y_max
 
 def _random_vector(min, max, prng=DEFAULT_PRNG):
     """ Construct a random vector between min and max.
