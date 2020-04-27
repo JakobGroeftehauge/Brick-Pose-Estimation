@@ -51,11 +51,9 @@ def filter_detections(
     def _filter_detections(scores, labels):
         # threshold based on score
         indices = backend.where(keras.backend.greater(scores, score_threshold))
-        print(other[0])
         if nms:
             filtered_boxes  = backend.gather_nd(boxes, indices)
             filtered_scores = keras.backend.gather(scores, indices)[:, 0]
-            filtered_angles = backend.gather_nd(other[0], indices)
 
             # perform NMS
             nms_indices = backend.non_max_suppression(filtered_boxes, filtered_scores, max_output_size=max_detections, iou_threshold=nms_threshold)
