@@ -139,7 +139,7 @@ def create_models(backbone_retinanet, num_classes, weights, multi_gpu=0,
         loss={
             'regression'        : losses.smooth_l1(),
             'classification'    : losses.focal(),
-            'angle_regression'  : losses.smooth_l1_norm_penalized()
+            'angle_regression'  : losses.smooth_l1()
         },
         optimizer=keras.optimizers.adam(lr=lr, clipnorm=0.001)
     )
@@ -544,7 +544,8 @@ def main(args=None):
     )
     print(HPM_train_model)
     print(HPM_train_model.history)
-    print_history_to_csv(HPM_train_model.history, '', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
+    #print_history_to_csv(HPM_train_model.history, '02 On Pallet Dataset/', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
+    print_history_to_csv(HPM_train_model.history, '02 On Pallet Dataset/', '_losses.csv')
 
     return HPM_train_model
 

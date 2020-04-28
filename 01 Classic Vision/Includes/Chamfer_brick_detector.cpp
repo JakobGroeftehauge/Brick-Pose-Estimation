@@ -116,7 +116,7 @@ void Chamfer_brick_detector::create_template(float scale, float angle, cv::Mat &
 
 	//Calculate norm kind of
 	int white_pixels = cv::countNonZero(template_);
-	template_ = template_;// / float(white_pixels) * 100;
+	template_ = template_ / float(white_pixels) * 100;
 
 	// set destination variables
 	template_img_dst = template_;
@@ -139,7 +139,7 @@ void Chamfer_brick_detector::find_rectangle_candidates(int angle_steps, float sc
 			//Timer inner_loop("Inner loop");
 			create_template(scale_min + j * scale_res, i * angle_res -90, template_img, tmp_rect);
 
-			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCORR_NORMED); // typically 5-10 ms. CV_TM_CCORR sometimes more. Release
+			cv::matchTemplate(this->chamfer_img, template_img, tmp_matching_space, CV_TM_CCORR); // typically 5-10 ms. CV_TM_CCORR sometimes more. Release
    //         if (i == angle_steps / 2 - 5 && j == scale_steps / 2)
 			//{
 			//	cv::Mat _tmp_template;
