@@ -6,6 +6,9 @@
 #include "Detector.h"
 #include "Brick_Detector.h"
 #include "Chamfer_brick_detector.h"
+
+#define AXIS_ALIGNED 0
+#define NON_AXIS_ALIGNED 1
 struct annotation_match {
 	annotation_match(int prediction_idx_, int annotation_idx_, double IoU_)
 	{
@@ -41,14 +44,14 @@ class Evaluator
 {
 public:
 	Evaluator();
-	Evaluator(std::string path);
-	Evaluator(std::string path_to_folder, std::string img_list_csv);
+    Evaluator(std::string path, int BB_rep = AXIS_ALIGNED);
+    Evaluator(std::string path_to_folder, std::string img_list_csv, int BB_rep = AXIS_ALIGNED);
 	void reset_test();
 	void set_detector(Detector * detector_addr);
 	void set_path(std::string path);
-	bool evaluate_next_img();
-	void evaluate_dataset(std::vector<double> thresholds = std::vector<double>({ 0.5 }));
-	void set_thresholds(std::vector<double> thresholds = std::vector<double>({ 0.5 }));
+    bool evaluate_next_img();
+    void evaluate_dataset(std::vector<double> thresholds = std::vector<double>({ 0.5 }));
+    void set_thresholds(std::vector<double> thresholds = std::vector<double>({ 0.5 }));
 	void open_file();
 	void close_file();
 	void reset_counters();
@@ -83,6 +86,7 @@ private:
 	float total_true_positive;
 	float total_false_positive;
 	float total_false_negative;
+    int BB_rep;
 
 };
 

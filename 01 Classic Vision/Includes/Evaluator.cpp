@@ -2,23 +2,25 @@
 #include <experimental/filesystem>
 
 
+
 Evaluator::Evaluator()
 {
 }
 
-Evaluator::Evaluator(std::string path)
+Evaluator::Evaluator(std::string path, int BB_rep)
 {
+
     if (!(std::experimental::filesystem::exists(path + "/evaluations")))
     {
         if(std::experimental::filesystem::create_directory(path + "/evaluations"))
             std::cout << "Directory: " + path + "/evaluations created" <<  std::endl;
     }
         
-
+    this->BB_rep = BB_rep;
 	set_path(path);
 }
 
-Evaluator::Evaluator(std::string path_to_folder, std::string img_list_csv)
+Evaluator::Evaluator(std::string path_to_folder, std::string img_list_csv, int BB_rep)
 {
     if (!(std::experimental::filesystem::exists(path_to_folder + "/evaluations")))
     {
@@ -26,6 +28,7 @@ Evaluator::Evaluator(std::string path_to_folder, std::string img_list_csv)
             std::cout << "Directory: " + path_to_folder + "/evaluations created" << std::endl;
     }
 
+    this->BB_rep = BB_rep;
     this->loader = Data_loader(path_to_folder, img_list_csv);
 }
 
@@ -88,6 +91,8 @@ void Evaluator::evaluate_dataset(std::vector<double> thresholds)
     }
 
 }
+
+
 
 void Evaluator::set_thresholds(std::vector<double> thresholds)
 {
@@ -214,7 +219,7 @@ void Evaluator::evaluate_angle(double threshold, double list[2])
 void Evaluator::evaluate_range(std::vector<double> thresholds)
 // evaluates one image over a range of IoU thresholds
 {
-    match_annotations(0); // 0 - use axis aligned
+    match_annotations(this->BB_rep); // 0 - use axis aligned
     for (int i = 0; i < thresholds.size(); i++)
     {
         int bbox_res[3];
