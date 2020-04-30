@@ -202,6 +202,7 @@ def run(generator, args, anchor_params):
     i = 0
     while True:
         # load the data
+        print("test")
         image       = generator.load_image(i)
         annotations = generator.load_annotations(i)
         if len(annotations['labels']) > 0 :
@@ -209,6 +210,7 @@ def run(generator, args, anchor_params):
             if args.random_transform:
                 image, annotations = generator.random_transform_group_entry(image, annotations)
                 image, annotations = generator.random_visual_effect_group_entry(image, annotations)
+                print("Annotations", annotations)
 
             # resize the image and annotations
             if args.resize:
