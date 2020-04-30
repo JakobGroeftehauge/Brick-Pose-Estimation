@@ -88,8 +88,8 @@ def anchor_targets_bbox(
 
     batch_size = len(image_group)
 
-    angles_batch =  np.zeros((batch_size, anchors.shape[0], 2 + 1), dtype=keras.backend.floatx()) # 2+1 - Two angle values one state value
-    regression_batch  = np.zeros((batch_size, anchors.shape[0], 4 + 1), dtype=keras.backend.floatx())
+    #angles_batch =  np.zeros((batch_size, anchors.shape[0], 2 + 1), dtype=keras.backend.floatx()) # 2+1 - Two angle values one state value
+    regression_batch_aug  = np.zeros((batch_size, anchors.shape[0], 6 + 1), dtype=keras.backend.floatx())
     labels_batch      = np.zeros((batch_size, anchors.shape[0], num_classes + 1), dtype=keras.backend.floatx())
 
 
@@ -102,29 +102,27 @@ def anchor_targets_bbox(
             labels_batch[index, ignore_indices, -1]       = -1
             labels_batch[index, positive_indices, -1]     = 1
 
-            regression_batch[index, ignore_indices, -1]   = -1
-            regression_batch[index, positive_indices, -1] = 1
-
-            angles_batch[index, ignore_indices, -1]   = -1
-            angles_batch[index, positive_indices, -1] = 1
+            regression_batch_aug[index, ignore_indices, -1]   = -1
+            regression_batch_aug[index, positive_indices, -1] = 1
 
             # compute target class labels
             #angles_batch[index, positive_indices, annotations['angles'][argmax_overlaps_inds[positive_indices]].astype(int)] = 1
-            angles_batch[index, :, :-1] = annotations['angles'][argmax_overlaps_inds, :]
+            #angles_batch[index, :, :-1] = annotations['angles'][argmax_overlaps_inds, :]
             labels_batch[index, positive_indices, annotations['labels'][argmax_overlaps_inds[positive_indices]].astype(int)] = 1
 
-            regression_batch[index, :, :-1] = bbox_transform(anchors, annotations['bboxes'][argmax_overlaps_inds, :])
+            regression_batch_aug[index, :, -3:-1] = annotations['angles'][argmax_overlaps_inds, :]
+            regression_batch_aug[index, :, :-3] = bbox_transform(anchors, annotations['bboxes'][argmax_overlaps_inds, :])
 
         # ignore annotations outside of image
         if image.shape:
             anchors_centers = np.vstack([(anchors[:, 0] + anchors[:, 2]) / 2, (anchors[:, 1] + anchors[:, 3]) / 2]).T
             indices = np.logical_or(anchors_centers[:, 0] >= image.shape[1], anchors_centers[:, 1] >= image.shape[0])
 
-            angles_batch[index, indices, -1]     = -1
+            #angles_batch[index, indices, -1]     = -1
             labels_batch[index, indices, -1]     = -1
-            regression_batch[index, indices, -1] = -1
+            regression_batch_aug[index, indices, -1] = -1
 
-    return regression_batch, labels_batch, angles_batch
+    return regression_batch_aug, labels_batch
 
 
 def compute_center_diffs(anchors, annotations):
@@ -134,11 +132,12 @@ def compute_center_diffs(anchors, annotations):
     for k, anno in enumerate(annotations):
         anno_center_x = (anno[0] + anno[2]) / 2
         anno_center_y = (anno[1] + anno[3]) / 2
+        anno_man_diag = abs(anno[1] - anno[3])
         for n, anch in enumerate(anchors):
             anch_center_x = (anch[0] + anch[2]) / 2
             anch_center_y = (anch[1] + anch[3]) / 2
 
-            center_diffs[n,k] = abs(anno_center_x-anch_center_x) + abs(anno_center_y - anch_center_y)
+            center_diffs[n,k] = (abs(anno_center_x-anch_center_x) + abs(anno_center_y - anch_center_y))/anno_man_diag
 
     return center_diffs
 
@@ -147,7 +146,7 @@ def compute_gt_annotations(
     annotations,
     negative_overlap=0.4,
     positive_overlap=0.5,
-    max_dist = 40
+    max_dist = 0.4
 ):
     """ Obtain indices of gt annotations with the greatest overlap.
 
@@ -167,12 +166,13 @@ def compute_gt_annotations(
     min_diffs = center_diffs[np.arange(center_diffs.shape[0]), arg_min_diffs_inds]
 
     overlaps = compute_overlap(anchors.astype(np.float64), annotations.astype(np.float64))
-    max_overlaps = overlaps[:, arg_min_diffs_inds]
-
-
+    max_overlaps = overlaps[np.arange(center_diffs.shape[0]), arg_min_diffs_inds]
     # assign "dont care" labels
-    positive_indices = (min_diffs <= max_dist) & (max_overlaps >= positive_overlap)
-    ignore_indices = (max_overlaps > negative_overlap) & (min_diffs > max_dist) & ~positive_indices
+
+    positive_indices = (min_diffs <= max_dist) & (max_overlaps > positive_overlap)
+    ignore_indices = (max_overlaps > negative_overlap) & ~positive_indices
+    #positive_indices = (min_diffs <= max_dist) and (max_overlaps >= positive_overlap)
+    #ignore_indices = (max_overlaps > negative_overlap) and (min_diffs > max_dist) & ~positive_indices
 
     return positive_indices, ignore_indices, arg_min_diffs_inds
 
