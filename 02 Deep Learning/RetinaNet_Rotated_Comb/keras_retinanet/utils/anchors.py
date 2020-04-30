@@ -164,7 +164,7 @@ def compute_gt_annotations(
     annotations,
     negative_overlap=0.4,
     positive_overlap=0.5,
-    max_dist = 0.4
+    max_dist = 0.5
 ):
     """ Obtain indices of gt annotations with the greatest overlap.
 
