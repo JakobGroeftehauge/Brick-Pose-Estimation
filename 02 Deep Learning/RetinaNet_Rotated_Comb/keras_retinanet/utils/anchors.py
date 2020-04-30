@@ -127,11 +127,27 @@ def anchor_targets_bbox(
     return regression_batch, labels_batch, angles_batch
 
 
+def compute_center_diffs(anchors, annotations):
+    N = anchors.shape[0]
+    K = annotations.shape[0]
+    center_diffs = np.zeros(N,K)
+    for k, anno in enumerate(annotations):
+        anno_center_x = (anno[0] + anno[2]) / 2
+        anno_center_y = (anno[1] + anno[3]) / 2
+        for n, anch in enumerate(anchors):
+            anch_center_x = (anch[0] + anch[2]) / 2
+            anch_center_y = (anch[1] + anch[3]) / 2
+
+            center_diffs[n,k] = abs(anno_center_x-anch_center_x) + abs(anno_center_y - anch_center_y)
+
+    return center_diffs
+
 def compute_gt_annotations(
     anchors,
     annotations,
     negative_overlap=0.4,
-    positive_overlap=0.5
+    positive_overlap=0.5,
+    max_dist = 40
 ):
     """ Obtain indices of gt annotations with the greatest overlap.
 
@@ -146,16 +162,19 @@ def compute_gt_annotations(
         ignore_indices: indices of ignored anchors
         argmax_overlaps_inds: ordered overlaps indices
     """
+    center_diffs = compute_center_diffs(anchors, annotations)
+    arg_min_diffs_inds = np.argmin(center_diffs,axis=1)
+    min_diffs = center_diffs[np.arange(center_diffs.shape[0]), arg_min_diffs_inds]
 
     overlaps = compute_overlap(anchors.astype(np.float64), annotations.astype(np.float64))
-    argmax_overlaps_inds = np.argmax(overlaps, axis=1)
-    max_overlaps = overlaps[np.arange(overlaps.shape[0]), argmax_overlaps_inds]
+    max_overlaps = overlaps[:, arg_min_diffs_inds]
+
 
     # assign "dont care" labels
-    positive_indices = max_overlaps >= positive_overlap
-    ignore_indices = (max_overlaps > negative_overlap) & ~positive_indices
+    positive_indices = (min_diffs <= max_dist) & (max_overlaps >= positive_overlap)
+    ignore_indices = (max_overlaps > negative_overlap) & (min_diffs > max_dist) & ~positive_indices
 
-    return positive_indices, ignore_indices, argmax_overlaps_inds
+    return positive_indices, ignore_indices, arg_min_diffs_inds
 
 
 def layer_shapes(image_shape, model):
