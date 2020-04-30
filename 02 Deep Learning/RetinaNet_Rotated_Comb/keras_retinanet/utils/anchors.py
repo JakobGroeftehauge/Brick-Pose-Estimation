@@ -124,6 +124,24 @@ def anchor_targets_bbox(
 
     return regression_batch_aug, labels_batch
 
+def compute_center_diffs_opt(anchors, annotations):
+    N = anchors.shape[0]
+    K = annotations.shape[0]
+    #center_diffs = np.zeros((N,K))
+
+    anno_center_x = (annotations[:, 0] + annotations[: , 2]) * 0.5
+    anno_center_y = (annotations[:, 1] + annotations[: , 3]) * 0.5
+    anch_center_x = (anchors[:, 0] + anchors[:, 2]) * 0.5
+    anch_center_y = (anchors[:, 1] + anchors[:, 3]) * 0.5
+    anno_height = np.abs((annotations[:, 1] - annotations[: , 3]))
+
+    center_diffs_x = np.abs(np.repeat(anno_center_x.T, anch_center_x.shape[0], axis=0) - np.repeat(anch_center_x, anno_center_x.shape[0], axis=1))
+    center_diffs_y = np.abs(np.repeat(anno_center_y.T, anch_center_y.shape[0], axis=0) - np.repeat(anch_center_y, anno_center_y.shape[0], axis=1))
+
+    anno_height_mat = np.repeat(anno_height.T, anch_center_x.shape[0], axis=0)
+    center_diffs = np.divide((center_diffs_x + center_diffs_y), anno_height_mat)
+
+    return center_diffs
 
 def compute_center_diffs(anchors, annotations):
     N = anchors.shape[0]
@@ -161,7 +179,7 @@ def compute_gt_annotations(
         ignore_indices: indices of ignored anchors
         argmax_overlaps_inds: ordered overlaps indices
     """
-    center_diffs = compute_center_diffs(anchors, annotations)
+    center_diffs = compute_center_diffs_opt(anchors, annotations)
     arg_min_diffs_inds = np.argmin(center_diffs,axis=1)
     min_diffs = center_diffs[np.arange(center_diffs.shape[0]), arg_min_diffs_inds]
 
