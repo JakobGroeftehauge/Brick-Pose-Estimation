@@ -38,6 +38,10 @@ struct evaluation_results {
 	double angle_err_sqr_sum = 0;
 	double avg_angle_err;
 	double std_angle_err;
+    double center_point_err_sum = 0;
+    double center_point_err_sqr_sum = 0;
+    double avg_center_point_err;
+    double std_center_point_err;
 };
 
 class Evaluator
@@ -74,6 +78,7 @@ private:
 	//void print_results_to_csv();
 	void evaluate_bb(double threshold, int list[3]);
 	void evaluate_angle(double threshold, double list[2]);
+    void evaluate_center_point(double threshold, double list[2]);
 	void evaluate_range(std::vector<double> thresholds);
 	void save_evaluation(int true_pos, int false_pos, int false_neg);
 	//std::string folder_path;

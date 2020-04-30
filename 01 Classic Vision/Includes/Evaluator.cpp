@@ -88,9 +88,12 @@ void Evaluator::evaluate_dataset(std::vector<double> thresholds)
         this->results[i].f1 = 2 * this->results[i].precision * this->results[i].recall / (this->results[i].precision + this->results[i].recall);
         this->results[i].avg_angle_err = this->results[i].angle_err_sum / double(this->results[i].total_TP);
         this->results[i].std_angle_err = sqrt(this->results[i].angle_err_sqr_sum / double(this->results[i].total_TP) - pow(this->results[i].avg_angle_err, 2));
+        this->results[i].avg_center_point_err = this->results[i].center_point_err_sum / double(this->results[i].total_TP);
+        this->results[i].std_center_point_err = sqrt(this->results[i].center_point_err_sqr_sum / double(this->results[i].total_TP) - pow(this->results[i].avg_center_point_err, 2));
     }
 
 }
+
 
 
 
@@ -136,19 +139,24 @@ evaluation_results Evaluator::get_avg_result()
         output_res.total_TP += this->results[i].total_TP;
         output_res.angle_err_sqr_sum += this->results[i].angle_err_sqr_sum;
         output_res.angle_err_sum += this->results[i].angle_err_sum;
+        output_res.center_point_err_sqr_sum += this->results[i].center_point_err_sqr_sum;
+        output_res.center_point_err_sum += this->results[i].center_point_err_sum;
     }
     output_res.precision = double(output_res.total_TP) / double(output_res.total_TP + output_res.total_FP);
     output_res.recall = double(output_res.total_TP) / double(output_res.total_TP + output_res.total_FN);
     output_res.f1 = 2 * output_res.recall * output_res.precision / (output_res.recall + output_res.precision);
     output_res.avg_angle_err = output_res.angle_err_sum / double(output_res.total_TP);
     output_res.std_angle_err = sqrt(output_res.angle_err_sqr_sum / double(output_res.total_TP) - pow(output_res.avg_angle_err, 2.0));
-
+    output_res.avg_center_point_err = output_res.center_point_err_sum / double(output_res.total_TP);
+    output_res.std_center_point_err = sqrt(output_res.center_point_err_sqr_sum / double(output_res.total_TP) - pow(output_res.avg_center_point_err, 2.0));
 
     output_res.total_TP = -1;
     output_res.total_FP = -1;
     output_res.total_FN = -1;
     output_res.angle_err_sum = -1;
     output_res.angle_err_sqr_sum = -1;
+    output_res.center_point_err_sum = -1;
+    output_res.center_point_err_sqr_sum = -1;
     return output_res;
 }
 
@@ -216,6 +224,31 @@ void Evaluator::evaluate_angle(double threshold, double list[2])
     list[1] = angle_err_sqr;
 }
 
+void Evaluator::evaluate_center_point(double threshold, double list[])
+{
+    int i = 0;
+    double dist_err = 0;
+    double dist_err_sqr = 0;
+
+    while(i < annotation_matches.size() && annotation_matches[i].IoU > threshold)
+    {
+        int anno_idx = annotation_matches[i].annotation_idx;
+        int pred_idx = annotation_matches[i].prediction_idx;
+
+        cv::Point2f p1 =  this->loader.annotations[anno_idx].rotated_rect.center;
+        cv::Point2f p2 =  this->detector->predictions[pred_idx].rotated_rect.center;
+
+        double dist = std::sqrt(std::pow(p1.x - p2.x, 2.0) + std::pow(p1.y - p2.y, 2.0));
+
+        dist_err += dist;
+        dist_err_sqr += dist * dist;
+        i++;
+    }
+    list[0] = dist_err;
+    list[1] = dist_err_sqr;
+
+}
+
 void Evaluator::evaluate_range(std::vector<double> thresholds)
 // evaluates one image over a range of IoU thresholds
 {
@@ -224,13 +257,17 @@ void Evaluator::evaluate_range(std::vector<double> thresholds)
     {
         int bbox_res[3];
         double angle_res[2];
+        double center_point_res[2];
         evaluate_bb(thresholds[i], bbox_res);
         evaluate_angle(thresholds[i], angle_res);
+        evaluate_center_point(thresholds[i], center_point_res);
         this->results[i].total_FN += bbox_res[2];
         this->results[i].total_FP += bbox_res[1];
         this->results[i].total_TP += bbox_res[0];
         this->results[i].angle_err_sum += angle_res[0];
         this->results[i].angle_err_sqr_sum += angle_res[1];
+        this->results[i].center_point_err_sum += center_point_res[0];
+        this->results[i].center_point_err_sqr_sum += center_point_res[1];
     }
 }
 
