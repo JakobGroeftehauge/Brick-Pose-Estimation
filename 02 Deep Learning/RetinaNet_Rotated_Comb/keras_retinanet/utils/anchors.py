@@ -135,8 +135,8 @@ def compute_center_diffs_opt(anchors, annotations):
     anch_center_y = (anchors[:, 1] + anchors[:, 3]) * 0.5
     anno_height = np.abs((annotations[:, 1] - annotations[: , 3]))
 
-    center_diffs_x = np.abs(np.tile(anno_center_x.T, (anch_center_x.shape[0], 1)) - np.repeat(anch_center_x, (1,anno_center_x.shape[0])))
-    center_diffs_y = np.abs(np.repeat(anno_center_y.T, (anch_center_y.shape[0], 1)) - np.repeat(anch_center_y, (1,anno_center_y.shape[0])))
+    center_diffs_x = np.abs(np.tile(anno_center_x.T, (anch_center_x.shape[0], 1)) - np.tile(anch_center_x, (1,anno_center_x.shape[0])))
+    center_diffs_y = np.abs(np.tile(anno_center_y.T, (anch_center_y.shape[0], 1)) - np.tile(anch_center_y, (1,anno_center_y.shape[0])))
 
     anno_height_mat = np.tile(anno_height.T, (anch_center_x.shape[0], 1))
     center_diffs = np.divide((center_diffs_x + center_diffs_y), anno_height_mat)
