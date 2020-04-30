@@ -130,7 +130,7 @@ def anchor_targets_bbox(
 def compute_center_diffs(anchors, annotations):
     N = anchors.shape[0]
     K = annotations.shape[0]
-    center_diffs = np.zeros(N,K)
+    center_diffs = np.zeros((N,K))
     for k, anno in enumerate(annotations):
         anno_center_x = (anno[0] + anno[2]) / 2
         anno_center_y = (anno[1] + anno[3]) / 2
