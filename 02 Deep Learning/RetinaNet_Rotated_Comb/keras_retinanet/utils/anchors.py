@@ -136,7 +136,7 @@ def compute_center_diffs_opt(anchors, annotations):
     anno_height = np.abs((annotations[:, 1] - annotations[: , 3]))
 
     anno_center_x_mat = np.tile(anno_center_x.T, (anch_center_x.shape[0], 1))
-    anch_center_x_mat = np.tile(anch_center_x.T, (1,anno_center_x.shape[0]))
+    anch_center_x_mat = np.tile([anch_center_x].T, (1,anno_center_x.shape[0]))
     print("anch", anch_center_x.shape)
     print("anno center x shape: ", anno_center_x_mat.shape)
     print("anch center x shape: ", anch_center_x_mat.shape)
