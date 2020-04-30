@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 import keras
+from .. import backend
 from .. import initializers
 from .. import layers
 from ..utils.anchors import AnchorParameters
@@ -425,22 +426,26 @@ def retinanet_bbox(
     anchors  = __build_anchors(anchor_params, features)
 
     # we expect the anchors, regression and classification values as first output
-    regression     = model.outputs[0][:][0:4]
+    regression, other = layers.SplitRegression(name = 'split')(model.outputs[0])
+    #feed model.outputs[0] into a layer which 
+    
+    print("regression",regression)
     classification = model.outputs[1]
 
     # "other" can be any additional output from custom submodels, by default this will be []
-    other = model.outputs[0][:][4:end]
-
+    #other = model.outputs[2:]
+    print("other",other)
     # apply predicted regression to anchors
     boxes = layers.RegressBoxes(name='boxes')([anchors, regression]) #_misc.py
     boxes = layers.ClipBoxes(name='clipped_boxes')([model.inputs[0], boxes])
 
+    print('boxes', boxes)
     # filter detections (apply NMS / score threshold / select top-k)
     detections = layers.FilterDetections(
         nms                   = nms,
         class_specific_filter = class_specific_filter,
         name                  = 'filtered_detections'
-    )([boxes, classification] + other)
+    )([boxes, classification, other])
 
     # construct the model
     return keras.models.Model(inputs=model.inputs, outputs=detections, name=name)

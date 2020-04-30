@@ -174,12 +174,22 @@ class ClipBoxes(keras.layers.Layer):
             _, height, width, _ = backend.unstack(shape, axis=0)
 
         x1, y1, x2, y2 = backend.unstack(boxes, axis=-1)
+        #x1, y1, x2, y2, ang1, ang2 = backend.unstack(boxes, axis=-1)
+
         x1 = backend.clip_by_value(x1, 0, width  - 1)
         y1 = backend.clip_by_value(y1, 0, height - 1)
         x2 = backend.clip_by_value(x2, 0, width  - 1)
         y2 = backend.clip_by_value(y2, 0, height - 1)
 
         return keras.backend.stack([x1, y1, x2, y2], axis=2)
-
+        #return keras.backend.stack([x1, y1, x2, y2, ang1, ang2], axis=2)
     def compute_output_shape(self, input_shape):
         return input_shape[1]
+
+class SplitRegression(keras.layers.Layer):
+    def call(self, inputs, **kwargs):
+        regression = inputs
+        x1, y1, x2, y2, ang1, ang2 = backend.unstack(regression, axis=-1)
+        return [keras.backend.stack([x1, y1, x2, y2], axis=2), keras.backend.stack([ang1, ang2], axis=2)]
+    def compute_output_shape(self, input_shape):
+        return [(input_shape[0:-1], 4), (input_shape[0:-1],2)]
