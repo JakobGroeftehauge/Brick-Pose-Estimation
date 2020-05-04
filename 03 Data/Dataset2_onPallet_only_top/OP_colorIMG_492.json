@@ -3,8 +3,6 @@
   "flags": {},
   "shapes": [
     {
-      "fill_color": null,
-      "line_color": null,
       "label": "Brick",
       "points": [
         [
@@ -24,13 +22,10 @@
           80.49363708496094
         ]
       ],
-      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "fill_color": null,
-      "line_color": null,
       "label": "Brick",
       "points": [
         [
@@ -50,14 +45,13 @@
           27.1041259765625
         ]
       ],
-      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "fill_color": null,
-      "line_color": null,
       "label": "Brick",
+      "line_color": null,
+      "fill_color": null,
       "points": [
         [
           965.578125,
@@ -76,14 +70,13 @@
           39.993621826171875
         ]
       ],
-      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "fill_color": null,
-      "line_color": null,
       "label": "Brick",
+      "line_color": null,
+      "fill_color": null,
       "points": [
         [
           1007.5781860351562,
@@ -102,14 +95,13 @@
           68.49363708496094
         ]
       ],
-      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "fill_color": null,
-      "line_color": null,
       "label": "Brick",
+      "line_color": null,
+      "fill_color": null,
       "points": [
         [
           1104.083251953125,
@@ -128,13 +120,10 @@
           97.98336791992188
         ]
       ],
-      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "fill_color": null,
-      "line_color": null,
       "label": "Brick",
       "points": [
         [
@@ -154,14 +143,13 @@
           122.39029432684828
         ]
       ],
-      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "fill_color": null,
-      "line_color": null,
       "label": "Brick",
+      "line_color": null,
+      "fill_color": null,
       "points": [
         [
           868.3982683982683,
@@ -180,25 +168,24 @@
           6.4935064935064934
         ]
       ],
-      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     }
-  ],
-  "imagePath": "OP_colorIMG_492.png",
-  "imageData": null,
-  "imageHeight": 720,
-  "imageWidth": 1280,
-  "fillColor": [
-    255,
-    0,
-    0,
-    128
   ],
   "lineColor": [
     0,
     255,
     0,
     128
-  ]
+  ],
+  "fillColor": [
+    255,
+    0,
+    0,
+    128
+  ],
+  "imagePath": "OP_colorIMG_492.png",
+  "imageData": null,
+  "imageHeight": 720,
+  "imageWidth": 1280
 }
