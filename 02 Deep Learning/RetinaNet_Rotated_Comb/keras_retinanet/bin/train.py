@@ -453,6 +453,7 @@ def parse_args(args):
     parser.add_argument('--multiprocessing',  help='Use multiprocessing in fit_generator.', action='store_true')
     parser.add_argument('--workers',          help='Number of generator workers.', type=int, default=1)
     parser.add_argument('--max-queue-size',   help='Queue length for multiprocessing workers in fit_generator.', type=int, default=10)
+    parser.add_argument('--name', help='name (optional).')
 
     return check_args(parser.parse_args(args))
 
@@ -543,7 +544,7 @@ def main(args=None):
     )
     print(HPM_train_model)
     print(HPM_train_model.history)
-    print_history_to_csv(HPM_train_model.history, '', 'val_'+args.annotations.strip('.csv')+'_losses.csv')
+    print_history_to_csv(HPM_train_model.history, '', args.name+'_losses.csv')
 
     return HPM_train_model
 
