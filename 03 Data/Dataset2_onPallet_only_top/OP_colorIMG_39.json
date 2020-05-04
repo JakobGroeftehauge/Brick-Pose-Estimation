@@ -1,11 +1,11 @@
 {
-  "version": "3.21.1",
+  "version": "4.2.9",
   "flags": {},
   "shapes": [
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
+      "label": "Brick",
       "points": [
         [
           693.531982421875,
@@ -24,13 +24,14 @@
           321.25872802734375
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
+      "label": "Brick",
       "points": [
         [
           696.531982421875,
@@ -49,13 +50,14 @@
           361.75872802734375
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
+      "label": "Brick",
       "points": [
         [
           702.531982421875,
@@ -74,13 +76,14 @@
           403.75872802734375
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
+      "label": "Brick",
       "points": [
         [
           711.0945434570312,
@@ -99,13 +102,14 @@
           441.2685241699219
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
+      "label": "Brick",
       "points": [
         [
           718.5945434570312,
@@ -124,38 +128,14 @@
           481.7685241699219
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
-      "points": [
-        [
-          624.6367797851562,
-          431.12396240234375
-        ],
-        [
-          661.2881469726562,
-          424.66131591796875
-        ],
-        [
-          687.8632202148438,
-          575.3760375976562
-        ],
-        [
-          651.2118530273438,
-          581.8386840820312
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
       "points": [
         [
           688.4179077148438,
@@ -174,13 +154,14 @@
           279.5216064453125
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
+      "label": "Brick",
       "points": [
         [
           523.0112915039062,
@@ -199,88 +180,14 @@
           292.76068115234375
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
-      "points": [
-        [
-          589.8270263671875,
-          433.41790771484375
-        ],
-        [
-          629.0216064453125,
-          427.90948486328125
-        ],
-        [
-          651.6729736328125,
-          589.0820922851562
-        ],
-        [
-          612.4783935546875,
-          594.5905151367188
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
-      "points": [
-        [
-          664.7501220703125,
-          421.2412414550781
-        ],
-        [
-          702.774658203125,
-          415.8972473144531
-        ],
-        [
-          724.7498779296875,
-          572.2587890625
-        ],
-        [
-          686.725341796875,
-          577.602783203125
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
-      "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
-      "points": [
-        [
-          552.3270263671875,
-          439.41790771484375
-        ],
-        [
-          591.5216064453125,
-          433.90948486328125
-        ],
-        [
-          614.1729736328125,
-          595.0820922851562
-        ],
-        [
-          574.9783935546875,
-          600.5905151367188
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
-      "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
       "points": [
         [
           529.0112915039062,
@@ -299,13 +206,14 @@
           331.76068115234375
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
+      "label": "Brick",
       "points": [
         [
           728.5714285714286,
@@ -324,13 +232,14 @@
           525.1700680272108
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
+      "label": "Brick",
       "points": [
         [
           734.0136054421769,
@@ -349,10 +258,15 @@
           563.9455782312925
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     }
   ],
+  "imagePath": "OP_colorIMG_39.png",
+  "imageData": null,
+  "imageHeight": 720,
+  "imageWidth": 1280,
   "lineColor": [
     0,
     255,
@@ -364,9 +278,5 @@
     0,
     0,
     128
-  ],
-  "imagePath": "OP_colorIMG_39.png",
-  "imageData": null,
-  "imageHeight": 720,
-  "imageWidth": 1280
+  ]
 }

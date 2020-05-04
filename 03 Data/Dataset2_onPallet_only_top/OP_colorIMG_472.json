@@ -1,111 +1,11 @@
 {
-  "version": "3.21.1",
+  "version": "4.2.9",
   "flags": {},
   "shapes": [
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
-      "points": [
-        [
-          1012.7406005859375,
-          305.9285888671875
-        ],
-        [
-          973.5584106445312,
-          294.6932678222656
-        ],
-        [
-          1019.7593994140625,
-          133.5714111328125
-        ],
-        [
-          1058.941650390625,
-          144.80673217773438
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
-      "points": [
-        [
-          1094.34228515625,
-          324.9306640625
-        ],
-        [
-          1056.2958984375,
-          314.02099609375
-        ],
-        [
-          1101.15771484375,
-          157.5693359375
-        ],
-        [
-          1139.2041015625,
-          168.47900390625
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
-      "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
-      "points": [
-        [
-          1055.264892578125,
-          312.99859619140625
-        ],
-        [
-          1016.8607788085938,
-          303.42340087890625
-        ],
-        [
-          1056.235107421875,
-          145.50140380859375
-        ],
-        [
-          1094.63916015625,
-          155.07659912109375
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
-      "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
-      "points": [
-        [
-          1053.2503662109375,
-          490.4985656738281
-        ],
-        [
-          1013.6998901367188,
-          480.6375427246094
-        ],
-        [
-          1054.2496337890625,
-          318.0014343261719
-        ],
-        [
-          1093.800048828125,
-          327.8624572753906
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
-      "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
       "points": [
         [
           759.07763671875,
@@ -124,63 +24,14 @@
           363.6539001464844
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
-      "points": [
-        [
-          1014.2857142857142,
-          480.7453416149068
-        ],
-        [
-          972.670807453416,
-          469.5652173913043
-        ],
-        [
-          1012.2495727539062,
-          303.0014343261719
-        ],
-        [
-          1051.800048828125,
-          312.8624572753906
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
       "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
-      "points": [
-        [
-          960.8695652173913,
-          466.45962732919253
-        ],
-        [
-          922.3602484472049,
-          456.52173913043475
-        ],
-        [
-          971.45361328125,
-          294.2535400390625
-        ],
-        [
-          1011.343505859375,
-          307.21453857421875
-        ]
-      ],
-      "shape_type": "polygon",
-      "flags": {}
-    },
-    {
-      "label": "Brick",
-      "line_color": null,
-      "fill_color": null,
       "points": [
         [
           772.670807453416,
@@ -199,13 +50,14 @@
           321.1180124223602
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     },
     {
-      "label": "Brick",
       "line_color": null,
       "fill_color": null,
+      "label": "Brick",
       "points": [
         [
           783.8509316770186,
@@ -224,10 +76,15 @@
           279.5031055900621
         ]
       ],
+      "group_id": null,
       "shape_type": "polygon",
       "flags": {}
     }
   ],
+  "imagePath": "OP_colorIMG_472.png",
+  "imageData": null,
+  "imageHeight": 720,
+  "imageWidth": 1280,
   "lineColor": [
     0,
     255,
@@ -239,9 +96,5 @@
     0,
     0,
     128
-  ],
-  "imagePath": "OP_colorIMG_472.png",
-  "imageData": null,
-  "imageHeight": 720,
-  "imageWidth": 1280
+  ]
 }
