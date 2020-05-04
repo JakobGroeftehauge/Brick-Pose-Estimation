@@ -1,0 +1,74 @@
+{
+  "version": "4.2.9",
+  "flags": {},
+  "shapes": [
+    {
+      "line_color": null,
+      "fill_color": null,
+      "label": "Brick",
+      "points": [
+        [
+          805.921052631579,
+          422.3947368421052
+        ],
+        [
+          770.5128205128206,
+          399.5726495726496
+        ],
+        [
+          860.21826171875,
+          261.8737487792969
+        ],
+        [
+          894.0108642578125,
+          284.6671447753906
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "line_color": null,
+      "fill_color": null,
+      "label": "Brick",
+      "points": [
+        [
+          736.723163841808,
+          380.225988700565
+        ],
+        [
+          827.6836158192091,
+          242.3728813559322
+        ],
+        [
+          858.1920903954802,
+          262.14689265536725
+        ],
+        [
+          769.4915254237288,
+          398.3050847457627
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "imagePath": "OP_colorIMG_284.png",
+  "imageData": null,
+  "imageHeight": 720,
+  "imageWidth": 1280,
+  "lineColor": [
+    0,
+    255,
+    0,
+    128
+  ],
+  "fillColor": [
+    255,
+    0,
+    0,
+    128
+  ]
+}
