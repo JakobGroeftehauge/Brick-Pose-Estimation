@@ -19,7 +19,10 @@
 * Simple Dataset - Single Layer of Bricks 
 * On Pallet Dataset - Multiple Stacked Layers of Bricks
 
+### Other
+ 
+#### Appendix 
+
 ## Future Work
 * CenterNet - Objects as Points (https://arxiv.org/abs/1904.07850)
 
-## Other
