@@ -1,18 +1,28 @@
 # Deep Learning Aided Pose Estimation for Robotic Brick Picking
 
-## Description
+## Abstract
 
+- Add abstratc form the report
 
+## Contents
 
-## Content
+### Baseline Methods 
+* Detection of Lines using Hough Lines
+* Chamfer Matching
 
-### List of Projects Contained in the Repository
+### Deep Learning Based Methods 
+* Keras RetinaNet - Axis Aligned Bounding Boxes (https://github.com/fizyr/keras-retinanet)
+* Keras RetinaNet - Axis Alinged with Added Seperate Angle Subnet
+* Keras RetinaNet - Non-Axis Aligned with Combined Bounding Box regression and Angle subnet. 
 
-**ConvertFromBGR_to_RGB:**  <br/> 
-**Hough_tranform:** Implementation of hough transform for line detection in edge images. <br/>
-**Line Detection:**  <br/>
-**Resize_and_crop_img:**  <br/>
-**saveImages:** Application for capturing RGB and depth images simultaneous with the Intel RealSense camera  <br/>
+### Data 
+* Simple Dataset - Single Layer of Bricks 
+* On Pallet Dataset - Multiple Stacked Layers of Bricks
 
-### Miscellaneous
-**Strojer_Images:** This folder contains various images of bricks used for the listed projects <br/>
+### Other
+ 
+#### Appendix 
+
+## Future Work
+* CenterNet - Objects as Points (https://arxiv.org/abs/1904.07850)
+
