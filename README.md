@@ -16,8 +16,9 @@
 * Keras RetinaNet - Non-Axis Aligned with Combined Bounding Box regression and Angle subnet. 
 
 ### Data 
-* Simple Dataset - Single Layer of Bricks 
+* Simple Dataset - Single Layer of Bricks
 * On Pallet Dataset - Multiple Stacked Layers of Bricks
+* Old Bricks - Single Layer og Used Bricks
 
 ### Other
  
