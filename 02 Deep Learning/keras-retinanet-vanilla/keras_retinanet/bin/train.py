@@ -20,6 +20,7 @@ import argparse
 import os
 import sys
 import warnings
+import csv
 
 import keras
 import keras.preprocessing.image
@@ -63,6 +64,15 @@ def makedirs(path):
             raise
 
 
+def print_history_to_csv(history, path, name='losses.csv'):
+    with open(path + name, 'w', newline='') as csv_file:
+        file_writer = csv.writer(csv_file, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        history_keys = list(history.keys())
+        file_writer.writerow(history_keys)
+        for i in range(len(history[history_keys[0]])):
+            file_writer.writerow([history[key][i] for key in history_keys])
+ 
+            
 def model_with_weights(model, weights, skip_mismatch):
     """ Load weights for model.
 
@@ -436,7 +446,7 @@ def parse_args(args):
     parser.add_argument('--multiprocessing',  help='Use multiprocessing in fit_generator.', action='store_true')
     parser.add_argument('--workers',          help='Number of generator workers.', type=int, default=1)
     parser.add_argument('--max-queue-size',   help='Queue length for multiprocessing workers in fit_generator.', type=int, default=10)
-
+    parser.add_argument('--name', help='name (optional).')
     return check_args(parser.parse_args(args))
 
 
@@ -512,7 +522,7 @@ def main(args=None):
         validation_generator = None
 
     # start training
-    return training_model.fit_generator(
+    HPM_train_model = training_model.fit_generator(
         generator=train_generator,
         steps_per_epoch=args.steps,
         epochs=args.epochs,
@@ -524,7 +534,10 @@ def main(args=None):
         validation_data=validation_generator,
         initial_epoch=args.initial_epoch
     )
-
+    print(HPM_train_model)
+    print(HPM_train_model.history)
+    print_history_to_csv(HPM_train_model.history, '', args.name+'_losses.csv')
+    return HPM_train_model
 
 if __name__ == '__main__':
     main()
