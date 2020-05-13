@@ -13,17 +13,17 @@ int main()
 	std::vector<double> nms_thresh = { 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 425, 450, 475, 500 };// , 0.2, 0.25, 0.3, 0.35, 0.4};
 	//std::vector<double> nms_thresh = { 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07,0.075,0.08,0.085,0.09,0.095,0.1 };// , 0.2, 0.25, 0.3, 0.35, 0.4};
 	Chamfer_brick_detector detector; 
-	//Evaluator test_evaluator("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv", NON_AXIS_ALIGNED);
-	Evaluator test_evaluator("../../03 Data/Dataset2_onPallet", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_OP_val_set_14-04.csv", NON_AXIS_ALIGNED);
+	Evaluator test_evaluator("../../03 Data/Simple Dataset", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_val_set_18-03.csv", NON_AXIS_ALIGNEDm);
+	//Evaluator test_evaluator("../../03 Data/Dataset2_onPallet", "../../02 Deep Learning/Create-CSV-dataset/list_of_img_in_OP_val_set_14-04.csv", 0);
 	test_evaluator.set_detector(&detector);
-	//test_evaluator.detector->set_brick_specs(96, 21, 108, 28);
-	test_evaluator.detector->set_brick_specs(139, 30, 211, 54.39);
+	test_evaluator.detector->set_brick_specs(96, 21, 108, 28);
+	//test_evaluator.detector->set_brick_specs(139, 30, 211, 54.39);
 	test_evaluator.detector->set_resolution(60, 5);
 
-	res.open("../../03 Data/Dataset2_onPallet/" + test_name + "results.csv");
-	dump.open("../../03 Data/Dataset2_onPallet/" + test_name + "dump.txt");
-	//res.open("../../03 Data/Simple Dataset/" + test_name + "results.csv");
-	//dump.open("../../03 Data/Simple Dataset/" + test_name + "dump.txt");
+	//res.open("../../03 Data/Dataset2_onPallet/" + test_name + "results.csv");
+	//dump.open("../../03 Data/Dataset2_onPallet/" + test_name + "dump.txt");
+	res.open("../../03 Data/Simple Dataset/" + test_name + "results.csv");
+	dump.open("../../03 Data/Simple Dataset/" + test_name + "dump.txt");
 	res << setw(sp) << "Thresh, Prec., Rec., F1, ang. err., a. e. std.,cent. err, std. c. e., Time" << std::endl;
 
 	for (int i = 0; i < nms_thresh.size(); i++)
