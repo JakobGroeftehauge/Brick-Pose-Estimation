@@ -36,6 +36,7 @@ Baseline_method/Baseline_method
 03 Data/Create-Dataset/Create-json-annotations/Create-json-annotations
 01 Classic Vision/Eval_Hough/Eval_Hough
 01 Classic Vision/Anchor_figure/Anchor_figure
+01 Classic Vision/Fig_new_RBB_representation/Fig_new_RBB_representation
 
 ## Paperspace server
 cuda-repo-ubuntu1804_10.1.243-1_amd64.deb
