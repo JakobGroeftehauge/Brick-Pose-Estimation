@@ -38,7 +38,7 @@ Baseline_method/Baseline_method
 01 Classic Vision/Anchor_figure/Anchor_figure
 01 Classic Vision/Fig_new_RBB_representation/Fig_new_RBB_representation
 01 Classic Vision/Fig_OP_dataset/Fig_OP_dataset
-
+01 Classic Vision/Fig_BB_between_GT/Fig_BB_between_GT
 ## Paperspace server
 cuda-repo-ubuntu1804_10.1.243-1_amd64.deb
 nvidia-machine-learning-repo-ubuntu1804_1.0.0-1_amd64.deb
