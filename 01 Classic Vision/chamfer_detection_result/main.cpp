@@ -23,7 +23,7 @@ void print_angle_predictions(cv::Mat& img, bounding_box BB, int line_width, cv::
     cv::Point2d pt1 = BB.rotated_rect.center + cv::Point2f(w/2.0*sin((angle+90)*CV_PI/180)*0.5, -w/2.0*cos((angle+90)*CV_PI/180)*0.5);
     cv::Point2d pt2 = BB.rotated_rect.center -  cv::Point2f(w/2.0*sin((angle+90)*CV_PI/180)*0.5, -w/2.0*cos((angle+90)*CV_PI/180)*0.5);
 
-    cv::arrowedLine(img, pt2, pt1, color, line_width, CV_AA);
+    cv::arrowedLine(img, pt2, pt1, color, line_width, CV_AA, 0, 0.15);
 }
 
 
