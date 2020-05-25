@@ -15,6 +15,18 @@ using namespace std;
 string path = "../../03 Data/Simple Dataset Copied/" ;
 string file_name =  "colorIMG_159";
 
+void print_angle_predictions(cv::Mat& img, bounding_box BB, int line_width, cv::Scalar color = cv::Scalar(255, 255, 0))
+{
+    double w = BB.rotated_rect.size.width;
+    double h = BB.rotated_rect.size.height;
+    double angle = BB.rotated_rect.angle;
+    cv::Point2d pt1 = BB.rotated_rect.center + cv::Point2f(w/2.0*sin((angle+90)*CV_PI/180)*0.5, -w/2.0*cos((angle+90)*CV_PI/180)*0.5);
+    cv::Point2d pt2 = BB.rotated_rect.center -  cv::Point2f(w/2.0*sin((angle+90)*CV_PI/180)*0.5, -w/2.0*cos((angle+90)*CV_PI/180)*0.5);
+
+    cv::arrowedLine(img, pt2, pt1, color, line_width, CV_AA);
+}
+
+
 void draw_rot_rect(cv::Mat& img, cv::RotatedRect rot_rect, cv::Scalar color, int line_width)
 {
     cv::Point2f rect_points[4];
@@ -140,6 +152,15 @@ int main()
        std::cout << TP[i] << std::endl;
    }
 
+   for(int i = 0; i < preds.size(); i++)
+   {
+       if(std::find(TP.begin(), TP.end(), i) != TP.end())
+       {
+           print_angle_predictions(img_axis_aligned, preds[i], 3);
+       }
+       std::cout << TP[i] << std::endl;
+   }
+
    // Evaluate OP dataset non-axis aligned bounding boxes
    TP.clear();
    match_annotations(preds, rect_list, TP, 0.5, 1);
@@ -150,6 +171,7 @@ int main()
        if(std::find(TP.begin(), TP.end(), i) != TP.end())
        {
            draw_rot_rect(img_axis_non_aligned, preds[i].rotated_rect, cv::Scalar(0, 255, 0), 2); //simple width - 2 OP - 3
+           print_angle_predictions(img_axis_non_aligned, preds[i], 3);
        }
        else
        {
