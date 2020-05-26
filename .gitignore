@@ -41,6 +41,8 @@ Baseline_method/Baseline_method
 01 Classic Vision/Fig_BB_between_GT/Fig_BB_between_GT
 01 Classic Vision/chamfer_detection_result/chamfer_detection_result
 01 Classic Vision/hough_detection_results/hough_detection_results
+01 Classic Vision/deep_learning_detection_results/deep_learning_detection_results
+01 Classic Visiob/RotinaNet_prediction_results/RotinaNet_prediction_results
 
 ## Paperspace server
 cuda-repo-ubuntu1804_10.1.243-1_amd64.deb

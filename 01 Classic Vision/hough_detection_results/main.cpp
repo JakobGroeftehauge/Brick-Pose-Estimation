@@ -8,12 +8,12 @@
 using namespace std;
 
 // OP dataset
-string path = "../../03 Data/Dataset2_onPallet/" ;
-string file_name =  "OP_colorIMG_185";
+//string path = "../../03 Data/Dataset2_onPallet/" ;
+//string file_name =  "OP_colorIMG_185";
 
 // Simple
-//string path = "../../03 Data/Simple Dataset Copied/" ;
-//string file_name =  "colorIMG_159";
+string path = "../../03 Data/Simple Dataset Copied/" ;
+string file_name =  "colorIMG_159";
 
 void print_angle_predictions(cv::Mat& img, bounding_box BB, int line_width, cv::Scalar color = cv::Scalar(255, 255, 0))
 {
@@ -23,7 +23,7 @@ void print_angle_predictions(cv::Mat& img, bounding_box BB, int line_width, cv::
     cv::Point2d pt1 = BB.rotated_rect.center + cv::Point2f(w/2.0*sin((angle+90)*CV_PI/180)*0.5, -w/2.0*cos((angle+90)*CV_PI/180)*0.5);
     cv::Point2d pt2 = BB.rotated_rect.center -  cv::Point2f(w/2.0*sin((angle+90)*CV_PI/180)*0.5, -w/2.0*cos((angle+90)*CV_PI/180)*0.5);
 
-    cv::arrowedLine(img, pt2, pt1, color, line_width, CV_AA);
+    cv::arrowedLine(img, pt2, pt1, color, line_width, CV_AA, 0, 0.15);
 }
 
 void draw_rot_rect(cv::Mat& img, cv::RotatedRect rot_rect, cv::Scalar color, int line_width)
@@ -106,12 +106,12 @@ int main()
 {
    Brick_Detector detector;
    // OP
-   detector.set_canny_thresh(30, 165);
-   detector.set_brick_specs(139, 30, 211, 54.39);
+   //detector.set_canny_thresh(30, 165);
+   //detector.set_brick_specs(139, 30, 211, 54.39);
 
    // Simple
-   //detector.set_canny_thresh(48, 132);
-   //detector.set_brick_specs(96, 21, 108, 28);
+   detector.set_canny_thresh(48, 132);
+   detector.set_brick_specs(96, 21, 108, 28);
 
    std::vector<bounding_box> preds;
    std::vector<std::vector<cv::Point2f>> rect_list;
@@ -141,11 +141,11 @@ int main()
    {
        if(std::find(TP.begin(), TP.end(), i) != TP.end())
        {
-           cv::rectangle(img_axis_aligned, preds[i].rect.tl(), preds[i].rect.br(), cv::Scalar(0, 255, 0), 3);
+           cv::rectangle(img_axis_aligned, preds[i].rect.tl(), preds[i].rect.br(), cv::Scalar(0, 255, 0), 2);
        }
        else
        {
-           cv::rectangle(img_axis_aligned, preds[i].rect.tl(), preds[i].rect.br(), cv::Scalar(0, 0, 255), 4);
+           cv::rectangle(img_axis_aligned, preds[i].rect.tl(), preds[i].rect.br(), cv::Scalar(0, 0, 255), 3);
        }
 
        std::cout << TP[i] << std::endl;
@@ -155,7 +155,7 @@ int main()
    {
        if(std::find(TP.begin(), TP.end(), i) != TP.end())
        {
-           print_angle_predictions(img_axis_aligned, preds[i], 3);
+           print_angle_predictions(img_axis_aligned, preds[i], 2);
        }
        std::cout << TP[i] << std::endl;
    }
@@ -168,12 +168,12 @@ int main()
    {
        if(std::find(TP.begin(), TP.end(), i) != TP.end())
        {
-           draw_rot_rect(img_axis_non_aligned, preds[i].rotated_rect, cv::Scalar(0, 255, 0), 3); //simple width - 2 OP - 3
+           draw_rot_rect(img_axis_non_aligned, preds[i].rotated_rect, cv::Scalar(0, 255, 0), 2); //simple width - 2 OP - 3
            print_angle_predictions(img_axis_non_aligned, preds[i], 2);
        }
        else
        {
-           draw_rot_rect(img_axis_non_aligned, preds[i].rotated_rect, cv::Scalar(0, 0, 255), 4);  //simple width - 3 OP - 4
+           draw_rot_rect(img_axis_non_aligned, preds[i].rotated_rect, cv::Scalar(0, 0, 255), 3);  //simple width - 3 OP - 4
            //print_angle_predictions(img_axis_non_aligned, preds[i], 2);
        }
 
@@ -182,10 +182,10 @@ int main()
 
 
    // roi OP dataset
-   cv::Rect roi(420, 80, 800, 600);
+   //cv::Rect roi(420, 80, 800, 600);
 
   // roi simple
-   //cv::Rect roi(230, 100, 400, 320);
+   cv::Rect roi(230, 100, 400, 320);
 
    img_axis_aligned = img_axis_aligned(roi);
    img_axis_non_aligned = img_axis_non_aligned(roi);
