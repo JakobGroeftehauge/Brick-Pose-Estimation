@@ -76,7 +76,7 @@ inline void print_lines(cv::Mat &img, std::vector<std::vector<double>> lines, cv
     }
 }
 
-inline void print_rotated_bounding_boxes(cv::Mat &img, std::vector<bounding_box> preds, cv::Scalar color = cv::Scalar(0, 0, 255))
+inline void print_rotated_bounding_boxes(cv::Mat &img, std::vector<bounding_box> preds, cv::Scalar color = cv::Scalar(0, 0, 255), int line_width = 1)
 {
     for(unsigned int  i = 0; i < preds.size(); i++)
     {
@@ -85,7 +85,7 @@ inline void print_rotated_bounding_boxes(cv::Mat &img, std::vector<bounding_box>
 
         for(int j = 0; j < 4; j++)
         {
-            cv::line(img, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
+            cv::line(img, rect_points[j], rect_points[(j + 1) % 4], color, line_width, 8);
         }
     }
 }
