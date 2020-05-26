@@ -44,11 +44,11 @@ inline void draw_points(cv::Mat& img, std::vector<cv::Point2f> pt_list, int radi
     }
 }
 
-inline void print_bounding_boxes(cv::Mat& img, std::vector<bounding_box> preds, cv::Scalar color = cv::Scalar(255,0,0))
+inline void print_bounding_boxes(cv::Mat& img, std::vector<bounding_box> preds, cv::Scalar color = cv::Scalar(255,0,0), int thick = 1)
 {
     for(unsigned int i = 0; i < preds.size(); i++)
     {
-        cv::rectangle(img, preds[i].rect.tl(), preds[i].rect.br(), color);
+        cv::rectangle(img, preds[i].rect.tl(), preds[i].rect.br(), color, thick);
     }
 }
 inline void print_bounding_boxes(cv::Mat& img, std::vector<cv::Rect> preds, cv::Scalar color = cv::Scalar(255, 0, 0))

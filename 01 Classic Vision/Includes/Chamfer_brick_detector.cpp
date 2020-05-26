@@ -18,12 +18,18 @@ void Chamfer_brick_detector::detect()
 	//util::Timer timer("Detection time");
 	std::chrono::high_resolution_clock::time_point end;
 	std::chrono::high_resolution_clock::time_point start;
+	std::chrono::high_resolution_clock::time_point match_end;
+	std::chrono::high_resolution_clock::time_point match_start;
 	std::chrono::duration<float> duration;
-	start = std::chrono::high_resolution_clock::now();
+	
 	this->predictions.clear();
 	this->pred_candidates.clear();
+	start = std::chrono::high_resolution_clock::now();
 	compute_chamfer_img();
+	end = std::chrono::high_resolution_clock::now();
+	match_start = std::chrono::high_resolution_clock::now();
     find_rectangle_candidates(angle_step, scale_min, scale_max, scale_step);
+	match_end = std::chrono::high_resolution_clock::now();
 	//std::cout << this->pred_candidates.size() << std::endl;;
 	//sort list
 	std::sort(this->pred_candidates.begin(), this->pred_candidates.end());
@@ -32,8 +38,7 @@ void Chamfer_brick_detector::detect()
 	apply_IOU_NMS(this->pred_candidates, 0.15, this->pred_candidates);
 	//std::cout << "Length after IOU NMS: " << this->pred_candidates.size() << std::endl;
 	predictions_from_candidates(this->pred_candidates, this->predictions);
-	end = std::chrono::high_resolution_clock::now();
-	duration = end - start;
+	duration = end - start;// -(match_start - match_end);
 	float ms = duration.count() * 1000.0f;
 	this->time += ms;
 }
@@ -244,13 +249,14 @@ void Chamfer_brick_detector::find_edges(cv::Mat& src, cv::Mat& dst)
 	cv::Mat gray_img;
 	cv::cvtColor(src, gray_img, CV_BGR2GRAY);
 	cv::Mat filter_img;
-	//cv::medianBlur(gray_img, filter_img, 3);
+	cv::medianBlur(gray_img, filter_img, 3);
 	cv::GaussianBlur(gray_img, filter_img, cv::Size(3,3),0,0);
-	//cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
-	//cv::rectangle(dst, cv::Point(0, 0), cv::Point(235, dst.size().height - 1), 0, -1); //mask out pallet 1280x720
-	//cv::imshow("edge3", dst);
-	//cv::GaussianBlur(gray_img, filter_img, cv::Size(5, 5), 0, 0);
 	cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
+	//cv::rectangle(dst, cv::Point(0, 0), cv::Point(25, dst.size().height - 1), 0, -1); //mask out pallet 1280x720
+	//cv::imshow("edge3", dst);
+
+	//cv::GaussianBlur(gray_img, filter_img, cv::Size(5, 5), 0, 0);
+	//cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
 	//cv::rectangle(dst, cv::Point(0, 0), cv::Point(235, dst.size().height - 1), 0, -1); //mask out pallet 1280x720
 
 //	cv::imshow("edge5", dst);

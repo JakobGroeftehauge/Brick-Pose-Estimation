@@ -106,12 +106,14 @@ void match_annotations(std::vector<bounding_box> preds, std::vector<std::vector<
 int main()
 {
    Chamfer_brick_detector detector;
-   /*// OP
-   detector.set_canny_thresh(30, 165);
-   detector.set_brick_specs(139, 30, 211, 54.39);*/
+   // OP
+   //detector.set_canny_thresh(25, 70);
+   //detector.set_NMS_thresh(175);
+   //detector.set_brick_specs(139, 30, 211, 54.39);
 
    // Simple
-   detector.set_canny_thresh(48, 132);
+   detector.set_canny_thresh(25, 70);
+   detector.set_NMS_thresh(175);
    detector.set_brick_specs(96, 21, 108, 28);
 
    std::vector<bounding_box> preds;
@@ -156,7 +158,7 @@ int main()
    {
        if(std::find(TP.begin(), TP.end(), i) != TP.end())
        {
-           print_angle_predictions(img_axis_aligned, preds[i], 3);
+           print_angle_predictions(img_axis_aligned, preds[i], 2);
        }
        std::cout << TP[i] << std::endl;
    }
@@ -171,7 +173,7 @@ int main()
        if(std::find(TP.begin(), TP.end(), i) != TP.end())
        {
            draw_rot_rect(img_axis_non_aligned, preds[i].rotated_rect, cv::Scalar(0, 255, 0), 2); //simple width - 2 OP - 3
-           print_angle_predictions(img_axis_non_aligned, preds[i], 3);
+           print_angle_predictions(img_axis_non_aligned, preds[i], 2);
        }
        else
        {
@@ -182,11 +184,11 @@ int main()
    }
 
     // roi OP dataset
-   //cv::Rect roi(420, 80, 800, 600);
+    //cv::Rect roi(420, 80, 800, 600);
 
 
    // roi simple
-    cv::Rect roi(230, 100, 400, 320);
+   cv::Rect roi(230, 100, 400, 320);
 
    // roi simple
    img_axis_aligned = img_axis_aligned(roi);
