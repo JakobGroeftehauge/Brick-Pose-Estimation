@@ -37,8 +37,8 @@ int main()
             true_pos.push_back(detector.predictions[i]);
     }
 
-    util::print_bounding_boxes(img, true_pos, cv::Scalar(0,255,0));
-    util::print_bounding_boxes(img, false_pos, cv::Scalar(0,0,255),2);
+    util::print_rotated_bounding_boxes(img, true_pos, cv::Scalar(0,255,0), 2);
+    util::print_rotated_bounding_boxes(img, false_pos, cv::Scalar(0,0,255),3);
 
     cv::Rect roi(540, 125, 600, 450);
 
