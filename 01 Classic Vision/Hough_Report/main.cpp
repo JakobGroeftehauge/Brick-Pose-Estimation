@@ -23,7 +23,7 @@ void img_1(cv::Mat &img, Brick_Detector &detector)
 
 void img_2(cv::Mat &img, Brick_Detector &detector)
 {
-    util::print_bounding_boxes(img, detector.predictions, cv::Scalar(255,0, 255));
+    util::print_rotated_bounding_boxes(img, detector.predictions, cv::Scalar(255,0, 255), 2);
 }
 
 int main()
@@ -31,6 +31,8 @@ int main()
     cv::Mat img = cv::imread("../../03 Data/Simple Dataset/colorIMG_193.png");
     cv::imshow("raw img", img);
     Brick_Detector detector(img);
+    detector.set_canny_thresh(25, 70);
+    detector.set_brick_specs(96, 21, 108, 28);
     detector.detect();
     cv::Mat hough = detector.hough.hough_matrix;
     cv::Mat hough_rot = detector.hough.hough_rotated;
@@ -63,6 +65,7 @@ int main()
     //imwrite( "hough_space_rot.png", hough_rot);
     imwrite( "lines_hough.png", img_lines);
     imwrite( "BB_hough.png", img_detections);
+
 
     cv::waitKey(0);
     return 0;

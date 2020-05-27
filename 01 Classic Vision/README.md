@@ -1,6 +1,6 @@
 # Baseline Methods
 
-## Line Detection using Hough Lines 
+## Line Based Detection 
 
 ### Include Files
 **Brick Detector.h:** <br/>
