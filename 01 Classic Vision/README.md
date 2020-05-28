@@ -26,7 +26,7 @@
 **Detector.h:** <br/>
 
 # Projects 
-**BB_characteristics:**  Generates raw information regardng the annotated bounding boxes in a data set <br/>
+**BB_characteristics:**  Generates raw information regardng the annotated bounding boxes in a data set \
 **Baseline_method:** Initial application for performing grid search to determine hyperparameters for the line based algorithm <br/>
 **Chamfer_evaluation:** Evaluation of the chamfer matching algorithm using axis aligned bounding box as target <br/>
 **Eval_Hough:** Evalution of the line based method, using both rotated and axis aligned bounding boxes represenation <br/>
