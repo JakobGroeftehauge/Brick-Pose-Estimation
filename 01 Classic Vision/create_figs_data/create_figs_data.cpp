@@ -1,9 +1,31 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <vector>
-//#include "predictions.h"
+#include "../Includes/predictions.h"
 #include "../Includes/util.h"
 #include "../Includes/annotation_loader.h"
+
+void print_angle_predictions(cv::Mat& img, bounding_box BB, int line_width, cv::Scalar color = cv::Scalar(255, 255, 0))
+{
+    double w = BB.rotated_rect.size.width;
+    double h = BB.rotated_rect.size.height;
+    double angle = BB.rotated_rect.angle;
+    cv::Point2d pt1 = BB.rotated_rect.center + cv::Point2f(w / 2.0 * sin((angle + 90) * CV_PI / 180) * 0.5, -w / 2.0 * cos((angle + 90) * CV_PI / 180) * 0.5);
+    cv::Point2d pt2 = BB.rotated_rect.center - cv::Point2f(w / 2.0 * sin((angle + 90) * CV_PI / 180) * 0.5, -w / 2.0 * cos((angle + 90) * CV_PI / 180) * 0.5);
+
+    cv::arrowedLine(img, pt2, pt1, color, line_width, CV_AA, 0, 0.15);
+}
+
+void draw_rot_rect(cv::Mat& img, cv::RotatedRect rot_rect, cv::Scalar color, int line_width)
+{
+    cv::Point2f rect_points[4];
+    rot_rect.points(rect_points);
+
+    for (int j = 0; j < 4; j++)
+    {
+        cv::line(img, rect_points[j], rect_points[(j + 1) % 4], color, line_width, CV_AA);
+    }
+}
 
 std::string image_str = "colorIMG_193";
 
@@ -38,6 +60,14 @@ int main()
     cv::imshow("img", img_cropped);
     imwrite(image_str + "_annotated.png", img_cropped);
     //-------------------------------------------------------------------------------------------
+    
+    //------------------- Load annotations into bounding box struct -----------------------------
+    std::vector<bounding_box> bounding_boxes;
+    for (int i = 0; i < annotations.Rect_list.size(); i++)
+    {
+        bounding_boxes.push_back(annotations.Rect_list[i]);
+    }
+
 
     // ------------------------- PRINT ROTATED RECT AND ANGLE -----------------------------------
     img = cv::imread("../../03 Data/Simple Dataset Copied/" + image_str + ".png");
@@ -51,7 +81,7 @@ int main()
     util::print_rotated_bounding_boxes(img, rot_rects, cv::Scalar(255,255,0),CV_AA);
     for (int i = 0; i < end_points.size(); i++)
     {
-        cv::arrowedLine(img, rot_rects[i].center-end_points[i], rot_rects[i].center+end_points[i], cv::Scalar(255, 255, 0),1,CV_AA);
+        //cv::arrowedLine(img, rot_rects[i].center-end_points[i], rot_rects[i].center+end_points[i], cv::Scalar(255, 255, 0),1,CV_AA);
     }
     img_cropped = img(roi);
     cv::Mat resized(img_cropped);
@@ -63,16 +93,22 @@ int main()
     // --------------------------- PRINT AXIS-ALIGNED BBOX ---------------------------------------
     img = cv::imread("../../03 Data/Simple Dataset Copied/" + image_str + ".png");
     std::vector<cv::Rect> rects;
+    std::vector<std::vector<cv::Point2f>> AABB_points;
     for (int i = 0; i < annotations.Rect_list.size(); i++)
     {
         rects.push_back(cv::boundingRect(annotations.Rect_list[i]));
     }
 
     util::print_bounding_boxes(img, rects, cv::Scalar(255, 255, 0));
-    //for (int i = 0; i < end_points.size(); i++)
-    //{
-    //    cv::arrowedLine(img, rot_rects[i].center - end_points[i], rot_rects[i].center + end_points[i], cv::Scalar(200, 200, 0), 1, CV_AA);
-    //}
+    std::vector<cv::Point2f > points_;
+    for (int i = 0; i < end_points.size(); i++)
+    {
+        points_.clear();
+        points_.push_back(rects[i].br());
+        points_.push_back(rects[i].tl());
+        cv::arrowedLine(img, rot_rects[i].center - end_points[i], rot_rects[i].center + end_points[i], cv::Scalar(255, 255, 0), 2, CV_AA);
+        util::draw_points(img, points_, pt_radius, dot_color);
+    }
     img_cropped = img(roi);
     cv::imshow("Upright bbox", img_cropped);
     imwrite(image_str+"_axis_aligned.png", img_cropped);
