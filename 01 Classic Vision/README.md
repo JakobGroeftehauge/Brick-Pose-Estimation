@@ -26,11 +26,11 @@
 **Detector.h:** Parent class for detection methods. The line extraction based and chamfer matching based methods inherits from this class.<br/>
 
 # Projects 
-**BB_characteristics:**  <br/>
-**Baseline_method:**  <br/>
-**Chamfer_evaluation:**  <br/>
-**Eval_Hough:** <br/>
-**Eval_chamfer_rotated:** <br/> 
-**Vision_assisted_annotation.** <br/>
-**determine_brick_specs:**  <br/> 
-**real_sense:** <br/>
+**BB_characteristics:**  Generates raw information regardng the annotated bounding boxes in a data set <>
+**Baseline_method:** Initial application for performing grid search to determine hyperparameters for the bline based algorithm <b>
+**Chamfer_evaluation:** Evaluation of the chamfer matching algorithm using axis aligned bounding box as target <b>
+**Eval_Hough:** Evalution of the line based method, using both rotated and axis aligned bounding boxes represenation <b>
+**Eval_chamfer_rotated:** Evaluation of the chamfer matching algorithm using rotated rectangle as target <b> 
+**Vision_assisted_annotation.** Application for generating initial annotations to images, using the chamfer matching methods<b>
+**determine_brick_specs:** Determines size specification of all the annotations in a data set <b> 
+**real_sense:** Application for Capturing images via the intel RealSense camera <b>
