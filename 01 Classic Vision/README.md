@@ -1,5 +1,6 @@
-# Baseline Methods
+# Baseline Methods - Traditional Vision
 
+# Methods
 ## Line Based Detection 
 
 ### Include Files
@@ -24,3 +25,12 @@
 **Evaluator.h:**  <br/>
 **Detector.h:** <br/>
 
+# Projects 
+**BB_characteristics:**  <br/>
+**Baseline_method:**  <br/>
+**Chamfer_evaluation:**  <br/>
+**Eval_Hough:** <br/>
+**Eval_chamfer_rotated:** <br/> 
+**Vision_assisted_annotation.** <br/>
+**determine_brick_specs:**  <br/> 
+**real_sense:** <br/>
