@@ -250,15 +250,15 @@ void Chamfer_brick_detector::find_edges(cv::Mat& src, cv::Mat& dst)
 	cv::cvtColor(src, gray_img, CV_BGR2GRAY);
 	cv::Mat filter_img;
     //cv::medianBlur(gray_img, filter_img, 3);
-    //cv::GaussianBlur(gray_img, filter_img, cv::Size(3,3),0,0);
-    //cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
+    cv::GaussianBlur(gray_img, filter_img, cv::Size(3,3),0,0);
+    cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
 	//cv::rectangle(dst, cv::Point(0, 0), cv::Point(25, dst.size().height - 1), 0, -1); //mask out pallet 1280x720
 	//cv::imshow("edge3", dst);
 
-    cv::GaussianBlur(gray_img, filter_img, cv::Size(5, 5), 0, 0);
-    cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
-    cv::rectangle(dst, cv::Point(0, 0), cv::Point(235, dst.size().height - 1), 0, -1); //mask out pallet 1280x720
-
-//	cv::imshow("edge5", dst);
+//    cv::GaussianBlur(gray_img, filter_img, cv::Size(5, 5), 0, 0);
+//    cv::Canny(filter_img, dst, this->canny_thres_low, this->canny_thres_high);
+//    cv::rectangle(dst, cv::Point(0, 0), cv::Point(235, dst.size().height - 1), 0, -1); //mask out pallet 1280x720
+//
+////	cv::imshow("edge5", dst);
 //	cv::waitKey(0);
 }
