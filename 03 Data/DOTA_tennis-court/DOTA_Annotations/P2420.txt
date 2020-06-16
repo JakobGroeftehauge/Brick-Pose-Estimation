@@ -1,0 +1,3 @@
+imagesource:GoogleEarth
+gsd:0.957792126381
+228.0 690.0 252.0 690.0 252.0 712.0 228.0 712.0 roundabout 0

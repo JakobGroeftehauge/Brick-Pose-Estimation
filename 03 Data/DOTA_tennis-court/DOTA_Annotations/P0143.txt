@@ -1,0 +1,5 @@
+imagesource:GoogleEarth
+gsd:1.11159646899
+553.0 86.0 559.0 96.0 571.0 90.0 565.0 78.0 swimming-pool 1
+370.0 312.0 373.0 411.0 427.0 409.0 424.0 310.0 soccer-ball-field 1
+358.0 282.0 364.0 444.0 443.0 441.0 439.0 278.0 ground-track-field 1
