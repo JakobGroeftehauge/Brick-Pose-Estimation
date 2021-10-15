@@ -11,7 +11,7 @@ This project aims to examine different approaches to computer vision based objec
 * Chamfer Matching
 
 ### Deep Learning Based Methods 
-* Vanila RetinaNet - Axis Aligned Bounding Boxes (https://github.com/fizyr/keras-retinanet)
+* [Vanila RetinaNet - Axis Aligned Bounding Boxes](https://github.com/fizyr/keras-retinanet)
 * RetinaNet with Angle - Axis Alinged with Added Seperate Angle Subnet
 * RotinaNet - Non-Axis Aligned with Combined Bounding Box regression and Angle subnet. 
 
@@ -20,5 +20,5 @@ This project aims to examine different approaches to computer vision based objec
 * On Pallet Dataset - Multiple Stacked Layers of Bricks
 
 ## Future Work
-* CenterNet - Objects as Points (https://arxiv.org/abs/1904.07850)
+* [CenterNet - Objects as Points](https://arxiv.org/abs/1904.07850)
 
